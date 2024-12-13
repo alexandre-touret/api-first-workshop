@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build-book:
+  build-guitar-heaven:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
