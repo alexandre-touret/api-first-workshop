@@ -16,4 +16,4 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Test with Quarkus
-        run: ./mvnw quarkus:test -Dquarkus.test.continuous-testing=disabled
+        run: ./mvnw test -Dquarkus.test.continuous-testing=disabled
