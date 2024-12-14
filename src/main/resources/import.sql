@@ -4,6 +4,9 @@
 -- insert into myentity (id, field) values(2, 'field-2');
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;
+Voici 100 requêtes d'insertion SQL avec une colonne `id` qui est incrémentée à chaque appel :
+
+```sql
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (1, 'ES 335', 'ELECTRIC', 2500, 10);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (2, 'Stratocaster', 'ELECTRIC', 1500, 5);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (3, 'Les Paul', 'ELECTRIC', 3000, 2);
@@ -60,5 +63,52 @@ INSERT INTO Guitar (id, name, type, price, stock) VALUES (53, 'Yamaha A3R', 'FOL
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (54, 'Fender Malibu', 'FOLK', 700, 5);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (55, 'Gibson J-200', 'FOLK', 4000, 2);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (56, 'Taylor GS Mini', 'FOLK', 600, 6);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (57, 'Breedlove
 
-alter sequence Guitar_seq restart with 56;
+ Pursuit', 'FOLK', 900, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (58, 'Seagull Artist', 'FOLK', 1200, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (59, 'Cordoba Fusion', 'CLASSIC', 700, 6);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (60, 'Kremona Verea', 'CLASSIC', 1000, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (61, 'Ramirez R4', 'CLASSIC', 2000, 1);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (62, 'Takamine GC5CE', 'CLASSIC', 600, 5);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (63, 'Alhambra 7C', 'CLASSIC', 1300, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (64, 'Godin A6 Ultra', 'CLASSIC', 1500, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (65, 'Yamaha CG192S', 'CLASSIC', 800, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (66, 'Gibson ES-335', 'ELECTRIC', 3000, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (67, 'ESP Horizon', 'ELECTRIC', 2700, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (68, 'Fender Lead II', 'ELECTRIC', 1200, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (69, 'Gretsch G2622', 'ELECTRIC', 700, 5);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (70, 'Yamaha APX600', 'FOLK', 400, 7);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (71, 'Taylor 210ce', 'FOLK', 1500, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (72, 'Gibson J-15', 'FOLK', 1700, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (73, 'Ibanez AW54CE', 'FOLK', 300, 8);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (74, 'Breedlove Discovery', 'FOLK', 600, 6);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (75, 'Seagull Maritime', 'FOLK', 1000, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (76, 'Cordoba C9', 'CLASSIC', 1300, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (77, 'Kremona Sofia', 'CLASSIC', 800, 5);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (78, 'Ramirez R1', 'CLASSIC', 1500, 1);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (79, 'Takamine P3FCN', 'CLASSIC', 1600, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (80, 'Alhambra 9P', 'CLASSIC', 1800, 1);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (81, 'Gibson Firebird V', 'ELECTRIC', 2500, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (82, 'Fender Jag-Stang', 'ELECTRIC', 1300, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (83, 'Epiphone SG', 'ELECTRIC', 500, 10);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (84, 'Ibanez Talman', 'ELECTRIC', 700, 7);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (85, 'Jackson Dinky', 'ELECTRIC', 1000, 5);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (86, 'Dean Cadillac', 'ELECTRIC', 1200, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (87, 'PRS Santana', 'ELECTRIC', 3000, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (88, 'Music Man Silhouette', 'ELECTRIC', 2000, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (89, 'Gibson Explorer', 'ELECTRIC', 2200, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (90, 'Fender Coronado', 'ELECTRIC', 1600, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (91, 'Yamaha TRBX304', 'ELECTRIC', 350, 8);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (92, 'Gretsch G6120', 'ELECTRIC', 2900, 1);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (93, 'Ibanez SR505', 'ELECTRIC', 700, 6);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (94, 'Fender Bass VI', 'ELECTRIC', 1400, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (95, 'Gibson EB', 'ELECTRIC', 1200, 2);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (96, 'Fender Precision', 'ELECTRIC', 1500, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (97, 'Music Man StingRay', 'ELECTRIC', 2000, 3);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (98, 'Epiphone Thunderbird', 'ELECTRIC', 500, 5);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (99, 'Yamaha BB434', 'ELECTRIC', 600, 7);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (100, 'Gretsch G2220', 'ELECTRIC', 400, 6);
+```
+
+alter sequence Guitar_seq restart with 101;
