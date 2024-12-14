@@ -5,4 +5,4 @@
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;
 
-insert into Guitar (id,name,type,price,stock) values (1,'ES 335','Electric',2500,10);
+insert into Guitar (id,name,type,price,stock) values (999,'ES 335','ELECTRIC',2500,10);

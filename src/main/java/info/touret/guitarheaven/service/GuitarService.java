@@ -17,20 +17,21 @@ public class GuitarService {
     public GuitarService(GuitarRepository guitarRepository) {
         this.guitarRepository = guitarRepository;
     }
-
     public List<Guitar> findAllGuitars() {
         return guitarRepository.listAll();
     }
 
+    @Transactional
     public void createGuitar(Guitar guitar) {
         guitarRepository.persist(guitar);
     }
 
-
+    @Transactional
     public Guitar updateGuitar(Guitar guitar) {
         return guitarRepository.getEntityManager().merge(guitar);
     }
 
+    @Transactional
     public boolean deleteGuitar(Long guitarId) {
         return guitarRepository.deleteById(guitarId);
     }
