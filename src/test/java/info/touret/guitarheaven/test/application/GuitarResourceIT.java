@@ -1,4 +1,4 @@
-package info.touret.guitarheaven.test;
+package info.touret.guitarheaven.test.application;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 

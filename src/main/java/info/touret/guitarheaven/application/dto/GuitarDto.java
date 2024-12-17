@@ -1,4 +1,4 @@
-package info.touret.guitarheaven.dto;
+package info.touret.guitarheaven.application.dto;
 
 public record GuitarDto(Long id, String name, TYPE type, Double price, int stock) {
 

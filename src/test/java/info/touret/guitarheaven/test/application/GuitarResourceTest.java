@@ -1,12 +1,12 @@
-package info.touret.guitarheaven.test;
+package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.dto.GuitarDto;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
-import static info.touret.guitarheaven.dto.GuitarDto.TYPE.ELECTRIC;
+import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 
 @QuarkusTest
 class GuitarResourceTest {
@@ -22,7 +22,7 @@ class GuitarResourceTest {
 
     @Test
     void should_create_successfully() {
-        var guitar = new GuitarDto(1L, "ES 335", ELECTRIC, 2500.0, 10);
+        var guitar = new GuitarDto(null, "ES 335", ELECTRIC, 2500.0, 10);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

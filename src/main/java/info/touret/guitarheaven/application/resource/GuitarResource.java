@@ -1,10 +1,11 @@
-package info.touret.guitarheaven.resource;
+package info.touret.guitarheaven.application.resource;
 
-import info.touret.guitarheaven.dto.GuitarDto;
-import info.touret.guitarheaven.dto.GuitarsDto;
-import info.touret.guitarheaven.mapper.GuitarMapper;
-import info.touret.guitarheaven.service.GuitarService;
+import info.touret.guitarheaven.application.dto.GuitarDto;
+import info.touret.guitarheaven.application.dto.GuitarsDto;
+import info.touret.guitarheaven.application.mapper.GuitarMapper;
+import info.touret.guitarheaven.domain.service.GuitarService;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
@@ -28,6 +29,7 @@ public class GuitarResource {
         return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
     }
 
+    @Transactional
     @POST
     public void createGuitar(GuitarDto guitarDto) {
         guitarService.createGuitar(guitarMapper.toGuitar(guitarDto));

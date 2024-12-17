@@ -1,11 +1,11 @@
-package info.touret.guitarheaven.model;
+package info.touret.guitarheaven.infrastructure.persistence;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class Guitar {
+public class GuitarEntity {
     public enum TYPE {
         ELECTRIC, CLASSIC, FOLK, GIPSY
     }
