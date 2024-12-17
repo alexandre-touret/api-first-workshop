@@ -1,9 +1,8 @@
-package info.touret.guitarheaven.infrastructure.persistence;
+package info.touret.guitarheaven.infrastructure.database.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Table(name = "Guitar")
 @Entity
 public class GuitarEntity {
     public enum TYPE {
@@ -14,6 +13,7 @@ public class GuitarEntity {
     @GeneratedValue
     private Long id;
     private String name;
+    @Enumerated(EnumType.STRING)
     private TYPE type;
     private Double price;
     private int stock;

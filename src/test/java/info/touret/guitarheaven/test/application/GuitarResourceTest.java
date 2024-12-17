@@ -35,22 +35,21 @@ class GuitarResourceTest {
 
     @Test
     void should_update_successfully() {
-        var guitar = new GuitarDto(1L, "ES 335", ELECTRIC, 2500.0, 10);
+        var guitar = new GuitarDto(999L, "ES 335", ELECTRIC, 2500.0, 9);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
                 .body(guitar)
                 .when()
-                .put("/guitars/1")
+                .put("/guitars/999")
                 .then()
-                .statusCode(204);
+                .statusCode(200);
     }
 
     @Test
     void should_delete_successfully() {
-        var guitar = new GuitarDto(1L, "ES 335", ELECTRIC, 2500.0, 10);
         RestAssured.given()
-                .delete("/guitars/1")
+                .delete("/guitars/999")
                 .then()
                 .statusCode(204);
     }

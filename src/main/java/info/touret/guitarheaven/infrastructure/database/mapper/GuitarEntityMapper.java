@@ -1,6 +1,7 @@
-package info.touret.guitarheaven.infrastructure.persistence;
+package info.touret.guitarheaven.infrastructure.database.mapper;
 
 import info.touret.guitarheaven.domain.model.Guitar;
+import info.touret.guitarheaven.infrastructure.database.entity.GuitarEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;

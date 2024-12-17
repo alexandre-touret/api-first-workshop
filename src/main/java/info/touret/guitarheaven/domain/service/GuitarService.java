@@ -1,17 +1,13 @@
 package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import java.util.List;
 
-@ApplicationScoped
 public class GuitarService {
 
     private final GuitarPort guitarPort;
 
-    @Inject
     public GuitarService(GuitarPort guitarPort) {
         this.guitarPort = guitarPort;
     }
