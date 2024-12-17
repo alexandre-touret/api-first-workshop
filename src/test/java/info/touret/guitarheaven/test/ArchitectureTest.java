@@ -42,5 +42,3 @@ public class ArchitectureTest {
     public static final ArchRule should_return_the_infrastructure_layer_doesnt_depends_on_the_application = noClasses().that().resideInAPackage(ArchitectureTest.INFRASTRUCTURE_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage(ArchitectureTest.APPLICATION_ROOT_PACKAGE + "..");
 
 }
-
-git
