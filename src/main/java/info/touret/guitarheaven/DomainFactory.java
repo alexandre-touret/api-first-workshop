@@ -5,9 +5,11 @@ import info.touret.guitarheaven.domain.service.GuitarService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
+/**
+ * Factory for domain classes
+ */
 @ApplicationScoped
-public class DomainConfiguration {
-
+public class DomainFactory {
 
     @ApplicationScoped
     @Produces

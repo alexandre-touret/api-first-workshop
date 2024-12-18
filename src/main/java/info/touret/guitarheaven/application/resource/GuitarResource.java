@@ -13,6 +13,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.reactive.ResponseStatus;
 import org.jboss.resteasy.reactive.RestPath;
 
+/**
+ * Guitar API
+ */
 @Path("/guitars")
 public class GuitarResource {
 
@@ -30,7 +33,6 @@ public class GuitarResource {
     public GuitarsDto retrieveAllGuitars() {
         return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
     }
-
 
     @ResponseStatus(201)
     @POST
