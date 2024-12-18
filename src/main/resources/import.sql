@@ -4,9 +4,8 @@
 -- insert into myentity (id, field) values(2, 'field-2');
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;
-Voici 100 requêtes d'insertion SQL avec une colonne `id` qui est incrémentée à chaque appel :
 
-```sql
+
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (1, 'ES 335', 'ELECTRIC', 2500, 10);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (2, 'Stratocaster', 'ELECTRIC', 1500, 5);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (3, 'Les Paul', 'ELECTRIC', 3000, 2);
@@ -63,9 +62,7 @@ INSERT INTO Guitar (id, name, type, price, stock) VALUES (53, 'Yamaha A3R', 'FOL
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (54, 'Fender Malibu', 'FOLK', 700, 5);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (55, 'Gibson J-200', 'FOLK', 4000, 2);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (56, 'Taylor GS Mini', 'FOLK', 600, 6);
-INSERT INTO Guitar (id, name, type, price, stock) VALUES (57, 'Breedlove
-
- Pursuit', 'FOLK', 900, 4);
+INSERT INTO Guitar (id, name, type, price, stock) VALUES (57, 'Breedlove  Pursuit', 'FOLK', 900, 4);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (58, 'Seagull Artist', 'FOLK', 1200, 3);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (59, 'Cordoba Fusion', 'CLASSIC', 700, 6);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (60, 'Kremona Verea', 'CLASSIC', 1000, 2);
@@ -109,6 +106,5 @@ INSERT INTO Guitar (id, name, type, price, stock) VALUES (97, 'Music Man StingRa
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (98, 'Epiphone Thunderbird', 'ELECTRIC', 500, 5);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (99, 'Yamaha BB434', 'ELECTRIC', 600, 7);
 INSERT INTO Guitar (id, name, type, price, stock) VALUES (100, 'Gretsch G2220', 'ELECTRIC', 400, 6);
-```
 
 alter sequence Guitar_seq restart with 101;

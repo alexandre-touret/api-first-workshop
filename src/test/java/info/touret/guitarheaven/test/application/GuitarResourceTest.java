@@ -1,12 +1,12 @@
-package info.touret.guitarheaven.test;
+package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.dto.GuitarDto;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
-import static info.touret.guitarheaven.dto.GuitarDto.TYPE.ELECTRIC;
+import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 
 @QuarkusTest
 class GuitarResourceTest {
