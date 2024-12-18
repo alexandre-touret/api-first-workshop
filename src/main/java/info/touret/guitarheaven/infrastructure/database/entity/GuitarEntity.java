@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity
 public class GuitarEntity {
     public enum TYPE {
-        ELECTRIC, CLASSIC, FOLK, GIPSY
+        ELECTRIC, CLASSIC, FOLK, GIPSY, JAZZ
     }
 
     @Id
