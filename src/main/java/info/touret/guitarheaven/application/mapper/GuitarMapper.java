@@ -1,8 +1,8 @@
-package info.touret.guitarheaven.mapper;
+package info.touret.guitarheaven.application.mapper;
 
-import info.touret.guitarheaven.dto.GuitarDto;
-import info.touret.guitarheaven.dto.GuitarsDto;
-import info.touret.guitarheaven.model.Guitar;
+import info.touret.guitarheaven.application.dto.GuitarDto;
+import info.touret.guitarheaven.application.dto.GuitarsDto;
+import info.touret.guitarheaven.domain.model.Guitar;
 import org.mapstruct.Mapper;
 
 import java.util.List;
