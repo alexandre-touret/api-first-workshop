@@ -1,4 +1,4 @@
-package info.touret.guitarheaven.dto;
+package info.touret.guitarheaven.application.dto;
 
 import java.util.List;
 

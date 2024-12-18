@@ -1,14 +1,10 @@
-package info.touret.guitarheaven.model;
+package info.touret.guitarheaven.infrastructure.database.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Table(name = "Guitar")
 @Entity
-public class Guitar {
-        
+public class GuitarEntity {
     public enum TYPE {
         ELECTRIC, CLASSIC, FOLK, GIPSY, JAZZ
     }
@@ -60,9 +56,5 @@ public class Guitar {
 
     public void setStock(int stock) {
         this.stock = stock;
-    }
-    @Override
-    public String toString() {
-        return "Guitar [id=" + id + ", name=" + name + ", type=" + type + ", price=" + price + ", stock=" + stock + "]";
     }
 }
