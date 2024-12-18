@@ -1,0 +1,306 @@
+openapi: 3.0.0
+info:
+  title: Browse API
+  description: >
+    The Browse API has the following resources:
+    - **item_summary**: Allows shoppers to search for specific items by keyword, GTIN, category, charity, product, image, or item aspects and refine the results using filters.
+    - **item**: Allows shoppers to retrieve the details of a specific item or all items in an item group and check product compatibility.
+  contact:
+    name: eBay Inc
+  license:
+    name: eBay API License Agreement
+    url: https://developer.ebay.com/join/api-license-agreement
+  version: v1.19.9
+servers:
+  - url: https://api.ebay.com{basePath}
+    description: Production
+    variables:
+      basePath:
+        default: /buy/browse/v1
+paths:
+  /item_summary/search:
+    get:
+      tags:
+        - item_summary
+      description: >
+        This method searches for eBay items by various query parameters and retrieves summaries of the items. 
+        You can search by keyword, category, eBay product ID (ePID), or GTIN, charity ID, or a combination of these.
+        Note: Only listings with `FIXED_PRICE` (Buy It Now) are returned by default.
+      operationId: search
+      parameters:
+        - name: aspect_filter
+          in: query
+          description: Filter by item aspects, with required category ID specified twice.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Filter by color and category
+              value: categoryId:33034,Color:{Red}
+        - name: auto_correct
+          in: query
+          description: "Enables auto correction. Valid values: `KEYWORD`"
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Auto correct keyword
+              value: KEYWORD
+        - name: category_ids
+          in: query
+          description: >
+            The category ID to limit the results. Pass one category ID or a comma-separated list of IDs.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Single category ID
+              value: 33034
+            example2:
+              summary: Multiple category IDs
+              value: 33034,3858
+        - name: charity_ids
+          in: query
+          description: >
+            The charity ID filters results to return only those items associated with the specified charity. 
+            Supported by the US and UK marketplaces.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Multiple charity IDs
+              value: 13-1788491,300108469
+        - name: compatibility_filter
+          in: query
+          description: >
+            Specifies attributes to define a specific product. Only cars, trucks, and motorcycles are supported.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Filter by compatibility attributes
+              value: Year:2018;Make:Fender
+        - name: epid
+          in: query
+          description: >
+            The ePID is the eBay product identifier. Limits results to items in the specified ePID.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: ePID search
+              value: 15032
+        - name: fieldgroups
+          in: query
+          description: >
+            A comma-separated list of values to control what is returned in the response.
+            Default is `MATCHING_ITEMS`.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Aspect refinements
+              value: ASPECT_REFINEMENTS
+            example2:
+              summary: Multiple field groups
+              value: ASPECT_REFINEMENTS,BUYING_OPTION_REFINEMENTS
+        - name: filter
+          in: query
+          description: >
+            An array of field filters to limit/customize the result set. Refer to eBay API documentation for examples.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Price range filter
+              value: price:[500..1500]
+            example2:
+              summary: Multiple filters
+              value: price:[500..1500],sellers:{guitar_shop|music_world}
+        - name: gtin
+          in: query
+          description: >
+            Search by the Global Trade Item Number of an item. Note: Only UPC is supported.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: GTIN search
+              value: 0885978116182
+        - name: limit
+          in: query
+          description: >
+            The number of items from the result set returned in a single page.
+            Default is 50. Max is 200.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+          examples:
+            example1:
+              summary: Limit results
+              value: 50
+        - name: offset
+          in: query
+          description: >
+            Specifies the number of items to skip in the result set. Used with the limit field for pagination.
+            Default is 0. Max is 9999.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 9999
+          examples:
+            example1:
+              summary: Offset results
+              value: 10
+        - name: q
+          in: query
+          description: >
+            A string consisting of one or more keywords used to search for items on eBay.
+            Note: The `*` wildcard character is not allowed.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Single keyword
+              value: Fender Stratocaster
+            example2:
+              summary: Multiple keywords
+              value: Fender Stratocaster Gibson Les Paul
+        - name: sort
+          in: query
+          description: >
+            Specifies the criteria for sorting returned items. Default is `Best Match`.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: Sort by price
+              value: price
+            example2:
+              summary: Sort by distance
+              value: distance
+        - name: X-EBAY-C-ENDUSERCTX
+          in: header
+          description: >
+            This header supports revenue sharing for eBay Partner Network and improves accuracy of shipping and delivery estimates.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: End user context
+              value: contextualLocation=country%3DUS%2Czip%3D10001
+        - name: X-EBAY-C-MARKETPLACE-ID
+          in: header
+          description: >
+            Identifies the seller's eBay marketplace. Required for marketplaces outside the US.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: US marketplace
+              value: EBAY_US
+        - name: Accept-Language
+          in: header
+          description: >
+            Indicates the natural language and locale preferred by the user for the response.
+          required: false
+          schema:
+            type: string
+          examples:
+            example1:
+              summary: French language
+              value: fr-FR
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPagedCollection'
+              examples:
+                example1:
+                  summary: Example response
+                  value:
+                    href: "https://api.ebay.com/buy/browse/v1/item_summary/search?q=Fender+Stratocaster&limit=2"
+                    total: 1000
+                    limit: 2
+                    offset: 0
+                    itemSummaries:
+                      - itemId: "v1|110298597847|0"
+                        title: "Fender Stratocaster Electric Guitar - Black"
+                        price:
+                          value: 999.99
+                          currency: USD
+                        image:
+                          imageUrl: "https://i.ebayimg.com/images/g/1yMAAOSwHjRe~Wf9/s-l1600.jpg"
+                      - itemId: "v1|110298598973|0"
+                        title: "Gibson Les Paul Standard Electric Guitar - Sunburst"
+                        price:
+                          value: 1500.00
+                          currency: USD
+                        image:
+                          imageUrl: "https://i.ebayimg.com/images/g/2yMAAOSwHjRe~WgA/s-l1600.jpg"
+components:
+  schemas:
+    SearchPagedCollection:
+      type: object
+      properties:
+        href:
+          type: string
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        itemSummaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemSummary'
+    ItemSummary:
+      type: object
+      properties:
+        itemId:
+          type: string
+        title:
+          type: string
+        price:
+          $ref: '#/components/schemas/Price'
+        image:
+          $ref: '#/components/schemas/Image'
+    Price:
+      type: object
+      properties:
+        value:
+          type: number
+        currency:
+          type: string
+    Image:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+securitySchemes:
+  api_auth:
+    type: oauth2
+    flows:
+      clientCredentials:
+        tokenUrl: https://api.ebay.com/identity/v1/oauth2/token
+        scopes:
+          https://api.ebay.com/oauth/api_scope: eBay OAuth scope
