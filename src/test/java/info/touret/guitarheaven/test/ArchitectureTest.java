@@ -25,7 +25,8 @@ public class ArchitectureTest {
                     .domainServices("..domain.service..")
                     .applicationServices("..application..")
                     .adapter("database", "..database..")
-                    .adapter("ebay", "..ebay..");
+                    .adapter("ebay", "..ebay..")
+                    .adapter("kafka", "..kafka..");
 
     @ArchTest
     public static final ArchRule should_return_the_domain_doesnt_depend_on_jakarta = noClasses().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage("jakarta..");
