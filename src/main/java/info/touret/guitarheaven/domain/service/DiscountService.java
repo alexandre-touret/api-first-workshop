@@ -1,15 +1,14 @@
 package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import info.touret.guitarheaven.domain.port.SupplierCatalogPort;
 
-@ApplicationScoped
+import java.util.List;
+
 public class DiscountService {
 
     private final SupplierCatalogPort supplierCatalogPort;
 
-    @Inject
     public DiscountService(SupplierCatalogPort supplierCatalogPort) {
         this.supplierCatalogPort = supplierCatalogPort;
     }
@@ -24,4 +23,9 @@ public class DiscountService {
             return difference * 0.5;
         }
     }
+
+    public Double getTotalDiscount(List<Guitar> guitars) {
+        return guitars.stream().mapToDouble(this::getDiscount).sum();
+    }
+
 }
