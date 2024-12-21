@@ -22,6 +22,7 @@ public class GuitarDBAdapter implements GuitarPort {
         this.guitarEntityMapper = guitarEntityMapper;
     }
 
+
     @Override
     public List<Guitar> listAll() {
         return guitarEntityMapper.toGuitars(guitarRepository.listAll());
@@ -43,5 +44,10 @@ public class GuitarDBAdapter implements GuitarPort {
     @Override
     public boolean delete(Long guitarId) {
         return guitarRepository.deleteById(guitarId);
+    }
+
+    @Override
+    public List<Guitar> findGuitarsByIds(List<Long> ids) {
+        return guitarEntityMapper.toGuitars(guitarRepository.findInIds(ids));
     }
 }

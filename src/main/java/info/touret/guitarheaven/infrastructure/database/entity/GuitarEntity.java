@@ -2,6 +2,8 @@ package info.touret.guitarheaven.infrastructure.database.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Table(name = "Guitar")
 @Entity
 public class GuitarEntity {
@@ -17,6 +19,17 @@ public class GuitarEntity {
     private TYPE type;
     private Double price;
     private int stock;
+
+    @ManyToMany()
+    private Set<OrderEntity> orders;
+
+    public Set<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<OrderEntity> orders) {
+        this.orders = orders;
+    }
 
     public Long getId() {
         return id;
