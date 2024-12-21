@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ class OrderServiceTest {
     @Test
     void should_create_an_order_no_discount_successfully() {
         List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findAllGuitars()).thenReturn(guitars);
+        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
         when(discountService.getTotalDiscount(guitars)).thenReturn(0D);
         Order order = new Order(null, guitars, 100D, 2500D, OffsetDateTime.now());
         var orderId = orderService.order(order);
@@ -56,7 +57,7 @@ class OrderServiceTest {
     @Test
     void should_create_an_order_with_requested_discount_successfully() {
         List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findAllGuitars()).thenReturn(guitars);
+        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
         when(discountService.getTotalDiscount(guitars)).thenReturn(200D);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
         Order order = new Order(null, guitars, 100D, 2500D, OffsetDateTime.now());
@@ -70,7 +71,7 @@ class OrderServiceTest {
     @Test
     void should_create_an_order_with_found_discount_successfully() {
         List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findAllGuitars()).thenReturn(guitars);
+        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
         when(discountService.getTotalDiscount(guitars)).thenReturn(200D);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
         Order order = new Order(null, guitars, 300D, 2500D, OffsetDateTime.now());
@@ -84,7 +85,7 @@ class OrderServiceTest {
     @Test
     void should_throw_GOE() {
         List<Guitar> guitars = List.of(new Guitar(99L, "ES 135", Guitar.TYPE.ELECTRIC, 1500D, 5));
-        when(guitarService.findAllGuitars()).thenReturn(List.of());
+        when(guitarService.findGuitarsByIds(anyList())).thenReturn(List.of());
         Order order = new Order(null, guitars, 300D, 2500D, OffsetDateTime.now());
         assertThrowsExactly(GuitarOrderException.class, () -> orderService.order(order));
     }
@@ -92,7 +93,7 @@ class OrderServiceTest {
     @Test
     void should_request_supply_chain() {
         List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 1));
-        when(guitarService.findAllGuitars()).thenReturn(guitars);
+        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
         when(discountService.getTotalDiscount(guitars)).thenReturn(200D);
         ArgumentCaptor<String> guitarNameArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Integer> numberOfGuitarsRequestedArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
