@@ -1,9 +1,6 @@
 package info.touret.guitarheaven.test;
 
-import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.importer.ImportOption;
-import com.tngtech.archunit.core.importer.Location;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
@@ -27,7 +24,8 @@ public class ArchitectureTest {
             onionArchitecture().domainModels("..domain.model..")
                     .domainServices("..domain.service..")
                     .applicationServices("..application..")
-                    .adapter("database", "..database..");
+                    .adapter("database", "..database..")
+                    .adapter("ebay", "..ebay..");
 
     @ArchTest
     public static final ArchRule should_return_the_domain_doesnt_depend_on_jakarta = noClasses().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage("jakarta..");
