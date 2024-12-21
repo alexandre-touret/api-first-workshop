@@ -14,4 +14,6 @@ public interface GuitarEntityMapper {
     List<Guitar> toGuitars(List<GuitarEntity> guitars);
 
     GuitarEntity toGuitarEntity(Guitar guitar);
+
+
 }

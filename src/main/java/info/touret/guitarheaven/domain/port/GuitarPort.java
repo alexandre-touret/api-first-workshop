@@ -16,12 +16,14 @@ public interface GuitarPort {
 
     /**
      * Save a new guitar
+     *
      * @param guitar
      */
     void save(Guitar guitar);
 
     /**
      * Update the guitar
+     *
      * @param guitar
      * @return The updated guitar
      */
@@ -29,9 +31,15 @@ public interface GuitarPort {
 
     /**
      * Delete guitar
+     *
      * @param guitarId
      * @return <code>true</code> if the guitar is deleted. <code>false</code> instead
      */
     boolean delete(Long guitarId);
 
+    /**
+     * @param ids
+     * @return
+     */
+    List<Guitar> findGuitarsByIds(List<Long> ids);
 }
