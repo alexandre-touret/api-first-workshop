@@ -28,142 +28,6 @@ paths:
         Note: Only listings with `FIXED_PRICE` (Buy It Now) are returned by default.
       operationId: search
       parameters:
-        - name: aspect_filter
-          in: query
-          description: Filter by item aspects, with required category ID specified twice.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Filter by color and category
-              value: categoryId:33034,Color:{Red}
-        - name: auto_correct
-          in: query
-          description: "Enables auto correction. Valid values: `KEYWORD`"
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Auto correct keyword
-              value: KEYWORD
-        - name: category_ids
-          in: query
-          description: >
-            The category ID to limit the results. Pass one category ID or a comma-separated list of IDs.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Single category ID
-              value: 33034
-            example2:
-              summary: Multiple category IDs
-              value: 33034,3858
-        - name: charity_ids
-          in: query
-          description: >
-            The charity ID filters results to return only those items associated with the specified charity. 
-            Supported by the US and UK marketplaces.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Multiple charity IDs
-              value: 13-1788491,300108469
-        - name: compatibility_filter
-          in: query
-          description: >
-            Specifies attributes to define a specific product. Only cars, trucks, and motorcycles are supported.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Filter by compatibility attributes
-              value: Year:2018;Make:Fender
-        - name: epid
-          in: query
-          description: >
-            The ePID is the eBay product identifier. Limits results to items in the specified ePID.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: ePID search
-              value: 15032
-        - name: fieldgroups
-          in: query
-          description: >
-            A comma-separated list of values to control what is returned in the response.
-            Default is `MATCHING_ITEMS`.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Aspect refinements
-              value: ASPECT_REFINEMENTS
-            example2:
-              summary: Multiple field groups
-              value: ASPECT_REFINEMENTS,BUYING_OPTION_REFINEMENTS
-        - name: filter
-          in: query
-          description: >
-            An array of field filters to limit/customize the result set. Refer to eBay API documentation for examples.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Price range filter
-              value: price:[500..1500]
-            example2:
-              summary: Multiple filters
-              value: price:[500..1500],sellers:{guitar_shop|music_world}
-        - name: gtin
-          in: query
-          description: >
-            Search by the Global Trade Item Number of an item. Note: Only UPC is supported.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: GTIN search
-              value: 0885978116182
-        - name: limit
-          in: query
-          description: >
-            The number of items from the result set returned in a single page.
-            Default is 50. Max is 200.
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 200
-          examples:
-            example1:
-              summary: Limit results
-              value: 50
-        - name: offset
-          in: query
-          description: >
-            Specifies the number of items to skip in the result set. Used with the limit field for pagination.
-            Default is 0. Max is 9999.
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            maximum: 9999
-          examples:
-            example1:
-              summary: Offset results
-              value: 10
         - name: q
           in: query
           description: >
@@ -178,21 +42,7 @@ paths:
               value: Fender Stratocaster
             example2:
               summary: Multiple keywords
-              value: Fender Stratocaster Gibson Les Paul
-        - name: sort
-          in: query
-          description: >
-            Specifies the criteria for sorting returned items. Default is `Best Match`.
-          required: false
-          schema:
-            type: string
-          examples:
-            example1:
-              summary: Sort by price
-              value: price
-            example2:
-              summary: Sort by distance
-              value: distance
+              value: Gibson ES 335
         - name: X-EBAY-C-ENDUSERCTX
           in: header
           description: >
@@ -235,7 +85,7 @@ paths:
                 $ref: '#/components/schemas/SearchPagedCollection'
               examples:
                 example1:
-                  summary: Example response
+                  summary: Example response for Fender Stratocaster
                   value:
                     href: "https://api.ebay.com/buy/browse/v1/item_summary/search?q=Fender+Stratocaster&limit=2"
                     total: 1000
@@ -256,6 +106,15 @@ paths:
                           currency: USD
                         image:
                           imageUrl: "https://i.ebayimg.com/images/g/2yMAAOSwHjRe~WgA/s-l1600.jpg"
+                example2:
+                  summary: Example response for Gibson ES 335
+                  value:
+                    href: "https://api.ebay.com/buy/browse/v1/item_summary/search?q=Gibson+ES+335&limit=2"
+                    total: 0
+                    limit: 2
+                    offset: 0
+                    itemSummaries: []
+
 components:
   schemas:
     SearchPagedCollection:
