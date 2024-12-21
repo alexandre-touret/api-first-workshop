@@ -6,6 +6,7 @@ import info.touret.guitarheaven.infrastructure.database.mapper.OrderEntityMapper
 import info.touret.guitarheaven.infrastructure.database.repository.OrderRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class OrderDBAdapter implements OrderPort {
         this.orderEntityMapper = orderEntityMapper;
     }
 
+    @Transactional
     @Override
     public void saveOrder(Order order) {
         orderRepository.persist(orderEntityMapper.toOrderEntity(order));

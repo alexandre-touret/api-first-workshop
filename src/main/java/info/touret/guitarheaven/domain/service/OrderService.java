@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.domain.service;
 
-import info.touret.guitarheaven.domain.GuitarOrderException;
+import info.touret.guitarheaven.domain.exception.GuitarOrderException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.port.OrderPort;

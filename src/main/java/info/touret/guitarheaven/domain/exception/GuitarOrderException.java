@@ -1,4 +1,4 @@
-package info.touret.guitarheaven.domain;
+package info.touret.guitarheaven.domain.exception;
 
 public class GuitarOrderException extends RuntimeException {
     public GuitarOrderException() {

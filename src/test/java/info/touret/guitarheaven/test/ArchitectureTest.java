@@ -22,11 +22,12 @@ public class ArchitectureTest {
     @ArchTest
     public static final ArchRule should_return_hexagonal_architecture_is_respected =
             onionArchitecture().domainModels("..domain.model..")
-                    .domainServices("..domain.service..")
+                    .domainServices("..domain.(service|port|exception)..")
                     .applicationServices("..application..")
                     .adapter("database", "..database..")
                     .adapter("ebay", "..ebay..")
-                    .adapter("kafka", "..kafka..");
+                    .adapter("kafka", "..kafka..")
+                    .ensureAllClassesAreContainedInArchitecture();
 
     @ArchTest
     public static final ArchRule should_return_the_domain_doesnt_depend_on_jakarta = noClasses().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage("jakarta..");

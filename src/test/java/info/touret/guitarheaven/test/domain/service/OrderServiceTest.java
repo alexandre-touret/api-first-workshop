@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.domain.service;
 
-import info.touret.guitarheaven.domain.GuitarOrderException;
+import info.touret.guitarheaven.domain.exception.GuitarOrderException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.port.OrderPort;
@@ -8,15 +8,12 @@ import info.touret.guitarheaven.domain.port.SupplyChainPort;
 import info.touret.guitarheaven.domain.service.DiscountService;
 import info.touret.guitarheaven.domain.service.GuitarService;
 import info.touret.guitarheaven.domain.service.OrderService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.verification.VerificationMode;
 
 import java.time.Instant;
 import java.util.Date;
