@@ -1,6 +1,7 @@
 package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
+import info.touret.guitarheaven.domain.port.GuitarPort;
 
 import java.util.List;
 

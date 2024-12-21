@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.infrastructure.kafka;
 
-import info.touret.guitarheaven.domain.service.SupplyChainPort;
+import info.touret.guitarheaven.domain.port.SupplyChainPort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
