@@ -1,25 +1,28 @@
 package info.touret.guitarheaven.infrastructure.database.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.Set;
+import java.util.UUID;
 
+@Table(name = "GuitarOrder")
 @Entity
 public class OrderEntity {
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany
-    private List<GuitarEntity> guitars;
+    @ManyToMany(mappedBy = "orders")
+    private Set<GuitarEntity> guitars;
+
+    private UUID orderId;
+
+    private Double discountRequested;
 
     private Double totalPrice;
-
-    private Date createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -29,11 +32,11 @@ public class OrderEntity {
         this.id = id;
     }
 
-    public List<GuitarEntity> getGuitars() {
+    public Set<GuitarEntity> getGuitars() {
         return guitars;
     }
 
-    public void setGuitars(List<GuitarEntity> guitars) {
+    public void setGuitars(Set<GuitarEntity> guitars) {
         this.guitars = guitars;
     }
 
@@ -45,11 +48,27 @@ public class OrderEntity {
         this.totalPrice = totalPrice;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createAt) {
+    public void setCreatedAt(OffsetDateTime createAt) {
         this.createdAt = createAt;
+    }
+
+    public UUID getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
+    }
+
+    public Double getDiscountRequested() {
+        return discountRequested;
+    }
+
+    public void setDiscountRequested(Double discountRequested) {
+        this.discountRequested = discountRequested;
     }
 }

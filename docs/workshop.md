@@ -32,7 +32,7 @@ Feel free to raise any issues or participate!
 You **MUST** have set up these tools first:
 * [Java 21+](https://adoptium.net/temurin/releases/?version=21)
 * [Maven 3.9](https://www.maven.apache.org/)
-* [Docker](https://docs.docker.com/) & [Docker compose](https://docs.docker.com/compose/)
+* [Docker](https://docs.docker.com/)
 * Any IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea), [VSCode](https://code.visualstudio.com/), [Netbeans](https://netbeans.apache.org/),...) you want
 
 Here are commands to validate your environment:

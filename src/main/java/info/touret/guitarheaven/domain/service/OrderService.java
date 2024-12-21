@@ -7,7 +7,8 @@ import info.touret.guitarheaven.domain.port.OrderPort;
 import info.touret.guitarheaven.domain.port.SupplyChainPort;
 import jakarta.inject.Inject;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class OrderService {
@@ -27,19 +28,19 @@ public class OrderService {
     }
 
     public String order(Order order) {
-        if (!guitarService.findAllGuitars().containsAll(order.guitars())) {
+        List<Guitar> relatedGuitars = guitarService.findGuitarsByIds(order.guitars().stream().mapToLong(Guitar::id).boxed().toList());
+        if (relatedGuitars.isEmpty()) {
             throw new GuitarOrderException("Invalid Guitar List");
         } else {
-            var guitars = guitarService.findAllGuitars().stream().filter(order.guitars()::contains).toList();
-            double totalPrice = guitars.stream().mapToDouble(Guitar::price).sum();
+            double totalPrice = relatedGuitars.stream().mapToDouble(Guitar::price).sum();
             // if the requested discount is below the market, we only apply it
-            double discount = discountService.getTotalDiscount(guitars);
+            double discount = discountService.getTotalDiscount(relatedGuitars);
             if (discount > order.discountRequested()) {
                 discount = order.discountRequested();
             }
             // ask for suppliers for furnitures
-            guitars.forEach(this::CheckAndSupplyForNewFurniture);
-            Order finalOrder = new Order(UUID.randomUUID(), guitars, discount, totalPrice, new Date());
+            relatedGuitars.forEach(this::CheckAndSupplyForNewFurniture);
+            Order finalOrder = new Order(UUID.randomUUID(), relatedGuitars, discount, totalPrice, OffsetDateTime.now());
             orderPort.saveOrder(finalOrder);
             return finalOrder.orderId().toString();
         }

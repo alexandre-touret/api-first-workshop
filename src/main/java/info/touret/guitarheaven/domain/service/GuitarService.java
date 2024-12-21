@@ -21,14 +21,20 @@ public class GuitarService {
 
     /**
      * Gets all guitars
+     *
      * @return The whole guitar list
      */
     public List<Guitar> findAllGuitars() {
         return guitarPort.listAll();
     }
 
+    public List<Guitar> findGuitarsByIds(List<Long> ids) {
+        return guitarPort.findGuitarsByIds(ids);
+    }
+
     /**
      * Creates a guitar
+     *
      * @param guitar
      */
     public void createGuitar(Guitar guitar) {
@@ -37,6 +43,7 @@ public class GuitarService {
 
     /**
      * Updates the guitar
+     *
      * @param guitar
      * @return The updated guitar
      */
@@ -46,6 +53,7 @@ public class GuitarService {
 
     /**
      * Deletes one guitar
+     *
      * @param guitarId
      * @return
      */
