@@ -1,4 +1,4 @@
-package info.touret.guitarheaven.domain.service;
+package info.touret.guitarheaven.domain.port;
 
 import java.util.OptionalDouble;
 

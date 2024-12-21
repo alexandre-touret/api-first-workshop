@@ -1,7 +1,7 @@
-package info.touret.guitarheaven.test.domain;
+package info.touret.guitarheaven.test.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.service.GuitarPort;
+import info.touret.guitarheaven.domain.port.GuitarPort;
 import info.touret.guitarheaven.domain.service.GuitarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package info.touret.guitarheaven.test.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.service.DiscountService;
-import info.touret.guitarheaven.domain.service.SupplierCatalogPort;
+import info.touret.guitarheaven.domain.port.SupplierCatalogPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

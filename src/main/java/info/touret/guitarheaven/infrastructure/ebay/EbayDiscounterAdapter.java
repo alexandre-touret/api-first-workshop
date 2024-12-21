@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.infrastructure.ebay;
 
 
-import info.touret.guitarheaven.domain.service.SupplierCatalogPort;
+import info.touret.guitarheaven.domain.port.SupplierCatalogPort;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 

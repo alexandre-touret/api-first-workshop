@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.infrastructure.database.adapter;
 
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.service.GuitarPort;
+import info.touret.guitarheaven.domain.port.GuitarPort;
 import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
 import info.touret.guitarheaven.infrastructure.database.mapper.GuitarEntityMapper;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,13 +11,13 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 @ApplicationScoped
-public class DatabaseAdapter implements GuitarPort {
+public class GuitarDBAdapter implements GuitarPort {
 
     private final GuitarRepository guitarRepository;
     private final GuitarEntityMapper guitarEntityMapper;
 
     @Inject
-    public DatabaseAdapter(GuitarRepository guitarRepository, GuitarEntityMapper guitarEntityMapper) {
+    public GuitarDBAdapter(GuitarRepository guitarRepository, GuitarEntityMapper guitarEntityMapper) {
         this.guitarRepository = guitarRepository;
         this.guitarEntityMapper = guitarEntityMapper;
     }
