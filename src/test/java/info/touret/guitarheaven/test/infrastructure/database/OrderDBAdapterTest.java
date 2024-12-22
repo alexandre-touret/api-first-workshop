@@ -27,7 +27,7 @@ class OrderDBAdapterTest {
 
     @Test
     void should_save_one_order_successfully() {
-        Order order = new Order(null, List.of(new Guitar(999L, "ES 335", ELECTRIC, 2500d, 10)), 10, 2500d, OffsetDateTime.now());
+        Order order = new Order(null, List.of(new Guitar(999L, "ES 335", ELECTRIC, 2500d, 10)), 10, OffsetDateTime.now());
         assertDoesNotThrow(() -> orderDBAdapter.saveOrder(order));
     }
 }

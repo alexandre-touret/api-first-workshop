@@ -11,7 +11,9 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @ApplicationScoped
 public class OrderDBAdapter implements OrderPort {
@@ -37,5 +39,15 @@ public class OrderDBAdapter implements OrderPort {
         var orderEntity = orderEntityMapper.toOrderEntity(order);
         orderEntity.setGuitars(Set.copyOf(guitarRepository.findInIds(orderEntity.getGuitars().stream().mapToLong(GuitarEntity::getId).boxed().toList())));
         orderRepository.persist(orderEntity);
+    }
+
+    @Override
+    public Optional<Order> findOrderByUUID(UUID id) {
+        var orderEntities = orderRepository.list("orderId = ?1", id);
+        if (orderEntities.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(orderEntityMapper.toOrder(orderEntities.getFirst()));
+        }
     }
 }

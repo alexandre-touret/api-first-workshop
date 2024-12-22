@@ -6,8 +6,6 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.OptionalDouble;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
