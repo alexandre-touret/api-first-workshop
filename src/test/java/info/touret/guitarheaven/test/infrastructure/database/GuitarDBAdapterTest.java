@@ -4,8 +4,10 @@ import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.infrastructure.database.adapter.GuitarDBAdapter;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static info.touret.guitarheaven.domain.model.Guitar.TYPE.GIPSY;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +37,7 @@ class GuitarDBAdapterTest {
     @Order(3)
     @Test
     void should_update_successfully() {
-        var dupontNomade = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().get(0);
+        var dupontNomade = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().getFirst();
         dupontNomade = new Guitar(dupontNomade.id(), dupontNomade.name(), GIPSY, 1200D, 8);
         var guitar = guitarDBAdapter.update(dupontNomade);
         assertEquals(8, guitar.stock());
@@ -44,7 +46,7 @@ class GuitarDBAdapterTest {
     @Order(4)
     @Test
     void should_delete_successfully() {
-        var guitarToDelete = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().get(0);
+        var guitarToDelete = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().getFirst();
         assertTrue(guitarDBAdapter.delete(guitarToDelete.id()));
     }
 }

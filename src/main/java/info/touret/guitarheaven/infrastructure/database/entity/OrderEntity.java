@@ -24,6 +24,10 @@ public class OrderEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime createdAt;
 
+    @OneToOne
+    private QuoteEntity quote;
+
+
     public Long getId() {
         return id;
     }
@@ -38,14 +42,6 @@ public class OrderEntity {
 
     public void setGuitars(Set<GuitarEntity> guitars) {
         this.guitars = guitars;
-    }
-
-    public Double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public OffsetDateTime getCreatedAt() {

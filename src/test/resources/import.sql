@@ -6,8 +6,9 @@
 -- alter sequence myentity_seq restart with 4;
 insert into Guitar (id,name,type,price,stock) values (999,'ES 335','ELECTRIC',2500,10);
 
+-- insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId) values (100, 2500, '2004-10-19 10:23:54+02', 999, gen_random_uuid());
 insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
-values (100, 2500, '2004-10-19 10:23:54+02', 999, gen_random_uuid());
+values (100, 2500, '2004-10-19 10:23:54+02', 999, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'::UUID);
 
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (999, 999);
