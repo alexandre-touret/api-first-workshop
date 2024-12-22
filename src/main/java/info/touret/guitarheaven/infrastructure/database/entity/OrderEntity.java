@@ -27,6 +27,18 @@ public class OrderEntity {
     @OneToOne
     private QuoteEntity quote;
 
+    public OrderEntity() {
+    }
+
+    public OrderEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested, Double totalPrice, OffsetDateTime createdAt, QuoteEntity quote) {
+        this.id = id;
+        this.guitars = guitars;
+        this.orderId = orderId;
+        this.discountRequested = discountRequested;
+        this.totalPrice = totalPrice;
+        this.createdAt = createdAt;
+        this.quote = quote;
+    }
 
     public Long getId() {
         return id;

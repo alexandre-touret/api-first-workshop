@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.application.mapper;
 
 import info.touret.guitarheaven.application.dto.GuitarDto;
-import info.touret.guitarheaven.application.dto.GuitarsDto;
 import info.touret.guitarheaven.domain.model.Guitar;
 import org.mapstruct.Mapper;
 
@@ -12,9 +11,7 @@ public interface GuitarMapper {
 
     GuitarDto toGuitarDto(Guitar guitar);
 
-    default GuitarsDto toGuitarsDto(List<Guitar> guitars) {
-        return new GuitarsDto(guitars.stream().map(this::toGuitarDto).toList());
-    }
+    List<GuitarDto> toGuitarsDto(List<Guitar> guitars);
 
     Guitar toGuitar(GuitarDto guitarDto);
 }

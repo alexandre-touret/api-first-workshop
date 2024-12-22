@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.util.UUID;
+
 import static info.touret.guitarheaven.domain.model.Guitar.TYPE.GIPSY;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +30,7 @@ class GuitarDBAdapterTest {
     @Order(2)
     @Test
     void should_save_successfully() {
-        Guitar guitarToSave = new Guitar(null, "Dupont Nomade", GIPSY, 1200D, 10);
+        Guitar guitarToSave = new Guitar(null, UUID.randomUUID(), "Dupont Nomade", GIPSY, 1200D, 10);
         assertDoesNotThrow(() -> guitarDBAdapter.save(guitarToSave));
         var guitars = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList();
         assertEquals(1, guitars.size());
@@ -38,7 +40,7 @@ class GuitarDBAdapterTest {
     @Test
     void should_update_successfully() {
         var dupontNomade = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().getFirst();
-        dupontNomade = new Guitar(dupontNomade.id(), dupontNomade.name(), GIPSY, 1200D, 8);
+        dupontNomade = new Guitar(dupontNomade.id(), dupontNomade.guitarId(), dupontNomade.name(), GIPSY, 1200D, 8);
         var guitar = guitarDBAdapter.update(dupontNomade);
         assertEquals(8, guitar.stock());
     }

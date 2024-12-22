@@ -37,7 +37,8 @@ public class OrderDBAdapter implements OrderPort {
     @Override
     public void saveOrder(Order order) {
         var orderEntity = orderEntityMapper.toOrderEntity(order);
-        orderEntity.setGuitars(Set.copyOf(guitarRepository.findInIds(orderEntity.getGuitars().stream().mapToLong(GuitarEntity::getId).boxed().toList())));
+        var guitarEntityPanacheQuery = guitarRepository.find("guitarId in ?1", orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
+        orderEntity.setGuitars(Set.copyOf(guitarEntityPanacheQuery.list()));
         orderRepository.persist(orderEntity);
     }
 

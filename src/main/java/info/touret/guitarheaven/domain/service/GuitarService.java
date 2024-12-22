@@ -4,6 +4,7 @@ import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.port.GuitarPort;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Manages Guitars
@@ -36,6 +37,10 @@ public class GuitarService {
      */
     public List<Guitar> findGuitarsByIds(List<Long> ids) {
         return guitarPort.findGuitarsByIds(ids);
+    }
+
+    public List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds) {
+        return guitarPort.findGuitarsByGuitarIds(guitarIds);
     }
 
     /**

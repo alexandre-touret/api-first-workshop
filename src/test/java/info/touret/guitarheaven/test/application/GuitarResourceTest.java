@@ -6,6 +6,8 @@ import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 
 @QuarkusTest
@@ -35,13 +37,13 @@ class GuitarResourceTest {
 
     @Test
     void should_update_successfully() {
-        var guitar = new GuitarDto(999L, "ES 335", ELECTRIC, 2500.0, 9);
+        var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "ES 335", ELECTRIC, 2500.0, 9);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
                 .body(guitar)
                 .when()
-                .put("/guitars/999")
+                .put("/guitars/628766d4-fee3-46dd-8bcb-426cffb4d585")
                 .then()
                 .statusCode(200);
     }
