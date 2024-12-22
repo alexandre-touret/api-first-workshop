@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class OrderService {
@@ -22,17 +23,24 @@ public class OrderService {
     }
 
     public UUID order(Order order) {
-        List<Guitar> relatedGuitars = guitarService.findGuitarsByIds(order.guitars().stream().mapToLong(Guitar::id).boxed().toList());
+        List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(order.guitarIds());
         if (relatedGuitars.isEmpty()) {
             throw new GuitarOrderException("Invalid Guitar List for Order " + order);
         } else if (order.orderId() != null && orderPort.findOrderByUUID(order.orderId()).isPresent()) {
             throw new GuitarOrderException("The Order " + order.orderId() + " already exists");
         } else {
-            Order finalOrder = new Order(UUID.randomUUID(), relatedGuitars, order.discountRequested(), OffsetDateTime.now());
+            Order finalOrder = new Order(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), order.discountRequested(), OffsetDateTime.now());
             orderPort.saveOrder(finalOrder);
             return finalOrder.orderId();
         }
     }
 
+    public List<Order> findAllOrders() {
+        return orderPort.findAllOrders();
+    }
 
+
+    public Optional<Order> findById(UUID orderId) {
+        return orderPort.findOrderByUUID(orderId);
+    }
 }

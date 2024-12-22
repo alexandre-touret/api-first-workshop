@@ -2,13 +2,14 @@ package info.touret.guitarheaven.infrastructure.database.adapter;
 
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.port.GuitarPort;
-import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
 import info.touret.guitarheaven.infrastructure.database.mapper.GuitarEntityMapper;
+import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class GuitarDBAdapter implements GuitarPort {
@@ -49,5 +50,10 @@ public class GuitarDBAdapter implements GuitarPort {
     @Override
     public List<Guitar> findGuitarsByIds(List<Long> ids) {
         return guitarEntityMapper.toGuitars(guitarRepository.findInIds(ids));
+    }
+
+    @Override
+    public List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds) {
+        return guitarEntityMapper.toGuitars(guitarRepository.list("guitarId in ?1", guitarIds));
     }
 }

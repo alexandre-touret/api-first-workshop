@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.application.resource;
 
 import info.touret.guitarheaven.application.dto.GuitarDto;
-import info.touret.guitarheaven.application.dto.GuitarsDto;
 import info.touret.guitarheaven.application.mapper.GuitarMapper;
 import info.touret.guitarheaven.domain.service.GuitarService;
 import jakarta.inject.Inject;
@@ -12,6 +11,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.reactive.ResponseStatus;
 import org.jboss.resteasy.reactive.RestPath;
+
+import java.util.List;
 
 /**
  * Guitar API
@@ -30,7 +31,7 @@ public class GuitarResource {
     }
 
     @GET
-    public GuitarsDto retrieveAllGuitars() {
+    public List<GuitarDto> retrieveAllGuitars() {
         return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
     }
 

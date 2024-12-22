@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -39,19 +40,21 @@ class OrderServiceTest {
 
     @Test
     void should_create_an_order_no_discount_successfully() {
-        List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
-        Order order = new Order(null, guitars, 100D, OffsetDateTime.now());
+        var guitarId = UUID.randomUUID();
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
+        Order order = new Order(null, List.of(guitarId), 100D, OffsetDateTime.now());
         var orderId = orderService.order(order);
         assertNotNull(orderId);
     }
 
     @Test
     void should_create_an_order_with_requested_discount_successfully() {
-        List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
+        var guitarId = UUID.randomUUID();
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
-        Order order = new Order(null, guitars, 100D, OffsetDateTime.now());
+        Order order = new Order(null, List.of(guitarId), 100D, OffsetDateTime.now());
         var orderId = orderService.order(order);
         assertNotNull(orderId);
         verify(orderPort).saveOrder(orderArgumentCaptor.capture());
@@ -60,10 +63,11 @@ class OrderServiceTest {
 
     @Test
     void should_create_an_order_with_found_discount_successfully() {
-        List<Guitar> guitars = List.of(new Guitar(999L, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
-        when(guitarService.findGuitarsByIds(List.of(999L))).thenReturn(guitars);
+        var guitarId = UUID.randomUUID();
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
-        Order order = new Order(null, guitars, 300D, OffsetDateTime.now());
+        Order order = new Order(null, List.of(guitarId), 300D, OffsetDateTime.now());
         var orderId = orderService.order(order);
         assertNotNull(orderId);
         verify(orderPort).saveOrder(orderArgumentCaptor.capture());
@@ -72,9 +76,10 @@ class OrderServiceTest {
 
     @Test
     void should_throw_GOE() {
-        List<Guitar> guitars = List.of(new Guitar(99L, "ES 135", Guitar.TYPE.ELECTRIC, 1500D, 5));
-        when(guitarService.findGuitarsByIds(anyList())).thenReturn(List.of());
-        Order order = new Order(null, guitars, 300D, OffsetDateTime.now());
+        var guitarId = UUID.randomUUID();
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 5));
+        when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(List.of());
+        Order order = new Order(null, List.of(guitarId), 300D, OffsetDateTime.now());
         assertThrowsExactly(GuitarOrderException.class, () -> orderService.order(order));
     }
 

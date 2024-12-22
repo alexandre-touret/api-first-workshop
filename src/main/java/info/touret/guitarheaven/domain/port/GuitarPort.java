@@ -3,6 +3,7 @@ package info.touret.guitarheaven.domain.port;
 import info.touret.guitarheaven.domain.model.Guitar;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Guitar Domain Port
@@ -42,4 +43,7 @@ public interface GuitarPort {
      * @return
      */
     List<Guitar> findGuitarsByIds(List<Long> ids);
+
+    List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds);
+
 }
