@@ -35,7 +35,6 @@ public class GuitarService {
      * @return The list of guitars. It will be empty if no guitar is found
      */
     public List<Guitar> findGuitarsByIds(List<Long> ids) {
-        System.err.println(">>>> FIND BY IDS {}" + ids);
         return guitarPort.findGuitarsByIds(ids);
     }
 
