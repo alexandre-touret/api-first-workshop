@@ -33,7 +33,7 @@ public class OrderResource {
     @ResponseStatus(201)
     @POST
     public String create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderDto.class))) OrderDto order) {
-        return orderService.order(orderMapper.toOrder(order)).toString();
+        return orderService.create(orderMapper.toOrder(order)).toString();
     }
 
 
@@ -45,8 +45,8 @@ public class OrderResource {
     // TODO https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.9
     @GET()
     @Path("{orderId}")
-    public OrderDto getOrder(String orderId) {
-        return orderMapper.toOrderDto(orderService.findById(UUID.fromString(orderId)).orElseThrow(
+    public OrderDto getOrder(UUID orderId) {
+        return orderMapper.toOrderDto(orderService.findById(orderId).orElseThrow(
                 () -> new WebApplicationException(Response.Status.NOT_FOUND)));
     }
 }

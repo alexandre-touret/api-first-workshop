@@ -47,8 +47,8 @@ class GuitarDBAdapterTest {
 
     @Order(4)
     @Test
-    void should_delete_successfully() {
+    void should_delete_ByUUID_successfully() {
         var guitarToDelete = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().getFirst();
-        assertTrue(guitarDBAdapter.delete(guitarToDelete.id()));
+        assertTrue(guitarDBAdapter.deleteByUUID(guitarToDelete.guitarId()));
     }
 }

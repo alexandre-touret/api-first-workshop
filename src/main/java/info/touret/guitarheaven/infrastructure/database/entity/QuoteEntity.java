@@ -1,11 +1,14 @@
 package info.touret.guitarheaven.infrastructure.database.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "GuitarQuote", uniqueConstraints = {@UniqueConstraint(name = "quoteIdUnique", columnNames = "quoteId")})
 public class QuoteEntity {
 
     @Id
@@ -17,10 +20,13 @@ public class QuoteEntity {
     @OneToOne(mappedBy = "quote")
     private OrderEntity order;
 
+    @Min(0)
     private Double totalPriceWithDiscount;
 
+    @Min(0)
     private Double discount;
 
+    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime createdAt;
 

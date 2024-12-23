@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-@Table(name = "GuitarOrder")
+@Table(name = "GuitarOrder", uniqueConstraints = {@UniqueConstraint(name = "orderIdUnique", columnNames = "orderId")})
 @Entity
 public class OrderEntity {
     @Id

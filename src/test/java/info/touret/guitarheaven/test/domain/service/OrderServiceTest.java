@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.domain.service;
 
-import info.touret.guitarheaven.domain.exception.GuitarOrderException;
+import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.port.OrderPort;
@@ -39,48 +39,47 @@ class OrderServiceTest {
     }
 
     @Test
-    void should_create_an_order_no_discount_successfully() {
+    void should_create_an_create_no_discount_successfully() {
         var guitarId = UUID.randomUUID();
-        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         Order order = new Order(null, List.of(guitarId), 100D, OffsetDateTime.now());
-        var orderId = orderService.order(order);
+        var orderId = orderService.create(order);
         assertNotNull(orderId);
     }
 
     @Test
-    void should_create_an_order_with_requested_discount_successfully() {
+    void should_create_an_create_with_requested_discount_successfully() {
         var guitarId = UUID.randomUUID();
-        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
         Order order = new Order(null, List.of(guitarId), 100D, OffsetDateTime.now());
-        var orderId = orderService.order(order);
+        var orderId = orderService.create(order);
         assertNotNull(orderId);
         verify(orderPort).saveOrder(orderArgumentCaptor.capture());
         assertEquals(100D, orderArgumentCaptor.getValue().discountRequested());
     }
 
     @Test
-    void should_create_an_order_with_found_discount_successfully() {
+    void should_create_an_create_with_found_discount_successfully() {
         var guitarId = UUID.randomUUID();
-        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
+        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
         Order order = new Order(null, List.of(guitarId), 300D, OffsetDateTime.now());
-        var orderId = orderService.order(order);
+        var orderId = orderService.create(order);
         assertNotNull(orderId);
         verify(orderPort).saveOrder(orderArgumentCaptor.capture());
         assertEquals(300D, orderArgumentCaptor.getValue().discountRequested());
     }
 
     @Test
-    void should_throw_GOE() {
+    void should_throw_ENFE() {
         var guitarId = UUID.randomUUID();
-        List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 5));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(List.of());
         Order order = new Order(null, List.of(guitarId), 300D, OffsetDateTime.now());
-        assertThrowsExactly(GuitarOrderException.class, () -> orderService.order(order));
+        assertThrowsExactly(EntityNotFoundException.class, () -> orderService.create(order));
     }
 
 

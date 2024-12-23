@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.domain.service;
 
-import info.touret.guitarheaven.domain.exception.GuitarOrderException;
+import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.model.Quote;
@@ -33,7 +33,7 @@ public class QuoteService {
     }
 
     public UUID createQuote(Quote quote) {
-        Order order = orderService.findById(quote.orderId()).orElseThrow(() -> new GuitarOrderException("Invalid Order:" + quote.orderId()));
+        Order order = orderService.findById(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Order:" + quote.orderId()));
         List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(order.guitarIds());
 
         double totalPrice = relatedGuitars.stream().mapToDouble(Guitar::price).sum();

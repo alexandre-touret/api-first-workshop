@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.domain.service;
 
-import info.touret.guitarheaven.domain.exception.GuitarOrderException;
+import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.port.OrderPort;
@@ -22,12 +22,12 @@ public class OrderService {
         this.orderPort = orderPort;
     }
 
-    public UUID order(Order order) {
+    public UUID create(Order order) {
         List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(order.guitarIds());
         if (relatedGuitars.isEmpty()) {
-            throw new GuitarOrderException("Invalid Guitar List for Order " + order);
+            throw new EntityNotFoundException("Invalid Guitar List for Order " + order);
         } else if (order.orderId() != null && orderPort.findOrderByUUID(order.orderId()).isPresent()) {
-            throw new GuitarOrderException("The Order " + order.orderId() + " already exists");
+            throw new EntityNotFoundException("The Order " + order.orderId() + " already exists");
         } else {
             Order finalOrder = new Order(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), order.discountRequested(), OffsetDateTime.now());
             orderPort.saveOrder(finalOrder);
