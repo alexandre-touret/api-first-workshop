@@ -36,7 +36,7 @@ public interface GuitarPort {
      * @param guitarId
      * @return <code>true</code> if the guitar is deleted. <code>false</code> instead
      */
-    boolean delete(Long guitarId);
+    boolean deleteByUUID(UUID guitarId);
 
     /**
      * @param ids

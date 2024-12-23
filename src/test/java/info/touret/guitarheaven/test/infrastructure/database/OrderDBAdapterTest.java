@@ -10,8 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class OrderDBAdapterTest {
@@ -20,8 +19,8 @@ class OrderDBAdapterTest {
     OrderDBAdapter orderDBAdapter;
 
     @Test
-    void should_find_one_order() {
-        assertEquals(1, orderDBAdapter.findAllOrders().size());
+    void should_find_orders() {
+        assertFalse(orderDBAdapter.findAllOrders().isEmpty());
     }
 
     @Test

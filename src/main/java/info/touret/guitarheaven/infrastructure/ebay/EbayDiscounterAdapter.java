@@ -17,6 +17,7 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
     public OptionalDouble getAverageGuitarPrice(String guitarName) {
 
         var searchPagedCollection = ebayClient.searchByName(guitarName);
+
         if (searchPagedCollection.total() > 1) {
             return searchPagedCollection.itemSummaries()
                     .stream()

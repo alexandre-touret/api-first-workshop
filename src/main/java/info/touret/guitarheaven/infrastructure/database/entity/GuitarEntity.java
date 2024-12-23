@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
-@Table(name = "Guitar")
+@Table(name = "Guitar",uniqueConstraints = {@UniqueConstraint(name = "guitarIdUnique",columnNames = "guitarId")})
 @Entity
 public class GuitarEntity {
     public enum TYPE {

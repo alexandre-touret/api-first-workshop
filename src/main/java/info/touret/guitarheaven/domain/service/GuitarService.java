@@ -44,12 +44,15 @@ public class GuitarService {
     }
 
     /**
-     * Creates a guitar
+     * Creates a guitar. Creates a new UUID
      *
      * @param guitar the Guitar to create. The ID must not be filled
      */
-    public void createGuitar(Guitar guitar) {
+    public UUID createGuitar(Guitar guitar) {
+        final var guitarId = UUID.randomUUID();
+        guitar = new Guitar(guitar.id(), guitarId, guitar.name(), guitar.type(), guitar.price(), guitar.stock());
         guitarPort.save(guitar);
+        return guitarId;
     }
 
     /**
@@ -68,7 +71,7 @@ public class GuitarService {
      * @param guitarId : The ID of the guitar to delete
      * @return true if the guitar is deleted. False instead.
      */
-    public boolean deleteGuitar(Long guitarId) {
-        return guitarPort.delete(guitarId);
+    public boolean deleteGuitarByUUID(UUID guitarId) {
+        return guitarPort.deleteByUUID(guitarId);
     }
 }

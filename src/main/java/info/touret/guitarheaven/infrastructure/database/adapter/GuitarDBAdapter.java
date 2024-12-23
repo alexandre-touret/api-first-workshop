@@ -1,7 +1,9 @@
 package info.touret.guitarheaven.infrastructure.database.adapter;
 
+import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.port.GuitarPort;
+import info.touret.guitarheaven.infrastructure.database.entity.GuitarEntity;
 import info.touret.guitarheaven.infrastructure.database.mapper.GuitarEntityMapper;
 import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,6 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -38,13 +41,25 @@ public class GuitarDBAdapter implements GuitarPort {
     @Transactional
     @Override
     public Guitar update(Guitar guitar) {
-        return guitarEntityMapper.toGuitar(guitarRepository.getEntityManager().merge(guitarEntityMapper.toGuitarEntity(guitar)));
+        var mapperGuitarEntity = guitarEntityMapper.toGuitarEntity(guitar);
+        var guitarEntity = guitarRepository.findByUUID(mapperGuitarEntity.getGuitarId()).orElseThrow(() -> new EntityNotFoundException("Guitar not found :" + guitar.guitarId()));
+        guitarEntity.setType(mapperGuitarEntity.getType());
+        guitarEntity.setStock(mapperGuitarEntity.getStock());
+        guitarEntity.setPrice(mapperGuitarEntity.getPrice());
+        guitarEntity.setOrders(mapperGuitarEntity.getOrders());
+        guitarEntity.setName(mapperGuitarEntity.getName());
+        return guitarEntityMapper.toGuitar(guitarRepository.getEntityManager().merge(guitarEntity));
     }
 
     @Transactional
     @Override
-    public boolean delete(Long guitarId) {
-        return guitarRepository.deleteById(guitarId);
+    public boolean deleteByUUID(UUID guitarId) {
+        boolean status = false;
+        var optionalGuitarEntity = guitarRepository.findByUUID(guitarId);
+        if (optionalGuitarEntity.isPresent()) {
+            status = guitarRepository.deleteById(optionalGuitarEntity.get().getId());
+        }
+        return status;
     }
 
     @Override
