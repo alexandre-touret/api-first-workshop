@@ -2,7 +2,6 @@ package info.touret.guitarheaven.application.resource;
 
 import info.touret.guitarheaven.application.dto.GuitarDto;
 import info.touret.guitarheaven.application.mapper.GuitarMapper;
-import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.service.GuitarService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
