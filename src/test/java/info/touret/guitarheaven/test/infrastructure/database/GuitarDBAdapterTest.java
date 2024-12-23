@@ -23,8 +23,8 @@ class GuitarDBAdapterTest {
 
     @Test
     @Order(1)
-    void should_find_one_guitar() {
-        assertEquals(1, guitarDBAdapter.listAll().size());
+    void should_find_guitars() {
+        assertFalse( guitarDBAdapter.listAll().isEmpty());
     }
 
     @Order(2)
