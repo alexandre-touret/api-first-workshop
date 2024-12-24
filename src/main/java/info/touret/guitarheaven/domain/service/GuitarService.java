@@ -1,6 +1,7 @@
 package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.model.Guitar;
+import info.touret.guitarheaven.domain.model.Page;
 import info.touret.guitarheaven.domain.port.GuitarPort;
 
 import java.util.List;
@@ -73,5 +74,9 @@ public class GuitarService {
      */
     public boolean deleteGuitarByUUID(UUID guitarId) {
         return guitarPort.deleteByUUID(guitarId);
+    }
+
+    public Page<Guitar> findAllGuitarsByPage(int pageNumber, int pageSize) {
+        return guitarPort.findAllGuitarByPage(pageNumber, pageSize);
     }
 }

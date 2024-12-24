@@ -24,7 +24,7 @@ class GuitarDBAdapterTest {
     @Test
     @Order(1)
     void should_find_guitars() {
-        assertFalse( guitarDBAdapter.listAll().isEmpty());
+        assertFalse(guitarDBAdapter.listAll().isEmpty());
     }
 
     @Order(2)
@@ -50,5 +50,27 @@ class GuitarDBAdapterTest {
     void should_delete_ByUUID_successfully() {
         var guitarToDelete = guitarDBAdapter.listAll().stream().filter(guitar -> guitar.name().equals("Dupont Nomade")).toList().getFirst();
         assertTrue(guitarDBAdapter.deleteByUUID(guitarToDelete.guitarId()));
+    }
+
+
+    @Order(6)
+    @Test
+    void should_find_page_successfully() {
+        var allGuitarByPage = guitarDBAdapter.findAllGuitarByPage(0, 10);
+        assertEquals(0, allGuitarByPage.getPageNumber());
+        assertEquals(2, allGuitarByPage.getEntities().size());
+        assertFalse(allGuitarByPage.hasNext());
+        assertFalse(allGuitarByPage.hasPrevious());
+    }
+
+
+    @Order(7)
+    @Test
+    void should_not_find_page_successfully() {
+        var allGuitarByPage = guitarDBAdapter.findAllGuitarByPage(1, 10);
+        assertEquals(1, allGuitarByPage.getPageNumber());
+        assertEquals(0, allGuitarByPage.getEntities().size());
+        assertFalse(allGuitarByPage.hasNext());
+        assertTrue(allGuitarByPage.hasPrevious());
     }
 }

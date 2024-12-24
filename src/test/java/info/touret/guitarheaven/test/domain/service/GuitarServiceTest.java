@@ -1,21 +1,18 @@
 package info.touret.guitarheaven.test.domain.service;
 
-import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.model.Order;
+import info.touret.guitarheaven.domain.model.Page;
 import info.touret.guitarheaven.domain.port.GuitarPort;
 import info.touret.guitarheaven.domain.service.GuitarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static info.touret.guitarheaven.domain.model.Guitar.TYPE.ELECTRIC;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,4 +55,29 @@ class GuitarServiceTest {
     }
 
 
+    @Test
+    void should_find_one_page_successfully() {
+        var uuid = UUID.randomUUID();
+        final int PAGE_NUMBER = 0;
+        final int PAGE_SIZE = 10;
+        when(guitarPort.findAllGuitarByPage(PAGE_NUMBER, PAGE_SIZE)).thenReturn(new Page<>(1, List.of(new Guitar(1L, uuid, "Gibson ES 335", ELECTRIC, 1000.0, 10)), 0, false, false));
+        var allGuitarsByPage = guitarService.findAllGuitarsByPage(PAGE_NUMBER, PAGE_SIZE);
+        assertEquals(1, allGuitarsByPage.getPageCount());
+        assertEquals(0, allGuitarsByPage.getPageNumber());
+        assertFalse(allGuitarsByPage.hasNext());
+        assertFalse(allGuitarsByPage.hasPrevious());
+    }
+
+    @Test
+    void should_find_one_blank_page_successfully() {
+        var uuid = UUID.randomUUID();
+        final int PAGE_NUMBER = 1;
+        final int PAGE_SIZE = 10;
+        when(guitarPort.findAllGuitarByPage(PAGE_NUMBER, PAGE_SIZE)).thenReturn(new Page<>(1, List.of(new Guitar(1L, uuid, "Gibson ES 335", ELECTRIC, 1000.0, 10)), 0, false, false));
+        var allGuitarsByPage = guitarService.findAllGuitarsByPage(PAGE_NUMBER, PAGE_SIZE);
+        assertEquals(1, allGuitarsByPage.getPageCount());
+        assertEquals(0, allGuitarsByPage.getPageNumber());
+        assertFalse(allGuitarsByPage.hasNext());
+        assertFalse(allGuitarsByPage.hasPrevious());
+    }
 }
