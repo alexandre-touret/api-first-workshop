@@ -2,7 +2,6 @@ package info.touret.guitarheaven.domain.port;
 
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Page;
-import jakarta.validation.constraints.Min;
 
 import java.util.List;
 import java.util.UUID;
@@ -64,5 +63,5 @@ public interface GuitarPort {
      * @param pageSize   the number of elements per page (Min 1)
      * @return the list of guitars with some information
      */
-    Page<Guitar> findAllGuitarByPage(@Min(0) int pageNumber, @Min(1) int pageSize);
+    Page<Guitar> findAllGuitarByPage(int pageNumber, int pageSize);
 }
