@@ -28,4 +28,17 @@ class OrderDBAdapterTest {
         Order order = new Order(null, List.of(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")), 10, OffsetDateTime.now());
         assertDoesNotThrow(() -> orderDBAdapter.saveOrder(order));
     }
+
+    @Test
+    void void_should_get_order_successfully() {
+        var uuid = UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbba1");
+        var orderByUUID = orderDBAdapter.findOrderByUUID(uuid);
+        assertNotNull(orderByUUID);
+        assertTrue(orderByUUID.isPresent());
+        var order = orderByUUID.get();
+        assertEquals(uuid, order.orderId());
+        assertFalse(order.guitarIds().isEmpty());
+        assertEquals(1, order.guitarIds().size());
+        assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d684"), order.guitarIds().getFirst());
+    }
 }

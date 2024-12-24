@@ -19,6 +19,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.jboss.resteasy.reactive.ResponseStatus;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -39,8 +40,8 @@ public class OrderResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @ResponseStatus(201)
     @POST
-    public String create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderDto.class))) OrderDto order) {
-        return orderService.create(orderMapper.toOrder(order)).toString();
+    public Map<String, UUID> create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderDto.class))) OrderDto order) {
+        return Map.of("orderId", orderService.create(orderMapper.toOrder(order)));
     }
 
     @Operation(summary = "Gets all orders")

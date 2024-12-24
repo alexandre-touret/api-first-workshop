@@ -18,6 +18,8 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.jboss.resteasy.reactive.ResponseStatus;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @ApplicationScoped
 @Path("/quotes")
@@ -39,8 +41,8 @@ public class QuoteResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @ResponseStatus(201)
     @POST
-    public void createQuote(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = QuoteDto.class))) QuoteDto quoteDto) {
-        quoteService.createQuote(quoteMapper.fromDto(quoteDto));
+    public Map<String, UUID> createQuote(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = QuoteDto.class))) QuoteDto quoteDto) {
+        return Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)));
     }
 
     @Operation(summary = "Gets all quotes")
