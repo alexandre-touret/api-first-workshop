@@ -4,6 +4,7 @@ import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
+import org.hamcrest.core.IsAnything;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.util.UUID;
 
 import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTest
 class GuitarResourceTest {
@@ -39,6 +41,7 @@ class GuitarResourceTest {
                 .then()
                 .statusCode(201);
     }
+
     @Order(3)
     @Test
     void should_update_successfully() {
@@ -52,6 +55,7 @@ class GuitarResourceTest {
                 .then()
                 .statusCode(200);
     }
+
     @Order(6)
     @Test
     void should_delete_successfully() {
@@ -70,12 +74,28 @@ class GuitarResourceTest {
                 .then()
                 .statusCode(200);
     }
+
     @Order(5)
     @Test
-    void should_not_find_order_successfully() {
+    void should_not_find_guitar_successfully() {
         RestAssured.given()
                 .get("/guitars/628766d4-fee3-46dd-8bcb-426cffb4d587")
                 .then()
                 .statusCode(404);
+    }
+
+    @Order(5)
+    @Test
+    void should_find_guitar_page_successfully() {
+        RestAssured.given()
+                .get("/guitars/pages?pageNumber=0&pageSize=10")
+                .then()
+                .statusCode(200)
+                .assertThat().body("links.size()", Is.is(5))
+                .assertThat().body("links.self", IsAnything.anything())
+                .assertThat().body("links.next", IsAnything.anything())
+                .assertThat().body("links.last", IsAnything.anything())
+                .assertThat().body("links.prev", IsAnything.anything())
+                .assertThat().body("links.first", IsAnything.anything());
     }
 }
