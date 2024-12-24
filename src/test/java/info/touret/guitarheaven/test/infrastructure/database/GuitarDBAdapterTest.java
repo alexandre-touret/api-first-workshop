@@ -57,8 +57,8 @@ class GuitarDBAdapterTest {
     @Test
     void should_find_page_successfully() {
         var allGuitarByPage = guitarDBAdapter.findAllGuitarByPage(0, 10);
-        assertEquals(0, allGuitarByPage.getPageNumber());
-        assertEquals(2, allGuitarByPage.getEntities().size());
+        assertEquals(0, allGuitarByPage.pageNumber());
+        assertEquals(2, allGuitarByPage.entities().size());
         assertFalse(allGuitarByPage.hasNext());
         assertFalse(allGuitarByPage.hasPrevious());
     }
@@ -68,8 +68,8 @@ class GuitarDBAdapterTest {
     @Test
     void should_not_find_page_successfully() {
         var allGuitarByPage = guitarDBAdapter.findAllGuitarByPage(1, 10);
-        assertEquals(1, allGuitarByPage.getPageNumber());
-        assertEquals(0, allGuitarByPage.getEntities().size());
+        assertEquals(1, allGuitarByPage.pageNumber());
+        assertEquals(0, allGuitarByPage.entities().size());
         assertFalse(allGuitarByPage.hasNext());
         assertTrue(allGuitarByPage.hasPrevious());
     }

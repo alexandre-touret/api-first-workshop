@@ -9,7 +9,6 @@ import info.touret.guitarheaven.infrastructure.database.repository.GuitarReposit
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Min;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,7 +72,7 @@ public class GuitarDBAdapter implements GuitarPort {
     }
 
     @Override
-    public Page<Guitar> findAllGuitarByPage(@Min(0) int pageNumber, int pageSize) {
+    public Page<Guitar> findAllGuitarByPage(int pageNumber, int pageSize) {
         var guitarEntityPanacheQuery = guitarRepository.findAll().page(io.quarkus.panache.common.Page.of(pageNumber, pageSize));
         var pageCount = guitarEntityPanacheQuery.pageCount();
         var entities = guitarEntityPanacheQuery.list();

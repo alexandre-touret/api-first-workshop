@@ -62,8 +62,8 @@ class GuitarServiceTest {
         final int PAGE_SIZE = 10;
         when(guitarPort.findAllGuitarByPage(PAGE_NUMBER, PAGE_SIZE)).thenReturn(new Page<>(1, List.of(new Guitar(1L, uuid, "Gibson ES 335", ELECTRIC, 1000.0, 10)), 0, false, false));
         var allGuitarsByPage = guitarService.findAllGuitarsByPage(PAGE_NUMBER, PAGE_SIZE);
-        assertEquals(1, allGuitarsByPage.getPageCount());
-        assertEquals(0, allGuitarsByPage.getPageNumber());
+        assertEquals(1, allGuitarsByPage.pageCount());
+        assertEquals(0, allGuitarsByPage.pageNumber());
         assertFalse(allGuitarsByPage.hasNext());
         assertFalse(allGuitarsByPage.hasPrevious());
     }
@@ -75,8 +75,8 @@ class GuitarServiceTest {
         final int PAGE_SIZE = 10;
         when(guitarPort.findAllGuitarByPage(PAGE_NUMBER, PAGE_SIZE)).thenReturn(new Page<>(1, List.of(new Guitar(1L, uuid, "Gibson ES 335", ELECTRIC, 1000.0, 10)), 0, false, false));
         var allGuitarsByPage = guitarService.findAllGuitarsByPage(PAGE_NUMBER, PAGE_SIZE);
-        assertEquals(1, allGuitarsByPage.getPageCount());
-        assertEquals(0, allGuitarsByPage.getPageNumber());
+        assertEquals(1, allGuitarsByPage.pageCount());
+        assertEquals(0, allGuitarsByPage.pageNumber());
         assertFalse(allGuitarsByPage.hasNext());
         assertFalse(allGuitarsByPage.hasPrevious());
     }
