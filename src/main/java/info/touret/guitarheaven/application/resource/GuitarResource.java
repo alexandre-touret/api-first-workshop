@@ -23,6 +23,7 @@ import org.jboss.resteasy.reactive.RestPath;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,14 +35,12 @@ public class GuitarResource {
     private final GuitarService guitarService;
 
     private final GuitarMapper guitarMapper;
-    private final UriInfo uriInfo;
     private final PaginationLinksFactory pageUtils;
 
     @Inject
-    public GuitarResource(GuitarService guitarService, GuitarMapper guitarMapper, UriInfo uriInfo, PaginationLinksFactory pageUtils) {
+    public GuitarResource(GuitarService guitarService, GuitarMapper guitarMapper, PaginationLinksFactory pageUtils) {
         this.guitarService = guitarService;
         this.guitarMapper = guitarMapper;
-        this.uriInfo = uriInfo;
         this.pageUtils = pageUtils;
     }
 
@@ -59,8 +58,8 @@ public class GuitarResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @ResponseStatus(201)
     @POST
-    public void createGuitar(GuitarDto guitarDto) {
-        guitarService.createGuitar(guitarMapper.toGuitar(guitarDto));
+    public Map<String, UUID> createGuitar(GuitarDto guitarDto) {
+        return Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)));
     }
 
     @Operation(summary = "Updates a guitar")

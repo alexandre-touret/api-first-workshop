@@ -1,27 +1,27 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.dto.GuitarDto;
 import info.touret.guitarheaven.application.dto.OrderDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
+import org.hamcrest.core.Every;
 import org.hamcrest.core.Is;
+import org.hamcrest.text.MatchesPattern;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
-
 @QuarkusTest
 class OrderResourceTest {
+    private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
     @Test
     void should_get_a_list_successfully() {
         RestAssured.given()
                 .get("/orders")
                 .then()
                 .statusCode(200)
-                .assertThat().body("size()", Is.is(1));
+                .assertThat().body("size()", Is.is(2));
     }
 
     @Test
@@ -34,7 +34,9 @@ class OrderResourceTest {
                 .when()
                 .post("/orders")
                 .then()
-                .statusCode(201);
+                .statusCode(201)
+                .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+
     }
 
     @Test
@@ -42,8 +44,10 @@ class OrderResourceTest {
         RestAssured.given()
                 .get("/orders/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .assertThat().body("guitarIds", Every.everyItem(MatchesPattern.matchesPattern(UUID_REGEX)));
     }
+
     @Test
     void should_not_find_order_successfully() {
         RestAssured.given()
