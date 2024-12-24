@@ -1,6 +1,8 @@
 package info.touret.guitarheaven.domain.port;
 
 import info.touret.guitarheaven.domain.model.Guitar;
+import info.touret.guitarheaven.domain.model.Page;
+import jakarta.validation.constraints.Min;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,11 +41,28 @@ public interface GuitarPort {
     boolean deleteByUUID(UUID guitarId);
 
     /**
-     * @param ids
-     * @return
+     * Finds Guitars by their private IDS
+     *
+     * @param ids the PRIMARY KEYS
+     * @return The list of guitars. Empty if no guitars found
      */
     List<Guitar> findGuitarsByIds(List<Long> ids);
 
+    /**
+     * Finds Guitars by their UUID
+     *
+     * @param guitarIds the corresponding UUID
+     * @return The list of guitars. Empty if no guitars found
+     */
     List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds);
 
+
+    /**
+     * Finds all guitars and paginate the results
+     *
+     * @param pageNumber The page (Min 0)
+     * @param pageSize   the number of elements per page (Min 1)
+     * @return the list of guitars with some information
+     */
+    Page<Guitar> findAllGuitarByPage(@Min(0) int pageNumber, @Min(1) int pageSize);
 }

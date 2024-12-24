@@ -2,16 +2,16 @@ package info.touret.guitarheaven.infrastructure.database.adapter;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
+import info.touret.guitarheaven.domain.model.Page;
 import info.touret.guitarheaven.domain.port.GuitarPort;
-import info.touret.guitarheaven.infrastructure.database.entity.GuitarEntity;
 import info.touret.guitarheaven.infrastructure.database.mapper.GuitarEntityMapper;
 import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Min;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -70,5 +70,15 @@ public class GuitarDBAdapter implements GuitarPort {
     @Override
     public List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds) {
         return guitarEntityMapper.toGuitars(guitarRepository.list("guitarId in ?1", guitarIds));
+    }
+
+    @Override
+    public Page<Guitar> findAllGuitarByPage(@Min(0) int pageNumber, int pageSize) {
+        var guitarEntityPanacheQuery = guitarRepository.findAll().page(io.quarkus.panache.common.Page.of(pageNumber, pageSize));
+        var pageCount = guitarEntityPanacheQuery.pageCount();
+        var entities = guitarEntityPanacheQuery.list();
+        var hasNextPage = guitarEntityPanacheQuery.hasNextPage();
+        var hasPreviousPage = guitarEntityPanacheQuery.hasPreviousPage();
+        return new Page<>(pageCount, guitarEntityMapper.toGuitars(entities), pageNumber, hasNextPage, hasPreviousPage);
     }
 }
