@@ -32,7 +32,7 @@ public class PaginationLinksFactory {
         var baseUri = uriInfo.getAbsolutePath();
         var urlFormatPattern = "%s?pageNumber=%1$s&pageSize=%2$s";
         URL self = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber(), page.entities().size())).toURL();
-        URL first = new URI(String.format(urlFormatPattern, baseUri, 0, 10)).toURL();
+        URL first = new URI(String.format(urlFormatPattern, baseUri, 0, numberOfElementsPerPage)).toURL();
         URL prev = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber() >= 1 ? page.pageNumber() : 0, numberOfElementsPerPage)).toURL();
         URL next = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber() >= page.pageCount() + 1 ? page.pageNumber() : page.pageNumber() + 1, numberOfElementsPerPage)).toURL();
         URL last = new URI(String.format(urlFormatPattern, baseUri, page.pageCount() - 1, numberOfElementsPerPage)).toURL();
