@@ -6,11 +6,10 @@
   "image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
-      "version": "none",
+      "version": "21",
       "installMaven": "true",
       "installGradle": "false"
-    },
-    "ghcr.io/davzucky/devcontainers-features-wolfi/docker-outside-of-docker:1": {}
+    }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
