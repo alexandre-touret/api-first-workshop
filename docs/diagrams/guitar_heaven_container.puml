@@ -1,0 +1,28 @@
+@startuml container
+!include <C4/C4_Container>
+!include <C4/C4_Context>
+
+
+LAYOUT_LEFT_RIGHT()
+HIDE_STEREOTYPE()
+
+Person(user, "User")
+
+System_Boundary(guitarHeavenSystem, "Guitar Heaven System") {
+    System_Boundary(guitarHeavenCoreSystem,"Guitar Heaven API","Provides an API to manage Guitar stock, Orders & Quotes"){
+        Container(api,"API","Java,Quarkus,Docker")
+        Container(database,"Database",PostgreSQL")
+
+    }
+
+}
+
+System_Ext(supplierCatalog,"EBAY API")
+System_Ext(supplyChainBackOffice,"Supply Chain Back Office")
+
+Rel(user,api,"Search or creates Guitars, Orders or Quotes","HTTP")
+Rel(api,database,"Stores & Search data","JDBC")
+Rel(api,supplierCatalog,"Search for the average price of a guitar","HTTP")
+Rel(api,supplyChainBackOffice,"Broadcasts commands of new guitars","Kafka")
+
+@enduml

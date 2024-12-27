@@ -1,0 +1,22 @@
+@startuml context1
+!include <C4/C4_Container>
+!include <C4/C4_Context>
+
+
+LAYOUT_LEFT_RIGHT()
+HIDE_STEREOTYPE()
+
+Person(user, "User")
+
+System_Boundary(guitarHeavenSystem, "Guitar Heaven System") {
+    System(guitarHeavenCoreSystem,"Guitar Heaven API","Provides an API to manage Guitar stock, Orders & Quotes")
+}
+
+System_Ext(supplyChainBackOffice,"Supply Chain Back Office")
+System_Ext(supplierCatalog,"EBAY API")
+
+Rel(user,guitarHeavenCoreSystem,"Search or creates Guitars, Orders or Quotes","HTTP")
+Rel(guitarHeavenCoreSystem,supplyChainBackOffice,"Broadcasts commands of new guitars","Kafka")
+Rel(guitarHeavenCoreSystem,supplierCatalog,"Search for the average price of a guitar","HTTP")
+
+@enduml

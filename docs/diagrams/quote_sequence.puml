@@ -1,0 +1,41 @@
+@startuml
+
+hide footbox
+
+actor User as user
+box "Guitar Heaven" #LightBlue
+participant "Quote API" as quoteApi
+participant "Quote Service" as quoteService
+participant "Discount Service" as discountService
+participant "Supplier Catalog Port" as supplierPort
+participant "Supply Chain Port" as supplyChainPort
+participant "QuoteDBAdapter" as quoteDbAdapter
+end box
+
+box "External Services" #LightGreen
+participant EBayAPI as ebay
+participant Kafka as kafka
+participant PostgreSQL as pg
+end box
+
+
+user -> quoteApi : POST /quotes
+activate quoteApi
+quoteApi -> quoteService : saveQuote()
+activate quoteService
+quoteService -> discountService : getTotalDiscount()
+activate discountService
+discountService -> supplierPort : getAverageGuitarPrice()
+activate supplierPort
+supplierPort -> ebay : GET Browse & Search API
+deactivate supplierPort
+deactivate discountService
+quoteService -> supplyChainPort: requestForAdditionalGuitars()
+activate supplyChainPort
+supplyChainPort -> kafka: sendMessage()
+quoteService -> quoteDbAdapter : store()
+deactivate supplyChainPort
+quoteDbAdapter -> pg: persist()
+deactivate quoteService
+deactivate quoteApi
+@enduml
