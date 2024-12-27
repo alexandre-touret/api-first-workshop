@@ -37,18 +37,13 @@ public class OrderDBAdapter implements OrderPort {
     @Override
     public void saveOrder(Order order) {
         var orderEntity = orderEntityMapper.toOrderEntity(order);
-        var guitarEntityPanacheQuery = guitarRepository.find("guitarId in ?1", orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
-        orderEntity.setGuitars(Set.copyOf(guitarEntityPanacheQuery.list()));
+        var guitarEntityList = guitarRepository.findGuitarsyUUIDs(orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
+        orderEntity.setGuitars(Set.copyOf(guitarEntityList));
         orderRepository.persist(orderEntity);
     }
 
     @Override
     public Optional<Order> findOrderByUUID(UUID id) {
-        var orderEntities = orderRepository.list("orderId = ?1", id);
-        if (orderEntities.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(orderEntityMapper.toOrder(orderEntities.getFirst()));
-        }
+        return orderRepository.findByUUID(id).map(orderEntityMapper::toOrder);
     }
 }

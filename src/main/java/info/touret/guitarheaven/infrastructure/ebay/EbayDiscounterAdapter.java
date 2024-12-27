@@ -10,6 +10,7 @@ import java.util.OptionalDouble;
 @ApplicationScoped
 public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
+    public static final int SEARCH_THRESHOLD = 1;
     @RestClient
     private EbayClient ebayClient;
 
@@ -18,7 +19,7 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
         var searchPagedCollection = ebayClient.searchByName(guitarName);
 
-        if (searchPagedCollection.total() > 1) {
+        if (searchPagedCollection.total() > SEARCH_THRESHOLD) {
             return searchPagedCollection.itemSummaries()
                     .stream()
                     .mapToDouble(value -> value.price().value())
