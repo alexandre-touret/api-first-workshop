@@ -6,6 +6,6 @@ This workshop aims to
 - Present the methodologies and tools which could be used
 - Pinpoint common pitfalls
 
-## :workbench: The workshop
+## The workshop
 
 Go to [https://blog.touret.info/api-first-workshop/](https://blog.touret.info/api-first-workshop/)
