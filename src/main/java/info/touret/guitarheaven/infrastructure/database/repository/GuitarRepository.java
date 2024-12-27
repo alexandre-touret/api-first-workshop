@@ -15,6 +15,10 @@ public class GuitarRepository implements PanacheRepository<GuitarEntity> {
         return this.list("id in ?1", ids);
     }
 
+    public List<GuitarEntity> findGuitarsyUUIDs(List<UUID> uuids) {
+        return this.find("guitarId in ?1", uuids).list();
+    }
+
     public Optional<GuitarEntity> findByUUID(UUID uuid) {
         return this.find("guitarId = ?1", uuid).stream().findFirst();
     }

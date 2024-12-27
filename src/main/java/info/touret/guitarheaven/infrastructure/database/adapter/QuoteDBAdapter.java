@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.infrastructure.database.adapter;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
-import info.touret.guitarheaven.domain.exception.GuitarOrderException;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.domain.port.QuotePort;
 import info.touret.guitarheaven.infrastructure.database.mapper.QuoteEntityMapper;
@@ -30,13 +29,9 @@ public class QuoteDBAdapter implements QuotePort {
     @Transactional
     @Override
     public void saveQuote(Quote quote) {
-        var orderEntityPanacheQuery = orderRepository.find("orderId = ?1", quote.orderId());
-        if (orderEntityPanacheQuery.count() != 1) {
-            throw new EntityNotFoundException("Invalid Quote Order :" + quote.orderId());
-        }
-
         var quoteEntity = quoteEntityMapper.toQuoteEntity(quote);
-        quoteEntity.setOrder(orderEntityPanacheQuery.firstResult());
+        var orderEntity = orderRepository.findByUUID(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Quote Order :" + quote.orderId()));
+        quoteEntity.setOrder(orderEntity);
         quoteRepository.persist(quoteEntity);
     }
 

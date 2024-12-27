@@ -22,6 +22,7 @@ public interface EbayClient {
         if (response.getStatus() == 400) {
             return new RuntimeException("The remote service responded with HTTP 400");
         }
+        // Disabling some issues with the EBAY Mock
         return null;
     }
 }
