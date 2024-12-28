@@ -3,9 +3,9 @@ package info.touret.guitarheaven.test.domain.service;
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.OrderRequest;
-import info.touret.guitarheaven.domain.port.OrderPort;
+import info.touret.guitarheaven.domain.port.OrderRequestPort;
 import info.touret.guitarheaven.domain.service.GuitarService;
-import info.touret.guitarheaven.domain.service.OrderService;
+import info.touret.guitarheaven.domain.service.OrderRequestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,17 +25,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderRequestServiceTest {
 
-    OrderService orderService;
+    OrderRequestService orderRequestService;
 
     @Mock
     GuitarService guitarService;
 
     @Mock
-    OrderPort orderPort;
+    OrderRequestPort orderRequestPort;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(guitarService, orderPort);
+        orderRequestService = new OrderRequestService(guitarService, orderRequestPort);
     }
 
     @Test
@@ -44,7 +44,7 @@ class OrderRequestServiceTest {
         List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         OrderRequest orderRequest = new OrderRequest(null, List.of(guitarId), 100D, OffsetDateTime.now());
-        var orderId = orderService.create(orderRequest);
+        var orderId = orderRequestService.create(orderRequest);
         assertNotNull(orderId);
     }
 
@@ -55,9 +55,9 @@ class OrderRequestServiceTest {
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<OrderRequest> orderArgumentCaptor = ArgumentCaptor.forClass(OrderRequest.class);
         OrderRequest orderRequest = new OrderRequest(null, List.of(guitarId), 100D, OffsetDateTime.now());
-        var orderId = orderService.create(orderRequest);
+        var orderId = orderRequestService.create(orderRequest);
         assertNotNull(orderId);
-        verify(orderPort).saveOrder(orderArgumentCaptor.capture());
+        verify(orderRequestPort).saveOrder(orderArgumentCaptor.capture());
         assertEquals(100D, orderArgumentCaptor.getValue().discountRequested());
     }
 
@@ -68,9 +68,9 @@ class OrderRequestServiceTest {
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         ArgumentCaptor<OrderRequest> orderArgumentCaptor = ArgumentCaptor.forClass(OrderRequest.class);
         OrderRequest orderRequest = new OrderRequest(null, List.of(guitarId), 300D, OffsetDateTime.now());
-        var orderId = orderService.create(orderRequest);
+        var orderId = orderRequestService.create(orderRequest);
         assertNotNull(orderId);
-        verify(orderPort).saveOrder(orderArgumentCaptor.capture());
+        verify(orderRequestPort).saveOrder(orderArgumentCaptor.capture());
         assertEquals(300D, orderArgumentCaptor.getValue().discountRequested());
     }
 
@@ -79,7 +79,7 @@ class OrderRequestServiceTest {
         var guitarId = UUID.randomUUID();
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(List.of());
         OrderRequest orderRequest = new OrderRequest(null, List.of(guitarId), 300D, OffsetDateTime.now());
-        assertThrowsExactly(EntityNotFoundException.class, () -> orderService.create(orderRequest));
+        assertThrowsExactly(EntityNotFoundException.class, () -> orderRequestService.create(orderRequest));
     }
 
 

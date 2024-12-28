@@ -9,7 +9,7 @@ public interface SupplierCatalogPort {
 
     /**
      * @param guitarName The name of the guitar to be searched
-     * @return The average price if corresponding guitars exist, <code>OptionalDouble.empty()</code>
+     * @return The average priceInUSD if corresponding guitars exist, <code>OptionalDouble.empty()</code>
      */
     OptionalDouble getAverageGuitarPrice(String guitarName);
 }

@@ -51,7 +51,7 @@ public class GuitarService {
      */
     public UUID createGuitar(Guitar guitar) {
         final var guitarId = UUID.randomUUID();
-        guitar = new Guitar(guitar.id(), guitarId, guitar.name(), guitar.type(), guitar.price(), guitar.stock());
+        guitar = new Guitar(guitar.id(), guitarId, guitar.name(), guitar.type(), guitar.priceInUSD(), guitar.stock());
         guitarPort.save(guitar);
         return guitarId;
     }

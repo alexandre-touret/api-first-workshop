@@ -42,8 +42,8 @@ Handle the stock of guitars. The data is stored into a PostgreSQL database and e
 * ``GET /guitars`` : Fetches all the guitars 
 * ``POST /guitars``: Creates a guitar
 * ``GET /guitars/pages``: Fetches all the guitars and paginate the results
-* ``PUT /guitars/{guitarId}``: Update one guitar
-* ``GET /guitars/{guitarId}``: Get one guitar
+* ``PUT /guitars/{guitarId}``: Updates one guitar
+* ``GET /guitars/{guitarId}``: Gets one guitar
 * ``DELETE /guitars/{guitarId}``: Removes one guitar
 * ``GET /guitars``: Update one guitar
 
@@ -85,6 +85,7 @@ Here is a sample of one orderRequest entity:
 #### Quote creation
 
 After the orderRequest is stored, it's time to create a quote and provide it to our customers.
+
 First and foremost, to check if the discount is fair, the system requests the eBay API to pinpoint what is the current price of this guitar on the market.
 Then, if the stock is too low, the system broadcasts automatically a new command to the supply chain backoffice through a Kafka Topic.
 
@@ -92,6 +93,8 @@ As above, the data is stored then into the PostgreSQL database and exposed throu
 
 * ``GET /quotes`` : Fetches all the quotes
 * ``POST /quotes``: Creates a quote
+
+Finally, here is a sample of a quote:
 
 ### High level design
 
@@ -338,13 +341,13 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 
 ### From a user perspective
 
-Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI. 
+👀 Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI. 
 
 For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swagger-ui``.
 
-* 👀 Try the different REST API queries out.
-* 👀 Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
-* 👀 Check out the different samples
+* Try out the different REST API queries.
+* Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
+* Check out the different samples
 
 ### Under the Hood
 
@@ -384,6 +387,7 @@ A bunch of examples:
 ### Validate the generated API
 
 🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to your ``src/main/resources`` folder.
+
 Name it with a suffix ``openapi.yaml`` (for instance: ``guitarheaven-openapi.yaml``).
 
 It is time to use a linter to validate the OpenAPI. 

@@ -2,7 +2,7 @@ package info.touret.guitarheaven.application.resource;
 
 import info.touret.guitarheaven.application.dto.OrderRequestDto;
 import info.touret.guitarheaven.application.mapper.OrderRequestMapper;
-import info.touret.guitarheaven.domain.service.OrderService;
+import info.touret.guitarheaven.domain.service.OrderRequestService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.GET;
@@ -26,11 +26,11 @@ import java.util.UUID;
 @Path("/orders-requests")
 public class OrderRequestResource {
 
-    private final OrderService orderService;
+    private final OrderRequestService orderRequestService;
     private final OrderRequestMapper orderRequestMapper;
 
-    public OrderRequestResource(OrderService orderService, OrderRequestMapper orderRequestMapper) {
-        this.orderService = orderService;
+    public OrderRequestResource(OrderRequestService orderRequestService, OrderRequestMapper orderRequestMapper) {
+        this.orderRequestService = orderRequestService;
         this.orderRequestMapper = orderRequestMapper;
     }
 
@@ -41,7 +41,7 @@ public class OrderRequestResource {
     @ResponseStatus(201)
     @POST
     public Map<String, UUID> create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderRequestDto.class))) OrderRequestDto order) {
-        return Map.of("orderId", orderService.create(orderRequestMapper.toOrder(order)));
+        return Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)));
     }
 
     @Operation(summary = "Gets all orders")
@@ -49,7 +49,7 @@ public class OrderRequestResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @GET
     public List<OrderRequestDto> getAllOrders() {
-        return orderRequestMapper.toOrderDtoList(orderService.findAllOrders());
+        return orderRequestMapper.toOrderDtoList(orderRequestService.findAllOrders());
     }
 
     @Operation(summary = "Gets an order")
@@ -59,7 +59,7 @@ public class OrderRequestResource {
     @GET()
     @Path("{orderId}")
     public OrderRequestDto getOrder(@NotNull UUID orderId) {
-        return orderRequestMapper.toOrderDto(orderService.findById(orderId).orElseThrow(
+        return orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
                 () -> new WebApplicationException(Response.Status.NOT_FOUND)));
     }
 }
