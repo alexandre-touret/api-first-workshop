@@ -96,6 +96,15 @@ As above, the data is stored then into the PostgreSQL database and exposed throu
 
 Finally, here is a sample of a quote:
 
+```json
+{
+  "orderId": "1711642e-e6be-406f-9a90-0be03f755ca8",
+  "discount": 10,
+  "totalPriceWithDiscount": 10,
+  "createdAt": "2022-03-10T12:15:50-04:00"
+}
+```
+
 ### High level design
 
 #### Context View
@@ -282,8 +291,10 @@ first and fork this repository.
 
 You can then open this project in either your local VS Code or directly in your browser.
 
-ℹ️ If you still want to run it on your local desktop, you can also [use the devcontainer configuration stored in the project](https://github.com/alexandre-touret/api-first-workshop/tree/main/.devcontainer). 
-For that, you MUST set up Docker before and open the project using either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
+> aside positive
+>
+> ℹ️ If you still want to run it on your local desktop, you can also [use the devcontainer configuration stored in the project](https://github.com/alexandre-touret/api-first-workshop/tree/main/.devcontainer).
+> For that, you MUST set up Docker before and open the project using either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
 
 ## Environment Setup
 
@@ -349,6 +360,21 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 * Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
 * Check out the different samples
 
+> aside negative
+>
+> In your opinion, is the following example useful or representative of the domain?
+> ```json
+> {
+> "guitarId": "C75e0FCE-c9BF-4B3C-b8df-abA3fBb5aEcd",
+> "name": "S",
+> "type": "ELECTRIC",
+> "price": 0.1,
+> "stock": 1073741824
+> }
+> ```
+>
+
+
 ### Under the Hood
 
 👀 Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. See how the API documentation is generated.
@@ -388,7 +414,7 @@ A bunch of examples:
 
 🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to your ``src/main/resources`` folder.
 
-Name it with a suffix ``openapi.yaml`` (for instance: ``guitarheaven-openapi.yaml``).
+Name it adding the suffix ``-openapi.yaml`` (e.g.,: ``guitarheaven-openapi.yaml``).
 
 It is time to use a linter to validate the OpenAPI. 
 For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
