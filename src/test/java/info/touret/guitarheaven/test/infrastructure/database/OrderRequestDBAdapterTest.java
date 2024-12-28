@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.test.infrastructure.database;
 
-import info.touret.guitarheaven.domain.model.Order;
-import info.touret.guitarheaven.infrastructure.database.adapter.OrderDBAdapter;
+import info.touret.guitarheaven.domain.model.OrderRequest;
+import info.touret.guitarheaven.infrastructure.database.adapter.OrderRequestDBAdapter;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -13,26 +13,26 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-class OrderDBAdapterTest {
+class OrderRequestDBAdapterTest {
 
     @Inject
-    OrderDBAdapter orderDBAdapter;
+    OrderRequestDBAdapter orderRequestDBAdapter;
 
     @Test
     void should_find_orders() {
-        assertFalse(orderDBAdapter.findAllOrders().isEmpty());
+        assertFalse(orderRequestDBAdapter.findAllOrders().isEmpty());
     }
 
     @Test
     void should_save_one_order_successfully() {
-        Order order = new Order(null, List.of(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")), 10, OffsetDateTime.now());
-        assertDoesNotThrow(() -> orderDBAdapter.saveOrder(order));
+        OrderRequest orderRequest = new OrderRequest(null, List.of(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")), 10, OffsetDateTime.now());
+        assertDoesNotThrow(() -> orderRequestDBAdapter.saveOrder(orderRequest));
     }
 
     @Test
     void void_should_get_order_successfully() {
         var uuid = UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbba1");
-        var orderByUUID = orderDBAdapter.findOrderByUUID(uuid);
+        var orderByUUID = orderRequestDBAdapter.findOrderByUUID(uuid);
         assertNotNull(orderByUUID);
         assertTrue(orderByUUID.isPresent());
         var order = orderByUUID.get();

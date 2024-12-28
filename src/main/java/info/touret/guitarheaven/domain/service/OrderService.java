@@ -2,7 +2,7 @@ package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.model.Order;
+import info.touret.guitarheaven.domain.model.OrderRequest;
 import info.touret.guitarheaven.domain.port.OrderPort;
 import jakarta.inject.Inject;
 
@@ -22,25 +22,25 @@ public class OrderService {
         this.orderPort = orderPort;
     }
 
-    public UUID create(Order order) {
-        List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(order.guitarIds());
+    public UUID create(OrderRequest orderRequest) {
+        List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(orderRequest.guitarIds());
         if (relatedGuitars.isEmpty()) {
-            throw new EntityNotFoundException("Invalid Guitar List for Order " + order);
-        } else if (order.orderId() != null && orderPort.findOrderByUUID(order.orderId()).isPresent()) {
-            throw new EntityNotFoundException("The Order " + order.orderId() + " already exists");
+            throw new EntityNotFoundException("Invalid Guitar List for Order " + orderRequest);
+        } else if (orderRequest.orderId() != null && orderPort.findOrderByUUID(orderRequest.orderId()).isPresent()) {
+            throw new EntityNotFoundException("The Order " + orderRequest.orderId() + " already exists");
         } else {
-            Order finalOrder = new Order(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), order.discountRequested(), OffsetDateTime.now());
-            orderPort.saveOrder(finalOrder);
-            return finalOrder.orderId();
+            OrderRequest finalOrderRequest = new OrderRequest(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), orderRequest.discountRequested(), OffsetDateTime.now());
+            orderPort.saveOrder(finalOrderRequest);
+            return finalOrderRequest.orderId();
         }
     }
 
-    public List<Order> findAllOrders() {
+    public List<OrderRequest> findAllOrders() {
         return orderPort.findAllOrders();
     }
 
 
-    public Optional<Order> findById(UUID orderId) {
+    public Optional<OrderRequest> findById(UUID orderId) {
         return orderPort.findOrderByUUID(orderId);
     }
 }

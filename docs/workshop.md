@@ -59,17 +59,17 @@ Here is a sample of one guitar entity:
   }
 ```
 
-#### Order management
+#### Order Requests management
 
-We create an order of one or many guitars and may ask for a discount. It will be challenged during the quote creation.
+We create an orderRequest of one or many guitars and may ask for a discount. It will be challenged during the quote creation.
 
 The data is then stored into the PostgreSQL database too and exposed through the following API:
 
-* ``GET /orders`` : Fetches all the orders
-* ``POST /orders``: Creates an order
-* ``PUT /orders/{orderId}``: Update one order
+* ``GET /orders-requests`` : Fetches all the orderRequests
+* ``POST /orders-requests``: Creates an orderRequest
+* ``PUT /orders-requests/{orderId}``: Update one orderRequest
 
-Here is a sample of one order entity:
+Here is a sample of one orderRequest entity:
 
 ```json
  {
@@ -84,7 +84,7 @@ Here is a sample of one order entity:
 
 #### Quote creation
 
-After the order is stored, it's time to create a quote and provide it to our customers.
+After the orderRequest is stored, it's time to create a quote and provide it to our customers.
 First and foremost, to check if the discount is fair, the system requests the eBay API to pinpoint what is the current price of this guitar on the market.
 Then, if the stock is too low, the system broadcasts automatically a new command to the supply chain backoffice through a Kafka Topic.
 
@@ -118,18 +118,18 @@ src/main/java/info/touret/guitarheaven/application/
 ├── dto
 │   ├── GuitarDto.java
 │   ├── LinksDto.java
-│   ├── OrderDto.java
+│   ├── OrderRequestDto.java
 │   ├── PageableGuitarDto.java
 │   └── QuoteDto.java
 ├── mapper
 │   ├── ExceptionMapper.java
 │   ├── GuitarMapper.java
-│   ├── OrderMapper.java
+│   ├── OrderRequestMapper.java
 │   └── QuoteMapper.java
 ├── PaginationLinksFactory.java
 └── resource
     ├── GuitarResource.java
-    ├── OrderResource.java
+    ├── OrderRequestResource.java
     └── QuoteResource.java
 
 ```
@@ -143,19 +143,19 @@ src/main/java/info/touret/guitarheaven/domain/
 │   └── GuitarOrderException.java
 ├── model
 │   ├── Guitar.java
-│   ├── Order.java
+│   ├── OrderRequest.java
 │   ├── Page.java
 │   └── Quote.java
 ├── port
 │   ├── GuitarPort.java
-│   ├── OrderPort.java
+│   ├── OrderRequestPort.java
 │   ├── QuotePort.java
 │   ├── SupplierCatalogPort.java
 │   └── SupplyChainPort.java
 └── service
     ├── DiscountService.java
     ├── GuitarService.java
-    ├── OrderService.java
+    ├── OrderRequestService.java
     └── QuoteService.java
 
 ```
@@ -168,19 +168,19 @@ src/main/java/info/touret/guitarheaven/infrastructure/
 ├── database
 │   ├── adapter
 │   │   ├── GuitarDBAdapter.java
-│   │   ├── OrderDBAdapter.java
+│   │   ├── OrderRequestDBAdapter.java
 │   │   └── QuoteDBAdapter.java
 │   ├── entity
 │   │   ├── GuitarEntity.java
-│   │   ├── OrderEntity.java
+│   │   ├── OrderRequestEntity.java
 │   │   └── QuoteEntity.java
 │   ├── mapper
 │   │   ├── GuitarEntityMapper.java
-│   │   ├── OrderEntityMapper.java
+│   │   ├── OrderRequestEntityMapper.java
 │   │   └── QuoteEntityMapper.java
 │   └── repository
 │       ├── GuitarRepository.java
-│       ├── OrderRepository.java
+│       ├── OrderRequestRepository.java
 │       └── QuoteRepository.java
 ├── ebay
 │   ├── EbayClient.java
@@ -364,13 +364,13 @@ In this projet, we used the Microprofile OpenAPI annotations.
 For instance:
 
 ```java
-    @Operation(summary = "Gets all guitars")
-    @APIResponse(responseCode = "200", description = "Success ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @GET
-    public List<GuitarDto> retrieveAllGuitars() {
-        return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
-    }
+@Operation(summary = "Gets all guitars")
+@APIResponse(responseCode = "200", description = "Success ")
+@APIResponse(responseCode = "500", description = "Server unavailable")
+@GET
+public List<GuitarDto> retrieveAllGuitars() {
+    return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
+}
 ```
 
 👀 Pinpoint the drawbacks:
@@ -378,7 +378,7 @@ For instance:
 A bunch of examples:
 * How the error descriptions stick to their implementation?
 * How to avoid gaps between the specification and the implementation?
-* How to design & validate the API prior coding it?
+* How to design & validate the API prior to coding it?
 ...
 
 ### Validate the generated API

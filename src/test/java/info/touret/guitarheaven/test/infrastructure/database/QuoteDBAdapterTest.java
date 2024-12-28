@@ -1,8 +1,6 @@
 package info.touret.guitarheaven.test.infrastructure.database;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
-import info.touret.guitarheaven.domain.exception.GuitarOrderException;
-import info.touret.guitarheaven.domain.model.Order;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.infrastructure.database.adapter.QuoteDBAdapter;
 import info.touret.guitarheaven.infrastructure.database.repository.QuoteRepository;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;

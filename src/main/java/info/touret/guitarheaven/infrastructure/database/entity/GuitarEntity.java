@@ -32,13 +32,13 @@ public class GuitarEntity {
     }
 
     @ManyToMany()
-    private Set<OrderEntity> orders;
+    private Set<OrderRequestEntity> orders;
 
-    public Set<OrderEntity> getOrders() {
+    public Set<OrderRequestEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<OrderEntity> orders) {
+    public void setOrders(Set<OrderRequestEntity> orders) {
         this.orders = orders;
     }
 

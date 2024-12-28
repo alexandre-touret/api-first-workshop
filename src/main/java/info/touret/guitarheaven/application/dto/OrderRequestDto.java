@@ -6,5 +6,5 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record OrderDto(UUID orderId, @NotEmpty List<UUID> guitarIds, double discountRequested, OffsetDateTime createdAt) {
+public record OrderRequestDto(UUID orderId, @NotEmpty List<UUID> guitarIds, double discountRequested, OffsetDateTime createdAt) {
 }
