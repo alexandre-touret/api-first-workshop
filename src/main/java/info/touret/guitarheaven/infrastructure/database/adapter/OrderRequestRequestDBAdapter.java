@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.infrastructure.database.adapter;
 
 import info.touret.guitarheaven.domain.model.OrderRequest;
-import info.touret.guitarheaven.domain.port.OrderPort;
+import info.touret.guitarheaven.domain.port.OrderRequestPort;
 import info.touret.guitarheaven.infrastructure.database.entity.GuitarEntity;
 import info.touret.guitarheaven.infrastructure.database.mapper.OrderEntityMapper;
 import info.touret.guitarheaven.infrastructure.database.repository.GuitarRepository;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @ApplicationScoped
-public class OrderRequestDBAdapter implements OrderPort {
+public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     private final OrderRepository orderRepository;
     private final OrderEntityMapper orderEntityMapper;
     private final GuitarRepository guitarRepository;
@@ -27,7 +27,7 @@ public class OrderRequestDBAdapter implements OrderPort {
     }
 
     @Inject
-    public OrderRequestDBAdapter(OrderRepository orderRepository, OrderEntityMapper orderEntityMapper, GuitarRepository guitarRepository) {
+    public OrderRequestRequestDBAdapter(OrderRepository orderRepository, OrderEntityMapper orderEntityMapper, GuitarRepository guitarRepository) {
         this.orderRepository = orderRepository;
         this.orderEntityMapper = orderEntityMapper;
         this.guitarRepository = guitarRepository;

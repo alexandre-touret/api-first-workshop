@@ -3,7 +3,7 @@ package info.touret.guitarheaven;
 import info.touret.guitarheaven.domain.port.*;
 import info.touret.guitarheaven.domain.service.DiscountService;
 import info.touret.guitarheaven.domain.service.GuitarService;
-import info.touret.guitarheaven.domain.service.OrderService;
+import info.touret.guitarheaven.domain.service.OrderRequestService;
 import info.touret.guitarheaven.domain.service.QuoteService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -28,13 +28,13 @@ public class DomainFactory {
 
     @ApplicationScoped
     @Produces
-    OrderService createOrderService(GuitarService guitarService, OrderPort orderPort) {
-        return new OrderService(guitarService, orderPort);
+    OrderRequestService createOrderService(GuitarService guitarService, OrderRequestPort orderRequestPort) {
+        return new OrderRequestService(guitarService, orderRequestPort);
     }
 
     @ApplicationScoped
     @Produces
-    QuoteService createQuoteService(GuitarService guitarService, QuotePort quotePort, DiscountService discountService, SupplyChainPort supplyChainPort, OrderService orderService) {
-        return new QuoteService(guitarService, discountService, quotePort, supplyChainPort, orderService);
+    QuoteService createQuoteService(GuitarService guitarService, QuotePort quotePort, DiscountService discountService, SupplyChainPort supplyChainPort, OrderRequestService orderRequestService) {
+        return new QuoteService(guitarService, discountService, quotePort, supplyChainPort, orderRequestService);
     }
 }

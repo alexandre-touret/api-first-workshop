@@ -8,7 +8,7 @@ import info.touret.guitarheaven.domain.port.QuotePort;
 import info.touret.guitarheaven.domain.port.SupplyChainPort;
 import info.touret.guitarheaven.domain.service.DiscountService;
 import info.touret.guitarheaven.domain.service.GuitarService;
-import info.touret.guitarheaven.domain.service.OrderService;
+import info.touret.guitarheaven.domain.service.OrderRequestService;
 import info.touret.guitarheaven.domain.service.QuoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +42,11 @@ class QuoteServiceTest {
     QuoteService quoteService;
 
     @Mock
-    OrderService orderService;
+    OrderRequestService orderRequestService;
 
     @BeforeEach
     void setUp() {
-        quoteService = new QuoteService(guitarService, discountService, quotePort, supplyChainPort, orderService);
+        quoteService = new QuoteService(guitarService, discountService, quotePort, supplyChainPort, orderRequestService);
     }
 
     @Test
@@ -55,7 +55,7 @@ class QuoteServiceTest {
         List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         var orderId = UUID.randomUUID();
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
+        when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
         Quote quote = new Quote(null, orderId, null, null, null);
         assertNotNull(quoteService.createQuote(quote));
     }
@@ -67,7 +67,7 @@ class QuoteServiceTest {
         List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 2));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         var orderId = UUID.randomUUID();
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
+        when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
         Quote quote = new Quote(null, orderId, null, null, null);
         ArgumentCaptor<Integer> numberOfGuitarsRequestedArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         assertNotNull(quoteService.createQuote(quote));
@@ -86,7 +86,7 @@ class QuoteServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderId, List.of(guitarId), 10D, OffsetDateTime.now());
         Quote quote = new Quote(null, orderId, null, null, null);
         ArgumentCaptor<Quote> quoteArgumentCaptor = ArgumentCaptor.forClass(Quote.class);
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(orderRequest));
+        when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.of(orderRequest));
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());
         assertEquals(10D, quoteArgumentCaptor.getValue().discount());
@@ -102,7 +102,7 @@ class QuoteServiceTest {
 
         OrderRequest orderRequest = new OrderRequest(orderId, List.of(guitarId), 30D, OffsetDateTime.now());
         Quote quote = new Quote(null, orderId, null, null, null);
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(orderRequest));
+        when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.of(orderRequest));
         ArgumentCaptor<Quote> quoteArgumentCaptor = ArgumentCaptor.forClass(Quote.class);
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());
@@ -112,7 +112,7 @@ class QuoteServiceTest {
     @Test
     void should_create_and_throw_ENFE() {
         var guitarId = UUID.randomUUID();
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.empty());
+        when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.empty());
         var orderId = UUID.randomUUID();
         Quote quote = new Quote(null, orderId, null, null, null);
         assertThrows(EntityNotFoundException.class, ()-> quoteService.createQuote(quote));
