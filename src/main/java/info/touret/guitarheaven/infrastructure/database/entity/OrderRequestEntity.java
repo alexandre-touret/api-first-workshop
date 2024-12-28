@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Table(name = "GuitarOrder", uniqueConstraints = {@UniqueConstraint(name = "orderIdUnique", columnNames = "orderId")})
 @Entity
-public class OrderEntity {
+public class OrderRequestEntity {
     @Id
     @GeneratedValue
     private Long id;
@@ -27,10 +27,10 @@ public class OrderEntity {
     @OneToOne
     private QuoteEntity quote;
 
-    public OrderEntity() {
+    public OrderRequestEntity() {
     }
 
-    public OrderEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested, Double totalPrice, OffsetDateTime createdAt, QuoteEntity quote) {
+    public OrderRequestEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested, Double totalPrice, OffsetDateTime createdAt, QuoteEntity quote) {
         this.id = id;
         this.guitars = guitars;
         this.orderId = orderId;

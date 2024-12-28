@@ -2,7 +2,7 @@ package info.touret.guitarheaven.domain.service;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.model.Order;
+import info.touret.guitarheaven.domain.model.OrderRequest;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.domain.port.QuotePort;
 import info.touret.guitarheaven.domain.port.SupplyChainPort;
@@ -33,18 +33,18 @@ public class QuoteService {
     }
 
     public UUID createQuote(Quote quote) {
-        Order order = orderService.findById(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Order:" + quote.orderId()));
-        List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(order.guitarIds());
+        OrderRequest orderRequest = orderService.findById(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Order:" + quote.orderId()));
+        List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(orderRequest.guitarIds());
 
         double totalPrice = relatedGuitars.stream().mapToDouble(Guitar::price).sum();
         // if the requested discount is below the market, we only apply it
         double discount = discountService.getTotalDiscount(relatedGuitars);
-        if (discount > order.discountRequested()) {
-            discount = order.discountRequested();
+        if (discount > orderRequest.discountRequested()) {
+            discount = orderRequest.discountRequested();
         }
         // ask for suppliers for furniture
         relatedGuitars.forEach(this::checkAndSupplyForNewFurniture);
-        Quote quoteToCreate = new Quote(UUID.randomUUID(), order.orderId(), discount, totalPrice - discount, OffsetDateTime.now());
+        Quote quoteToCreate = new Quote(UUID.randomUUID(), orderRequest.orderId(), discount, totalPrice - discount, OffsetDateTime.now());
         quotePort.saveQuote(quoteToCreate);
         return quoteToCreate.quoteId();
     }

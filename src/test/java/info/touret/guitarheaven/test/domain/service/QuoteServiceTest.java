@@ -2,7 +2,7 @@ package info.touret.guitarheaven.test.domain.service;
 
 import info.touret.guitarheaven.domain.exception.EntityNotFoundException;
 import info.touret.guitarheaven.domain.model.Guitar;
-import info.touret.guitarheaven.domain.model.Order;
+import info.touret.guitarheaven.domain.model.OrderRequest;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.domain.port.QuotePort;
 import info.touret.guitarheaven.domain.port.SupplyChainPort;
@@ -55,7 +55,7 @@ class QuoteServiceTest {
         List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "ES 335", Guitar.TYPE.ELECTRIC, 2500D, 10));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         var orderId = UUID.randomUUID();
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new Order(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
+        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
         Quote quote = new Quote(null, orderId, null, null, null);
         assertNotNull(quoteService.createQuote(quote));
     }
@@ -67,7 +67,7 @@ class QuoteServiceTest {
         List<Guitar> guitars = List.of(new Guitar(999L, guitarId, "Gibson ES 335", Guitar.TYPE.ELECTRIC, 2500D, 2));
         when(guitarService.findGuitarsByGuitarIds(anyList())).thenReturn(guitars);
         var orderId = UUID.randomUUID();
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new Order(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
+        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now())));
         Quote quote = new Quote(null, orderId, null, null, null);
         ArgumentCaptor<Integer> numberOfGuitarsRequestedArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         assertNotNull(quoteService.createQuote(quote));
@@ -83,10 +83,10 @@ class QuoteServiceTest {
         when(discountService.getTotalDiscount(eq(guitars))).thenReturn(20D);
         var orderId = UUID.randomUUID();
 
-        Order order = new Order(orderId, List.of(guitarId), 10D, OffsetDateTime.now());
+        OrderRequest orderRequest = new OrderRequest(orderId, List.of(guitarId), 10D, OffsetDateTime.now());
         Quote quote = new Quote(null, orderId, null, null, null);
         ArgumentCaptor<Quote> quoteArgumentCaptor = ArgumentCaptor.forClass(Quote.class);
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(order));
+        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(orderRequest));
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());
         assertEquals(10D, quoteArgumentCaptor.getValue().discount());
@@ -100,9 +100,9 @@ class QuoteServiceTest {
         when(discountService.getTotalDiscount(eq(guitars))).thenReturn(20D);
         var orderId = UUID.randomUUID();
 
-        Order order = new Order(orderId, List.of(guitarId), 30D, OffsetDateTime.now());
+        OrderRequest orderRequest = new OrderRequest(orderId, List.of(guitarId), 30D, OffsetDateTime.now());
         Quote quote = new Quote(null, orderId, null, null, null);
-        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(order));
+        when(orderService.findById(any(UUID.class))).thenReturn(Optional.of(orderRequest));
         ArgumentCaptor<Quote> quoteArgumentCaptor = ArgumentCaptor.forClass(Quote.class);
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());

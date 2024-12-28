@@ -18,7 +18,7 @@ public class QuoteEntity {
     private UUID quoteId;
 
     @OneToOne(mappedBy = "quote")
-    private OrderEntity order;
+    private OrderRequestEntity order;
 
     @Min(0)
     private Double totalPriceWithDiscount;
@@ -46,11 +46,11 @@ public class QuoteEntity {
         this.quoteId = quoteId;
     }
 
-    public OrderEntity getOrder() {
+    public OrderRequestEntity getOrder() {
         return order;
     }
 
-    public void setOrder(OrderEntity order) {
+    public void setOrder(OrderRequestEntity order) {
         this.order = order;
     }
 

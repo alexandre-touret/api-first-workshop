@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.dto.OrderDto;
+import info.touret.guitarheaven.application.dto.OrderRequestDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Every;
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 @QuarkusTest
-class OrderResourceTest {
+class OrderRequestRequestResourceTest {
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
     @Test
     void should_get_a_list_successfully() {
         RestAssured.given()
-                .get("/orders")
+                .get("/orders-requests")
                 .then()
                 .statusCode(200)
                 .assertThat().body("size()", Is.is(2));
@@ -26,13 +26,13 @@ class OrderResourceTest {
 
     @Test
     void should_create_order_successfully() {
-        var orderDto = new OrderDto(null, List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
+        var orderDto = new OrderRequestDto(null, List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
                 .body(orderDto)
                 .when()
-                .post("/orders")
+                .post("/orders-requests")
                 .then()
                 .statusCode(201)
                 .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
@@ -42,7 +42,7 @@ class OrderResourceTest {
     @Test
     void should_get_order_successfully() {
         RestAssured.given()
-                .get("/orders/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
+                .get("/orders-requests/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
                 .then()
                 .statusCode(200)
                 .assertThat().body("guitarIds", Every.everyItem(MatchesPattern.matchesPattern(UUID_REGEX)));
@@ -51,7 +51,7 @@ class OrderResourceTest {
     @Test
     void should_not_find_order_successfully() {
         RestAssured.given()
-                .get("/orders/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")
+                .get("/orders-requests/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")
                 .then()
                 .statusCode(404);
     }

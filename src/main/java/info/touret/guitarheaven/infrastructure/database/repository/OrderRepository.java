@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.infrastructure.database.repository;
 
-import info.touret.guitarheaven.infrastructure.database.entity.OrderEntity;
+import info.touret.guitarheaven.infrastructure.database.entity.OrderRequestEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
-public class OrderRepository implements PanacheRepository<OrderEntity> {
+public class OrderRepository implements PanacheRepository<OrderRequestEntity> {
 
-    public Optional<OrderEntity> findByUUID(UUID uuid) {
+    public Optional<OrderRequestEntity> findByUUID(UUID uuid) {
         return list("orderId = ?1", uuid).stream().findFirst();
     }
 }

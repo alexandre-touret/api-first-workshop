@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.application.resource;
 
-import info.touret.guitarheaven.application.dto.OrderDto;
-import info.touret.guitarheaven.application.mapper.OrderMapper;
+import info.touret.guitarheaven.application.dto.OrderRequestDto;
+import info.touret.guitarheaven.application.mapper.OrderRequestMapper;
 import info.touret.guitarheaven.domain.service.OrderService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;
@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
-@Path("/orders")
-public class OrderResource {
+@Path("/orders-requests")
+public class OrderRequestResource {
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
+    private final OrderRequestMapper orderRequestMapper;
 
-    public OrderResource(OrderService orderService, OrderMapper orderMapper) {
+    public OrderRequestResource(OrderService orderService, OrderRequestMapper orderRequestMapper) {
         this.orderService = orderService;
-        this.orderMapper = orderMapper;
+        this.orderRequestMapper = orderRequestMapper;
     }
 
     @Operation(summary = "Creates an order")
@@ -40,16 +40,16 @@ public class OrderResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @ResponseStatus(201)
     @POST
-    public Map<String, UUID> create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderDto.class))) OrderDto order) {
-        return Map.of("orderId", orderService.create(orderMapper.toOrder(order)));
+    public Map<String, UUID> create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderRequestDto.class))) OrderRequestDto order) {
+        return Map.of("orderId", orderService.create(orderRequestMapper.toOrder(order)));
     }
 
     @Operation(summary = "Gets all orders")
     @APIResponse(responseCode = "200", description = "Success")
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @GET
-    public List<OrderDto> getAllOrders() {
-        return orderMapper.toOrderDtoList(orderService.findAllOrders());
+    public List<OrderRequestDto> getAllOrders() {
+        return orderRequestMapper.toOrderDtoList(orderService.findAllOrders());
     }
 
     @Operation(summary = "Gets an order")
@@ -58,8 +58,8 @@ public class OrderResource {
     @APIResponse(responseCode = "500", description = "Server unavailable")
     @GET()
     @Path("{orderId}")
-    public OrderDto getOrder(@NotNull UUID orderId) {
-        return orderMapper.toOrderDto(orderService.findById(orderId).orElseThrow(
+    public OrderRequestDto getOrder(@NotNull UUID orderId) {
+        return orderRequestMapper.toOrderDto(orderService.findById(orderId).orElseThrow(
                 () -> new WebApplicationException(Response.Status.NOT_FOUND)));
     }
 }

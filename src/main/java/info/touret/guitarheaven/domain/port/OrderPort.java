@@ -1,15 +1,15 @@
 package info.touret.guitarheaven.domain.port;
 
-import info.touret.guitarheaven.domain.model.Order;
+import info.touret.guitarheaven.domain.model.OrderRequest;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderPort {
-    List<Order> findAllOrders();
+    List<OrderRequest> findAllOrders();
 
-    void saveOrder(Order order);
+    void saveOrder(OrderRequest orderRequest);
 
-    Optional<Order> findOrderByUUID(UUID id);
+    Optional<OrderRequest> findOrderByUUID(UUID id);
 }
