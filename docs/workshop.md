@@ -383,7 +383,7 @@ A bunch of examples:
 
 ### Validate the generated API
 
-🛠 Go to the generated OpenAPI going to the ``Extensions>SmallRye OpenAPI`` menu (or going to this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to your ``src/main/resources`` folder.
+🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to your ``src/main/resources`` folder.
 Name it with a suffix ``openapi.yaml`` (for instance: ``guitarheaven-openapi.yaml``).
 
 It is time to use a linter to validate the OpenAPI. 
