@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
-@Table(name = "Guitar",uniqueConstraints = {@UniqueConstraint(name = "guitarIdUnique",columnNames = "guitarId")})
+@Table(name = "Guitar", uniqueConstraints = {@UniqueConstraint(name = "guitarIdUnique", columnNames = "guitarId")})
 @Entity
 public class GuitarEntity {
     public enum TYPE {
@@ -18,7 +18,8 @@ public class GuitarEntity {
     private String name;
     @Enumerated(EnumType.STRING)
     private TYPE type;
-    private Double price;
+    @Column(name = "price")
+    private Double priceInUSD;
     private int stock;
 
     private UUID guitarId;
@@ -66,12 +67,12 @@ public class GuitarEntity {
         this.type = type;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getPriceInUSD() {
+        return priceInUSD;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setPriceInUSD(Double price) {
+        this.priceInUSD = price;
     }
 
     public int getStock() {

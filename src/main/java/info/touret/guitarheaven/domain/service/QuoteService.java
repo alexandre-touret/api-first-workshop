@@ -49,7 +49,7 @@ public class QuoteService {
     }
 
     /**
-     * Creates a quote. Before saving it, it calculates the discount comparing to the price of the market and the order request. Then, if needed, it broadcasts to a Supply Chain Backoffice, the commands for new furniture.
+     * Creates a quote. Before saving it, it calculates the discount comparing to the priceInUSD of the market and the order request. Then, if needed, it broadcasts to a Supply Chain Backoffice, the commands for new furniture.
      *
      * @param quote The quote to save
      * @return The UUID of the new quote

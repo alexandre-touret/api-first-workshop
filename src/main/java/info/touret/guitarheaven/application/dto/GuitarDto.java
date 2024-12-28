@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
-public record GuitarDto(UUID guitarId, @NotBlank String name, @NotBlank TYPE type, @Min(0) Double price, @Min(0) int stock) {
+public record GuitarDto(UUID guitarId, @NotBlank String name, @NotBlank TYPE type, @Min(0) Double priceInUSD, @Min(0) int stock) {
 
     public enum TYPE {
         ELECTRIC, CLASSIC, FOLK, GIPSY, JAZZ

@@ -20,7 +20,7 @@ public class DiscountService {
     }
 
     /**
-     * Calculate the discount fetching data from Ebay. After getting an average of the price of the market, we compare it with the internal price and propose a discount in the middle if needed.
+     * Calculate the discount fetching data from Ebay. After getting an average of the priceInUSD of the market, we compare it with the internal priceInUSD and propose a discount in the middle if needed.
      * @param guitar The guitar to evaluate 
      * @return The potential discount  
      * @see SupplierCatalogPort#getAverageGuitarPrice(String)
