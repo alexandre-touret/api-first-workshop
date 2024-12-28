@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @QuarkusTest
-class OrderRequestRequestResourceTest {
+class OrderRequestResourceTest {
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
     @Test
     void should_get_a_list_successfully() {
@@ -21,7 +21,7 @@ class OrderRequestRequestResourceTest {
                 .get("/orders-requests")
                 .then()
                 .statusCode(200)
-                .assertThat().body("size()", Is.is(2));
+                .assertThat().body("size()", Is.is(3));
     }
 
     @Test

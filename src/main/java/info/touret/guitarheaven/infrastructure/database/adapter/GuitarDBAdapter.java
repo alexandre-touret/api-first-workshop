@@ -44,7 +44,7 @@ public class GuitarDBAdapter implements GuitarPort {
         var guitarEntity = guitarRepository.findByUUID(mapperGuitarEntity.getGuitarId()).orElseThrow(() -> new EntityNotFoundException("Guitar not found :" + guitar.guitarId()));
         guitarEntity.setType(mapperGuitarEntity.getType());
         guitarEntity.setStock(mapperGuitarEntity.getStock());
-        guitarEntity.setPrice(mapperGuitarEntity.getPrice());
+        guitarEntity.setPriceInUSD(mapperGuitarEntity.getPriceInUSD());
         guitarEntity.setOrders(mapperGuitarEntity.getOrders());
         guitarEntity.setName(mapperGuitarEntity.getName());
         return guitarEntityMapper.toGuitar(guitarRepository.getEntityManager().merge(guitarEntity));

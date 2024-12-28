@@ -298,6 +298,11 @@ You can then open this project in either your local VS Code or directly in your 
 
 ## Environment Setup
 
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+> 
+> You will set up the environment and understand how to run it
+
 ### Open Github Codespaces
 
 * Log on [GitHub](https://github.com/) and fork [this repository](https://github.com/alexandre-touret/api-first-workshop).
@@ -350,6 +355,14 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 
 ## Explore the current API
 
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+> 
+> - You will use the API
+> - Check how smooth the onboarding is from a customer/user point of view.
+> - Pinpoint the main drawbacks
+
+
 ### From a user perspective
 
 👀 Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI. 
@@ -359,6 +372,11 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 * Try out the different REST API queries.
 * Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
 * Check out the different samples
+
+
+> aside positive
+> Currently only the guitar names "Gibson ES 335" and 
+
 
 > aside negative
 >
@@ -433,9 +451,32 @@ We will see that later on...
 
 ## Moving our app to API-First
 
+Add the plugin quarkus
+Remove the useless code
+Fix issues
+Run the tests
+Check the OpenAPI
+
+Generate the API Client for EBAY
+Use it
+
+Mock it in the unit tests
+
+Conclusion sur le code vs doc
+
 ## What about the clients?
 
+Check the Open API on Microcks
+
+Add examples
+
 ## AsyncAPI
+
+Add the AsyncAPI in the classpath
+
+Remove the useless code
+
+conclusion
 
 ## API-Breaking changes
 

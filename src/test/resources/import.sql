@@ -23,3 +23,15 @@ insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (999, 999);
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (1001, 1001);
+
+
+--For quote creation
+
+insert into Guitar (id, guitarId, name, type, price, stock)
+values (1002, '628226d4-fee3-46dd-8bcb-426cffb4d685'::UUID, 'Gibson ES 335', 'ELECTRIC', 2500, 10);
+
+insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
+values (100, 2500, '2004-10-19 10:23:54+02', 1002, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc1'::UUID);
+insert into Guitar_GuitarOrder(orders_id, guitars_id)
+values (1002, 1002);
+---

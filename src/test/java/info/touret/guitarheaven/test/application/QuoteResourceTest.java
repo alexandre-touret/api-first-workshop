@@ -26,7 +26,7 @@ public class QuoteResourceTest {
 
     @Test
     void should_create_successfully() {
-        var quote = new QuoteDto(null, UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"), 10D, null, OffsetDateTime.now());
+        var quote = new QuoteDto(null, UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1"), 10D, null, OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

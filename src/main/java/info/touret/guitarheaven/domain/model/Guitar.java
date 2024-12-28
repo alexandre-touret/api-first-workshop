@@ -8,7 +8,7 @@ import java.util.UUID;
  * @param guitarId: The UUID
  * @param name: The name of the guitar
  * @param type: The type of the guitar
- * @param priceInUSD: The price in USD
+ * @param priceInUSD: The priceInUSD in USD
  * @param stock: The current stock
  */
 public record Guitar(Long id, UUID guitarId, String name, TYPE type, Double priceInUSD, int stock) {

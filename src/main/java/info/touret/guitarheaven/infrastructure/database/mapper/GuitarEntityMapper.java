@@ -3,6 +3,7 @@ package info.touret.guitarheaven.infrastructure.database.mapper;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.infrastructure.database.entity.GuitarEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 

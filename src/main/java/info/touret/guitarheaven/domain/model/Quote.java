@@ -9,7 +9,7 @@ import java.util.UUID;
  * @param quoteId                : The UUID of the quote
  * @param orderId                : the UUID of the order
  * @param discount:              The discount calculated
- * @param totalPriceWithDiscount : The final price
+ * @param totalPriceWithDiscount : The final priceInUSD
  * @param createdAt:             The timstamp of the creation
  */
 public record Quote(UUID quoteId, UUID orderId, Double discount, Double totalPriceWithDiscount,
