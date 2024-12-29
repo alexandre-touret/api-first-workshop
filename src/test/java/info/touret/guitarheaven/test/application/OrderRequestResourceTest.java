@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.dto.OrderRequestDto;
+import info.touret.guitarheaven.application.generated.model.OrderDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Every;
@@ -26,7 +26,7 @@ class OrderRequestResourceTest {
 
     @Test
     void should_create_order_successfully() {
-        var orderDto = new OrderRequestDto(null, List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
+        var orderDto = new OrderDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequested(10D).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

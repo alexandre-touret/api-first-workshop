@@ -451,33 +451,414 @@ We will see that later on...
 
 ## Moving our app to API-First
 
-Add the plugin quarkus
-Remove the useless code
-Fix issues
-Run the tests
-Check the OpenAPI
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+>
+> - How to generate the API code from an OpenAPI file using [OpenAPI Generator](https://openapi-generator.tech/docs/plugins)
+> - How to easily remove the boilerplate code 
+> - Stick to the specification
 
-Generate the API Client for EBAY
-Use it
+### 🛠 Updating the Maven configuration
 
-Mock it in the unit tests
+ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
 
-Conclusion sur le code vs doc
+The corresponding source code will be generated in the ``target/generated-sources/openapi`` directory.
 
-## What about the clients?
+Let us do it now!
 
-Check the Open API on Microcks
+* Stop now the Quarkus application by typing ``q`` in the command prompt.
+* Go to the ``pom.xml`` and update it as following:
 
-Add examples
+In the ``build>plugins`` section, add the following plugin:
 
-## AsyncAPI
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>7.9.0</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
+                <generatorName>jaxrs-spec</generatorName>
+                <configOptions>
+                    <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
+                    <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
+                    <dateLibrary>java8</dateLibrary>
+                    <generateBuilders>true</generateBuilders>
+                    <openApiNullable>false</openApiNullable>
+                    <useBeanValidation>true</useBeanValidation>
+                    <generatePom>false</generatePom>
+                    <interfaceOnly>true</interfaceOnly>
+                    <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
+                    <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
+                    <returnResponse>true</returnResponse>
+                    <sourceFolder>.</sourceFolder>
+                    <useJakartaEe>true</useJakartaEe>
+                    <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
+                    <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                    <withXml>false</withXml>
+                </configOptions>
+                <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+            </configuration>
+        </execution>
+    </executions>
 
-Add the AsyncAPI in the classpath
+</plugin>
 
-Remove the useless code
+```
 
-conclusion
+The plugin generates useless classes for Quarkus. We can ignore their creation adding the file using the ``<ignoreFilesOverride>`` feature and adding the file ``.openapi-generator-ignore`` into the root of your project:
 
-## API-Breaking changes
+```properties
+# Exclude Configurator classes
+**/RestApplication.java
+**/RestResourceRoot.java
+pom.xml
+```
 
-## How our customers may integrate our API?
+Add then the following line in the ``build>plugins>maven-compiler-plugin>configuration`` section:
+
+```xml
+<generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
+```
+
+Now this plugin should be configured as following:
+
+```xml
+<plugin>
+   <artifactId>maven-compiler-plugin</artifactId>
+   <version>${compiler-plugin.version}</version>
+   <configuration>
+       <parameters>true</parameters>
+       <annotationProcessorPaths>
+           <path>
+               <groupId>org.mapstruct</groupId>
+               <artifactId>mapstruct-processor</artifactId>
+               <version>${org.mapstruct.version}</version>
+           </path>
+           <!-- other annotation processors -->
+       </annotationProcessorPaths>
+       <compilerArgs>
+           <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+           <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
+           <arg>-Amapstruct.verbose=true</arg>
+           <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
+       </compilerArgs>
+       <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
+   </configuration>
+</plugin>
+```
+
+Now let us check it. Run the following command:
+
+```bash
+./mvnw clean compile
+```
+
+Normally, it ends successfully and you would get such an output: 
+
+
+```shell
+[INFO] --- openapi-generator:7.9.0:generate (default) @ guitar-heaven ---
+[WARNING] Generation using 3.1.0 specs is in development and is not officially supported yet. If you would like to expedite development, please consider working on the open issues in the 3.1.0 project: https://github.com/orgs/OpenAPITools/projects/4/views/1 and reach out to our team on Slack at https://join.slack.com/t/openapi-generator/shared_invite/zt-12jxxd7p2-XUeQM~4pzsU9x~eGLQqX2g
+[INFO] Generating with dryRun=false
+[INFO] OpenAPI Generator: jaxrs-spec (server)
+[INFO] Generator 'jaxrs-spec' is considered stable.
+[INFO] Environment variable JAVA_POST_PROCESS_FILE not defined so the Java code may not be properly formatted. To define it, try 'export JAVA_POST_PROCESS_FILE="/usr/local/bin/clang-format -i"' (Linux/Mac)
+[INFO] NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[INFO] Invoker Package Name, originally not set, is now derived from api package name: info.touret.guitarheaven.application.generated
+[INFO] Processing operation retrieveAllGuitars
+[INFO] Processing operation createGuitar
+[INFO] Processing operation findAllGuitarsWithPagination
+[INFO] Processing operation getGuitar
+[INFO] Processing operation updateGuitar
+[INFO] Processing operation deleteGuitar
+[INFO] Processing operation getAllOrders
+[INFO] Processing operation create
+[INFO] Processing operation getOrder
+[INFO] Processing operation findAll
+[INFO] Processing operation createQuote
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[WARNING] Generation using 3.1.0 specs is in development and is not officially supported yet. If you would like to expedite development, please consider working on the open issues in the 3.1.0 project: https://github.com/orgs/OpenAPITools/projects/4/views/1 and reach out to our team on Slack at https://join.slack.com/t/openapi-generator/shared_invite/zt-12jxxd7p2-XUeQM~4pzsU9x~eGLQqX2g
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[WARNING] OffsetDateTime (reserved word) cannot be used as model name. Renamed to ModelOffsetDateTime
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/GuitarDto.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/LinksDto.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/OrderDto.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/PageableGuitarDto.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/Quote.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/QuoteDto.java
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/model/TYPE.java
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/resource/GuitarsApi.java
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/resource/OrdersApi.java
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/./info/touret/guitarheaven/application/generated/resource/QuotesApi.java
+[INFO] Skipping generation of Webhooks.
+[INFO] 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/README.md
+[INFO] Ignored /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/info/touret/guitarheaven/application/generated/RestResourceRoot.java (Ignored by rule in ignore file.)
+[INFO] Ignored /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/info/touret/guitarheaven/application/generated/RestApplication.java (Ignored by rule in ignore file.)
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/openapi/openapi.yaml
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/src/main/resources/application.properties
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/src/main/docker/Dockerfile.jvm
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/src/main/docker/Dockerfile.native
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/.dockerignore
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/.openapi-generator-ignore
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/.openapi-generator/VERSION
+[INFO] writing file /home/alexandre/dev/src/api-first-workshop/target/generated-sources/openapi/.openapi-generator/FILES
+################################################################################
+# Thanks for using OpenAPI Generator.                                          #
+# Please consider donation to help us maintain this project 🙏                 #
+# https://opencollective.com/openapi_generator/donate                          #
+################################################################################
+
+```
+
+
+### 🛠 Updating the code
+
+#### DTO
+Delete first the ``info.touret.guitarheaven.application.dto`` package.
+
+#### API
+For the following classes : ``GuitarResouce``, ``OrderRequestResource`` and ``QuoteResource``, do the following steps: 
+
+Change the import declarations of DTOs from ``info.touret.guitarheaven.application.dto`` to ``info.touret.guitarheaven.application.dto``:
+
+For instance, from :
+```java
+import info.touret.guitarheaven.application.dto.GuitarDto;
+import info.touret.guitarheaven.application.dto.PageableGuitarDto;
+
+```
+
+Declare the resources as implementing their Api (e.g., ``GuitarsApi``). 
+
+> aside positive
+> 👀 **What is this interface?**
+>
+> This class is the Java representation of the OpenAPI. By implementing it in your code, you must stick to the specification of your API. If not, your build will automatically fails.
+
+For example:
+
+```java
+public class GuitarResource implements GuitarsApi {...
+```
+
+Remove all the Microprofile OpenAPI and the ``jakarta.ws.rs`` annotations (e.g. ``@GET``) 
+
+For instance:
+
+```java
+@Operation(summary = "Gets all guitars")
+@APIResponse(responseCode = "200", description = "Success ")
+@APIResponse(responseCode = "500", description = "Server unavailable")
+@GET
+```
+
+Change all the method declarations. 
+Remove the ``jakarta.validation.constraints`` annotations such as ``@NotNull``
+Instead of returning a POJO, you will have now to return a ``Response`` object
+
+For instance: 
+
+```java
+public Response findAll() {
+    return Response.ok(quoteService.findAll()).build();
+}
+```
+
+If a method requires now returning a response, you can use the ``Response.noContent().build()`` functionality.
+
+For instance:
+
+```java
+public Response deleteGuitar(@NotNull UUID guitarId) {
+    guitarService.deleteGuitarByUUID(guitarId);
+    return Response.noContent().build();
+}
+```
+At the end, you will have these API:
+
+**GuitarResource**
+
+```java
+@ApplicationScoped
+public class GuitarResource implements GuitarsApi {
+
+    private final GuitarService guitarService;
+
+    private final GuitarMapper guitarMapper;
+    private final PaginationLinksFactory pageUtils;
+
+    @Inject
+    public GuitarResource(GuitarService guitarService, GuitarMapper guitarMapper, PaginationLinksFactory pageUtils) {
+        this.guitarService = guitarService;
+        this.guitarMapper = guitarMapper;
+        this.pageUtils = pageUtils;
+    }
+
+    @Override
+    public Response retrieveAllGuitars() {
+        return Response.ok(guitarMapper.toGuitarsDto(guitarService.findAllGuitars())).build();
+    }
+
+    @Override
+    public Response createGuitar(GuitarDto guitarDto) {
+        return Response.ok(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
+    }
+
+    @Override
+    public Response updateGuitar(UUID guitarId, GuitarDto guitarDto) {
+        return Response.ok(guitarMapper.toGuitarDto(guitarService.updateGuitar(guitarMapper.toGuitar(guitarDto)))).build();
+    }
+
+    @Override
+    public Response deleteGuitar(UUID guitarId) {
+        guitarService.deleteGuitarByUUID(guitarId);
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response getGuitar(UUID guitarId) {
+        var guitars = guitarService.findGuitarsByGuitarIds(List.of(guitarId));
+        if (guitars.isEmpty()) {
+            throw new WebApplicationException("Guitar " + guitarId + " not found", Status.NOT_FOUND);
+        } else {
+            return Response.ok(guitarMapper.toGuitarDto(guitars.getFirst())).build();
+        }
+    }
+
+
+    @Context
+    private UriInfo uriInfo;
+
+    @Override
+    public Response findAllGuitarsWithPagination(Integer pageNumber, Integer pageSize) {
+        var guitarsByPage = guitarService.findAllGuitarsByPage(pageNumber, pageSize);
+        try {
+            return Response.ok(new PageableGuitarDto().guitars(guitarMapper.toGuitarsDto(guitarsByPage.entities())).links(pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize))).build();
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+}
+
+```
+
+**OrderRequestResource**
+
+```java
+@ApplicationScoped
+public class OrderRequestResource implements OrdersApi {
+
+    private final OrderRequestService orderRequestService;
+    private final OrderRequestMapper orderRequestMapper;
+
+    public OrderRequestResource(OrderRequestService orderRequestService, OrderRequestMapper orderRequestMapper) {
+        this.orderRequestService = orderRequestService;
+        this.orderRequestMapper = orderRequestMapper;
+    }
+    @Override
+    public Response create(OrderDto order) {
+        return Response.ok(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
+    }
+
+    @Override
+    public Response getAllOrders() {
+        return Response.ok(orderRequestMapper.toOrderDtoList(orderRequestService.findAllOrders())).build();
+    }
+
+    @Override
+    public Response getOrder(UUID orderId) {
+        return Response.ok(orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
+                () -> new WebApplicationException(Response.Status.NOT_FOUND)))).build();
+    }
+}
+
+```
+
+**QuoteResource**
+
+```java
+@ApplicationScoped
+public class QuoteResource implements QuotesApi {
+
+
+    private final QuoteService quoteService;
+    private final QuoteMapper quoteMapper;
+
+    @Inject
+    public QuoteResource(QuoteService quoteService, QuoteMapper quoteMapper) {
+        this.quoteService = quoteService;
+        this.quoteMapper = quoteMapper;
+    }
+
+
+    @Override
+    public Response createQuote(QuoteDto quoteDto) {
+        return Response.ok(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
+    }
+
+    @Override
+    public Response findAll() {
+        return Response.ok(quoteService.findAll()).build();
+    }
+}
+
+```
+
+#### Mapper
+
+For the ``GuitarMapper``, ``OrderRequestMapper`` and ``QuoteMapper`` located in the ``info.touret.guitarheaven.application.mapper`` package, update the import declaration in the same way as before.
+
+For instance, you can update this import declaration:
+
+```java
+import info.touret.guitarheaven.application.dto.GuitarDto;
+```
+
+to 
+
+```java
+import info.touret.guitarheaven.application.generated.model.GuitarDto;
+```
+
+
+#### LinksFactory
+
+Update the import declaration as above and change the creation of the ``LinksDto`` class from:
+```java
+return new LinksDto(self, first, prev, next, last);
+```
+
+to:
+
+```java
+return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.toString()).next(next.toString()).last(last.toString());
+```
+
+#### Integration tests
+
+Change then the DTO creation in the integration tests : ``GuitarResourceTest``,``OrderRequestResourceTest`` and ``QuoteResourceTest``.
+
+For example, change 
+
+```java
+var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9);
+```
+
+to
+
+```java
+var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
+```
+

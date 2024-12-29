@@ -113,11 +113,49 @@
             <artifactId>archunit-junit5</artifactId>
             <version>${archunit-junit5.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.9.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
+                            <configOptions>
+                                <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
+                                <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
+                                <library>quarkus</library>
+                                <dateLibrary>java8</dateLibrary>
+                                <generateBuilders>true</generateBuilders>
+                                <openApiNullable>false</openApiNullable>
+                                <useBeanValidation>true</useBeanValidation>
+                                <generatePom>false</generatePom>
+                                <interfaceOnly>true</interfaceOnly>
+                                <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
+                                <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
+                                <returnResponse>true</returnResponse>
+                                <sourceFolder>.</sourceFolder>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
+                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                                <withXml>false</withXml>
+                            </configOptions>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
@@ -153,6 +191,7 @@
                         <arg>-Amapstruct.verbose=true</arg>
                         <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
                     </compilerArgs>
+                    <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
                 </configuration>
             </plugin>
             <plugin>

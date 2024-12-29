@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.application.mapper;
 
-import info.touret.guitarheaven.application.dto.OrderRequestDto;
+import info.touret.guitarheaven.application.generated.model.OrderDto;
 import info.touret.guitarheaven.domain.model.OrderRequest;
 import org.mapstruct.Mapper;
 
@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper(uses = GuitarMapper.class)
 public interface OrderRequestMapper {
 
-    OrderRequest toOrder(OrderRequestDto order);
+    OrderRequest toOrder(OrderDto order);
 
-    OrderRequestDto toOrderDto(OrderRequest orderRequest);
+    OrderDto toOrderDto(OrderRequest orderRequest);
 
-    List<OrderRequestDto> toOrderDtoList(List<OrderRequest> orderRequests);
+    List<OrderDto> toOrderDtoList(List<OrderRequest> orderRequests);
 }

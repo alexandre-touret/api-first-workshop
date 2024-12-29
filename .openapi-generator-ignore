@@ -1,0 +1,4 @@
+# Exclude Configurator classes
+**/RestApplication.java
+**/RestResourceRoot.java
+pom.xml

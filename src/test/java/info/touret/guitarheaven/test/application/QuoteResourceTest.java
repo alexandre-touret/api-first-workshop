@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.dto.QuoteDto;
+import info.touret.guitarheaven.application.generated.model.QuoteDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
@@ -26,7 +26,7 @@ public class QuoteResourceTest {
 
     @Test
     void should_create_successfully() {
-        var quote = new QuoteDto(null, UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1"), 10D, null, OffsetDateTime.now());
+        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discount(10D).totalPriceWithDiscount(null).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -41,7 +41,7 @@ public class QuoteResourceTest {
 
     @Test
     void should_create_and_fail() {
-        var quote = new QuoteDto(null, UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9"), 10D, null, OffsetDateTime.now());
+        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discount(10D).totalPriceWithDiscount(null).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
