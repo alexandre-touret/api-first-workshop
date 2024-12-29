@@ -430,9 +430,9 @@ A bunch of examples:
 
 ### Validate the generated API
 
-🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to your ``src/main/resources`` folder.
+🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to the ``src/main/resources/openapi`` folder (create the ``openapi`` subfolder first).
 
-Name it adding the suffix ``-openapi.yaml`` (e.g.,: ``guitarheaven-openapi.yaml``).
+Name it adding the suffix ``-code-first-openapi.yaml`` (e.g.,: ``guitarheaven-corde-first-openapi.yaml``).
 
 It is time to use a linter to validate the OpenAPI. 
 For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
@@ -440,7 +440,7 @@ For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
 🛠 Open a new shell in VSCode and run the following command at the project's root folder:
 
 ```shell
-$ bin/vacuum.sh -d src/main/resources/guitarheaven-openapi.yaml
+$ bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml
 ```
 
 ℹ️ The current issues seem insignificant. However, they would be noteworthy for your customers to: 
@@ -455,8 +455,12 @@ We will see that later on...
 > ℹ️ **What will you do and learn in this chapter?**
 >
 > - How to generate the API code from an OpenAPI file using [OpenAPI Generator](https://openapi-generator.tech/docs/plugins)
+> - Check and fix the generated OpenAPI 
 > - How to easily remove the boilerplate code 
 > - Stick to the specification
+
+### 👀 Comparing the generated file with a home made OpenAPI file
+
 
 ### 🛠 Updating the Maven configuration
 
@@ -560,7 +564,6 @@ Now let us check it. Run the following command:
 ```
 
 Normally, it ends successfully and you would get such an output: 
-
 
 ```shell
 [INFO] --- openapi-generator:7.9.0:generate (default) @ guitar-heaven ---
@@ -705,6 +708,9 @@ public class GuitarResource implements GuitarsApi {
         this.pageUtils = pageUtils;
     }
 
+    @Context
+    private UriInfo uriInfo;
+
     @Override
     public Response retrieveAllGuitars() {
         return Response.ok(guitarMapper.toGuitarsDto(guitarService.findAllGuitars())).build();
@@ -712,7 +718,7 @@ public class GuitarResource implements GuitarsApi {
 
     @Override
     public Response createGuitar(GuitarDto guitarDto) {
-        return Response.ok(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
+        return Response.status(201).entity(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
     }
 
     @Override
@@ -736,10 +742,6 @@ public class GuitarResource implements GuitarsApi {
         }
     }
 
-
-    @Context
-    private UriInfo uriInfo;
-
     @Override
     public Response findAllGuitarsWithPagination(Integer pageNumber, Integer pageSize) {
         var guitarsByPage = guitarService.findAllGuitarsByPage(pageNumber, pageSize);
@@ -758,7 +760,7 @@ public class GuitarResource implements GuitarsApi {
 
 ```java
 @ApplicationScoped
-public class OrderRequestResource implements OrdersApi {
+public class OrderRequestResource implements OrdersRequestsApi {
 
     private final OrderRequestService orderRequestService;
     private final OrderRequestMapper orderRequestMapper;
@@ -767,9 +769,10 @@ public class OrderRequestResource implements OrdersApi {
         this.orderRequestService = orderRequestService;
         this.orderRequestMapper = orderRequestMapper;
     }
+
     @Override
-    public Response create(OrderDto order) {
-        return Response.ok(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
+    public Response create(OrderRequestDto order) {
+        return Response.status(201).entity(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
     }
 
     @Override
@@ -805,7 +808,7 @@ public class QuoteResource implements QuotesApi {
 
     @Override
     public Response createQuote(QuoteDto quoteDto) {
-        return Response.ok(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
+        return Response.status(201).entity(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
     }
 
     @Override
