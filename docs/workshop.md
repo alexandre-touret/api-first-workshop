@@ -118,7 +118,7 @@ Finally, here is a sample of a quote:
 
 ![Context View](./img/guitar_heaven_container.png)
 
-The business logic is implemented into a good old monolith built on a [Hexagonal Architecture way](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
+The business logic is implemented in a good old monolith built on a [Hexagonal Architecture way](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
 
 To cut long story short, here is a short explanation of the packaging:
 
@@ -294,7 +294,8 @@ You can then open this project in either your local VS Code or directly in your 
 > aside positive
 >
 > ℹ️ If you still want to run it on your local desktop, you can also [use the devcontainer configuration stored in the project](https://github.com/alexandre-touret/api-first-workshop/tree/main/.devcontainer).
-> For that, you MUST set up Docker before and open the project using either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
+>
+> To do that, you MUST set up Docker before and open the project using either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
 
 ## Environment Setup
 
@@ -318,9 +319,9 @@ Wait until the codespace is ready.
 
 During the first startup, the maven build is automatically started. Please wait until it is finished.
 
-### Start the app
+### 🛠 Start the app
 
-🛠 In a new terminal, start the Quarkus Dev environment:
+In a new terminal, start the Quarkus Dev environment:
 
 ```jshelllanguage
 $ ./mvnw quarkus: dev
@@ -329,7 +330,7 @@ $ ./mvnw quarkus: dev
 👀 Wait a while until you get the following output:
 
 ```jshelllanguage
-2024 - 12 - 26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
+2024-12-26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
 2024-12-26 22:27:42,815INFO[io.quarkus](Quarkus Main Thread)Profile dev activated.Live Coding activated.
 2024-12-26 22:27:42,816INFO[io.quarkus](Quarkus Main Thread)Installed features:[agroal,cdi,hibernate-orm,hibernate-orm-panache,hibernate-validator,jdbc-postgresql,kafka-client,messaging,messaging-kafka,microcks,narayana-jta,rest,rest-client,rest-client-jackson,rest-jackson,resteasy-problem,smallrye-context-propagation,smallrye-openapi,swagger-ui,vertx]
 ```
@@ -337,7 +338,7 @@ $ ./mvnw quarkus: dev
 ℹ️ All the stack is provided through the [Quarkus Dev Services](https://quarkus.io/guides/dev-services). 
 You don't therefore have to bother yourself about ramping it up.
 
-✅ Now validate your setup browsing the Quarkus DEV-UI. Go to the VS Code Port panel and click on the url exposing the port ``8080`` and add the ``/q/dev-ui`` suffix.
+✅ Now validate your setup browsing the Quarkus DEV-UI. Go to the VS Code Port panel
 
 Select the port tab:
 
@@ -346,6 +347,8 @@ Select the port tab:
 And now go the URL which exposes the 8080 port:
 
 ![start-8080](./img/start_dev_ui.png)
+
+and add the ``/q/dev-ui`` suffix.
 
 For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev-ui``
 
@@ -360,6 +363,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 > 
 > - You will use the API
 > - Check how smooth the onboarding is from a customer/user point of view.
+> - Generate the changelog and pinpoint breaking changes in OpenAPI
 > - Pinpoint the main drawbacks
 
 
@@ -375,7 +379,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 
 
 > aside positive
-> Currently only the guitar names "Gibson ES 335" and 
+> Currently only the guitar names "Gibson ES 335" and "Fender Stratocaster" are available as examples
 
 
 > aside negative
@@ -391,7 +395,6 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 > }
 > ```
 >
-
 
 ### Under the Hood
 
@@ -428,7 +431,9 @@ A bunch of examples:
 * How to design & validate the API prior to coding it?
 ...
 
-### Validate the generated API
+### 🛠 Validate the generated API
+
+#### Automatic validation
 
 🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to the ``src/main/resources/openapi`` folder (create the ``openapi`` subfolder first).
 
@@ -437,17 +442,40 @@ Name it adding the suffix ``-code-first-openapi.yaml`` (e.g.,: ``guitarheaven-co
 It is time to use a linter to validate the OpenAPI. 
 For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
 
-🛠 Open a new shell in VSCode and run the following command at the project's root folder:
+ Open a new shell in VSCode and run the following command at the project's root folder:
 
 ```shell
 $ bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml
 ```
 
-ℹ️ The current issues seem insignificant. However, they would be noteworthy for your customers to: 
-* Understand your API 
-* Build mocks and the API client tooling. 
+ℹ️ The current issues seem insignificant. However, they would be noteworthy for your customers to:
+* Understand your API
+* Build mocks and the API client tooling.
 
-We will see that later on...   
+
+#### Check the OpenAPI manually & pinpoint differences
+
+Open the OpenAPI
+
+Check how the UUID are generated and validated:
+* What are, in your view, the potential issues?
+* How to fix them?
+
+You could find in the file ``src/main/resources/openapi/guitarheaven-openapi.yaml`` an evolution of this API.
+
+Let us check what are the differences:
+
+The ``/data`` prefix is only mentioned for compatibility with the Docker image used for running OASDIFF.
+
+```shell
+bin/oasdiff.sh changelog /data/src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+```
+
+You can also pinpoint the different breaking changes:
+
+```shell
+bin/oasdiff.sh breaking /data/src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+```
 
 ## Moving our app to API-First
 
@@ -625,7 +653,7 @@ Normally, it ends successfully and you would get such an output:
 ```
 
 
-### 🛠 Updating the code
+### 🛠 Updating the server code
 
 #### DTO
 Delete first the ``info.touret.guitarheaven.application.dto`` package.
@@ -642,18 +670,30 @@ import info.touret.guitarheaven.application.dto.PageableGuitarDto;
 
 ```
 
-Declare the resources as implementing their Api (e.g., ``GuitarsApi``). 
+to 
 
-> aside positive
-> 👀 **What is this interface?**
->
-> This class is the Java representation of the OpenAPI. By implementing it in your code, you must stick to the specification of your API. If not, your build will automatically fails.
+```java
+import info.touret.guitarheaven.application.generated.model.GuitarDto;
+import info.touret.guitarheaven.application.generated.model.PageableGuitarDto;
+```
+
+Declare the resources as implementing their Api (e.g., ``GuitarsApi``).
 
 For example:
 
 ```java
 public class GuitarResource implements GuitarsApi {...
 ```
+
+
+> aside positive
+> 👀 **What is this interface?**
+>
+> This class is the Java representation of the OpenAPI. 
+> 
+> By implementing it in your code, you must stick to the specification of your API. If not, your build will automatically fail.
+> 
+> Try to modify the arguments of the implement methods or the OpenAPI and see what happens during the build time.
 
 Remove all the Microprofile OpenAPI and the ``jakarta.ws.rs`` annotations (e.g. ``@GET``) 
 
@@ -865,3 +905,34 @@ to
 var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
 ```
 
+Update then the import declarations.
+
+#### 🛠 Validation
+
+Run the following command:
+
+```shell
+./mvnw clean verify
+```
+
+It should be successful.
+
+## Let us improve the OpenAPI
+
+## What about the clients?
+
+Check the Open API on Microcks
+
+Add examples in the Spec
+
+## AsyncAPI
+
+Add the AsyncAPI in the classpath
+
+Remove the useless code
+
+conclusion
+
+## API-Breaking changes
+
+## How our customers may integrate our API?
