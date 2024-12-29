@@ -917,7 +917,125 @@ Run the following command:
 
 It should be successful.
 
+Now, you can run again the application and go to the ``dev-ui``
+
+```shell
+./mvnw quarkus:dev
+```
+
 ## Let us improve the OpenAPI
+
+### Object Naming
+
+If we look into our API specification carefully, we can guess our backend is built on top of a Java platform. 
+
+To make it agnostic, let us revamp it without (mostly) impacting the Java code.
+
+#### Dto
+
+In the ``guitarheaven-openapi.yaml`` file, remove all the ``Dto`` suffixes.
+
+In the ``pom.xml``, add the following configuration parameter into the ``build>plugins>openapi-generator-maven-plugin>configuration``
+
+```xml
+<modelNameSuffix>Dto</modelNameSuffix>
+```
+
+You will therefore have the following configuration for this plugin:
+
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>7.9.0</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
+                <generatorName>jaxrs-spec</generatorName>
+                <configOptions>
+                    <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
+                    <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
+                    <library>quarkus</library>
+                    <dateLibrary>java8</dateLibrary>
+                    <generateBuilders>true</generateBuilders>
+                    <openApiNullable>false</openApiNullable>
+                    <useBeanValidation>true</useBeanValidation>
+                    <generatePom>false</generatePom>
+                    <interfaceOnly>true</interfaceOnly>
+                    <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
+                    <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
+                    <returnResponse>true</returnResponse>
+                    <sourceFolder>.</sourceFolder>
+                    <useJakartaEe>true</useJakartaEe>
+                    <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
+                    <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                    <withXml>false</withXml>
+                </configOptions>
+                <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                <modelNameSuffix>Dto</modelNameSuffix>
+            </configuration>
+        </execution>
+    </executions>
+
+</plugin>
+
+```
+Stop the quarkus dev, and generate again the code
+
+```shell
+$ ./mvnw clean compile
+```
+
+In the ``GuitarResourceTest`` class, update the import declaration  
+
+From:
+
+```java
+import static info.touret.guitarheaven.application.generated.model.TYPE.ELECTRIC;
+```
+
+to:
+
+```java
+import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+```
+
+_Yes it is a side effect :-(_
+
+#### Date Time
+
+In the OpenAPI, remove the ``OffsetDateTime`` schema type and update the fields using it as following:
+
+```yaml
+createdAt:
+  type: string
+  format: date-time
+```
+
+Run again the following command:
+
+```shell
+$ ./mvnw clean compile
+```
+and now run the Quarkus dev environment to check it again:
+
+```shell
+$ ./mvnw quarkus:dev
+```
+
+You can go through the SmallRye Swagger UI to see the differences.
+
+> aside positive
+>
+> ℹ️ If you want, you can now add more constraints to your API using 
+>
+> To do that, you MUST set up Docker before and open the project using either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
+
+
 
 ## What about the clients?
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.UUID;
 
-import static info.touret.guitarheaven.application.generated.model.TYPE.ELECTRIC;
+import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTest
