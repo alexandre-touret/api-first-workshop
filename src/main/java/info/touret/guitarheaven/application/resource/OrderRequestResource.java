@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.application.resource;
 
-import info.touret.guitarheaven.application.generated.model.OrderDto;
-import info.touret.guitarheaven.application.generated.resource.OrdersApi;
+import info.touret.guitarheaven.application.generated.model.OrderRequestDto;
+import info.touret.guitarheaven.application.generated.resource.OrdersRequestsApi;
 import info.touret.guitarheaven.application.mapper.OrderRequestMapper;
 import info.touret.guitarheaven.domain.service.OrderRequestService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
-public class OrderRequestResource implements OrdersApi {
+public class OrderRequestResource implements OrdersRequestsApi {
 
     private final OrderRequestService orderRequestService;
     private final OrderRequestMapper orderRequestMapper;
@@ -21,9 +21,10 @@ public class OrderRequestResource implements OrdersApi {
         this.orderRequestService = orderRequestService;
         this.orderRequestMapper = orderRequestMapper;
     }
+
     @Override
-    public Response create(OrderDto order) {
-        return Response.ok(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
+    public Response create(OrderRequestDto order) {
+        return Response.status(201).entity(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
     }
 
     @Override
@@ -32,7 +33,7 @@ public class OrderRequestResource implements OrdersApi {
     }
 
     @Override
-    public Response getOrder( UUID orderId) {
+    public Response getOrder(UUID orderId) {
         return Response.ok(orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
                 () -> new WebApplicationException(Response.Status.NOT_FOUND)))).build();
     }

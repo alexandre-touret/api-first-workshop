@@ -48,7 +48,7 @@ public class GuitarResource implements GuitarsApi {
 
     @Override
     public Response createGuitar(GuitarDto guitarDto) {
-        return Response.ok(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
+        return Response.status(201).entity(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
     }
 
     @Override

@@ -33,7 +33,7 @@ class GuitarResourceTest {
     @Order(2)
     @Test
     void should_create_successfully() {
-        var guitar = new GuitarDto().guitarId(null).name("Gibson ES 135").type(ELECTRIC).price(1500.0).stock(10);
+        var guitar = new GuitarDto().guitarId(null).name("Gibson ES 135").type(ELECTRIC).priceInUSD(1500.0).stock(10);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -48,7 +48,7 @@ class GuitarResourceTest {
     @Order(3)
     @Test
     void should_update_successfully() {
-        var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
+        var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).priceInUSD(2500.0).stock(9);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

@@ -26,7 +26,7 @@ public class QuoteResource implements QuotesApi {
 
     @Override
     public Response createQuote(QuoteDto quoteDto) {
-        return Response.ok(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
+        return Response.status(201).entity(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
     }
 
     @Override
