@@ -2,7 +2,7 @@
 openapi: 3.1.0
 components:
   schemas:
-    GuitarDto:
+    Guitar:
       type: object
       required:
         - name
@@ -24,7 +24,7 @@ components:
           type: integer
           format: int32
           minimum: 0
-    LinksDto:
+    Links:
       type: object
       properties:
         self:
@@ -37,12 +37,7 @@ components:
           type: string
         last:
           type: string
-    OffsetDateTime:
-      type: string
-      format: date-time
-      examples:
-        - 2022-03-10T12:15:50-04:00
-    OrderRequestDto:
+    OrderRequest:
       type: object
       required:
         - guitarIds
@@ -60,17 +55,18 @@ components:
           type: number
           format: double
         createdAt:
-          $ref: "#/components/schemas/OffsetDateTime"
-    PageableGuitarDto:
+          type: string
+          format: date-time
+    PageableGuitar:
       type: object
       properties:
         guitars:
           type: array
           items:
-            $ref: "#/components/schemas/GuitarDto"
+            $ref: "#/components/schemas/Guitar"
         links:
-          $ref: "#/components/schemas/LinksDto"
-    QuoteDto:
+          $ref: "#/components/schemas/Links"
+    Quote:
       type: object
       properties:
         quoteId:
@@ -88,7 +84,8 @@ components:
           format: double
           minimum: 0
         createdAt:
-          $ref: "#/components/schemas/OffsetDateTime"
+          type: string
+          format: date-time
     TYPE:
       type: string
       enum:
@@ -110,7 +107,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuitarDto"
+                  $ref: "#/components/schemas/Guitar"
         "500":
           description: Server unavailable
       tags:
@@ -122,7 +119,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GuitarDto"
+              $ref: "#/components/schemas/Guitar"
         required: true
       responses:
         "201":
@@ -154,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageableGuitarDto"
+                $ref: "#/components/schemas/PageableGuitar"
         "500":
           description: Server unavailable
       tags:
@@ -174,7 +171,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GuitarDto"
+              $ref: "#/components/schemas/Guitar"
         required: true
       responses:
         "200":
@@ -182,7 +179,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuitarDto"
+                $ref: "#/components/schemas/Guitar"
         "400":
           description: 'The request is invalid '
         "500":
@@ -205,7 +202,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuitarDto"
+                $ref: "#/components/schemas/Guitar"
         "400":
           description: 'The request is invalid '
         "500":
@@ -243,7 +240,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OrderRequestDto"
+                  $ref: "#/components/schemas/OrderRequest"
         "500":
           description: Server unavailable
       tags:
@@ -255,7 +252,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrderRequestDto"
+              $ref: "#/components/schemas/OrderRequest"
         required: true
       responses:
         "201":
@@ -283,7 +280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderRequestDto"
+                $ref: "#/components/schemas/OrderRequest"
         "400":
           description: The request is invalid (probably the guitars IDs)
         "500":
@@ -302,7 +299,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/QuoteDto"
+                  $ref: "#/components/schemas/Quote"
         "500":
           description: Server unavailable
       tags:
@@ -314,7 +311,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/QuoteDto"
+              $ref: "#/components/schemas/Quote"
         required: true
       responses:
         "201":
