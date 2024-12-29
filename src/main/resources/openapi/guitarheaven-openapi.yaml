@@ -10,13 +10,12 @@ components:
       properties:
         guitarId:
           type: string
+          format: uuid
         name:
           type: string
-          pattern: \S
         type:
           $ref: "#/components/schemas/TYPE"
           type: string
-          pattern: \S
         priceInUSD:
           type: number
           format: double
@@ -50,12 +49,13 @@ components:
       properties:
         orderId:
           type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          format: uuid
         guitarIds:
           type: array
           minItems: 1
           items:
             type: string
+            format: uuid
         discountRequested:
           type: number
           format: double
@@ -70,30 +70,15 @@ components:
             $ref: "#/components/schemas/GuitarDto"
         links:
           $ref: "#/components/schemas/LinksDto"
-    Quote:
-      type: object
-      properties:
-        quoteId:
-          $ref: "#/components/schemas/UUID"
-        orderId:
-          $ref: "#/components/schemas/UUID"
-        discount:
-          type: number
-          format: double
-        totalPriceWithDiscount:
-          type: number
-          format: double
-        createdAt:
-          $ref: "#/components/schemas/OffsetDateTime"
     QuoteDto:
       type: object
       properties:
         quoteId:
           type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          format: uuid
         orderId:
           type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          format: uuid
         discount:
           type: number
           format: double
@@ -112,10 +97,6 @@ components:
         - FOLK
         - GIPSY
         - JAZZ
-    UUID:
-      type: string
-      format: uuid
-      pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
 paths:
   /guitars:
     get:
@@ -188,7 +169,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -216,7 +197,8 @@ paths:
           in: path
           required: true
           schema:
-            $ref: "#/components/schemas/UUID"
+            type: string
+            format: uuid
       responses:
         "200":
           description: 'Guitar update successful '
@@ -239,7 +221,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            format: uuid
       responses:
         "200":
           description: 'Guitar update successful '
@@ -294,7 +276,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            format: uuid
       responses:
         "200":
           description: Success
@@ -320,7 +302,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Quote"
+                  $ref: "#/components/schemas/QuoteDto"
         "500":
           description: Server unavailable
       tags:
