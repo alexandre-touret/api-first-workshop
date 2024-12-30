@@ -20,7 +20,7 @@ public class QuoteResourceTest {
                 .get("/quotes")
                 .then()
                 .statusCode(200)
-                .assertThat().body("size()", Is.is(0));
+                .assertThat().body("isEmpty()", Is.is(false));
     }
 
 
