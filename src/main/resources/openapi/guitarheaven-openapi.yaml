@@ -1,0 +1,361 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    Guitar:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        guitarId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/TYPE"
+          type: string
+        priceInUSD:
+          type: number
+          format: double
+          minimum: 0
+        stock:
+          type: integer
+          format: int32
+          minimum: 0
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+        first:
+          type: string
+        prev:
+          type: string
+        next:
+          type: string
+        last:
+          type: string
+    OrderRequest:
+      type: object
+      required:
+        - guitarIds
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        guitarIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+        discountRequested:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+    PageableGuitar:
+      type: object
+      properties:
+        guitars:
+          type: array
+          items:
+            $ref: "#/components/schemas/Guitar"
+        links:
+          $ref: "#/components/schemas/Links"
+    Quote:
+      type: object
+      properties:
+        quoteId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        discount:
+          type: number
+          format: double
+          minimum: 0
+        totalPriceWithDiscount:
+          type: number
+          format: double
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+    TYPE:
+      type: string
+      enum:
+        - ELECTRIC
+        - CLASSIC
+        - FOLK
+        - GIPSY
+        - JAZZ
+paths:
+  /guitars:
+    get:
+      summary: Gets all guitars
+      operationId: retrieveAllGuitars
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Guitar"
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+    post:
+      summary: Creates a guitar
+      operationId: createGuitar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Guitar"
+        required: true
+      responses:
+        "201":
+          description: Guitar creation successful
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+  /guitars/pages:
+    get:
+      summary: Gets all guitars and paginate the results
+      operationId: findAllGuitarsWithPagination
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageableGuitar"
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+  /guitars/{guitarId}:
+    put:
+      summary: Updates a guitar
+      operationId: updateGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Guitar"
+        required: true
+      responses:
+        "200":
+          description: 'Guitar update successful '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guitar"
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+    get:
+      summary: Gets a guitar
+      operationId: getGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: 'Guitar update successful '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guitar"
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+    delete:
+      summary: Deletes a guitar
+      operationId: deleteGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: 'Guitar update successful '
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+  /orders-requests:
+    get:
+      summary: Gets all orders
+      operationId: getAllOrders
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderRequest"
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+    post:
+      summary: Creates an order
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequest"
+        required: true
+      responses:
+        "201":
+          description: Order creation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                    format: uuid
+              examples:
+                es335:
+                  summary: ES 335 order request
+                  value:
+                    orderId: 292a485f-a56a-4938-8f1a-bbbbbbbbbbc2
+        "400":
+          description: The request is invalid (probably the guitars IDs)
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+  /orders-requests/{orderId}:
+    get:
+      summary: Gets an order
+      operationId: getOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRequest"
+        "400":
+          description: The request is invalid (probably the guitars IDs)
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+  /quotes:
+    get:
+      summary: Gets all quotes
+      operationId: findAll
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quote"
+        "500":
+          description: Server unavailable
+      tags:
+        - Quote Resource
+    post:
+      summary: Creates a quote
+      operationId: createQuote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Quote"
+        required: true
+      responses:
+        "201":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quoteId:
+                    type: string
+                    format: uuid
+              examples:
+                es335:
+                  summary: ES 335 quote
+                  value:
+                    quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
+        "400":
+          description: 'Request invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Quote Resource
+info:
+  title: Guitar Heaven API
+  version: 1.0.1
+  description: "Your guitar is probably here, check it out!"
+  contact:
+    name: Alexandre Touret
+    email: techsupport@example.com
+    url: https://blog.touret.info/contact/
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
