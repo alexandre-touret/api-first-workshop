@@ -257,6 +257,19 @@ paths:
       responses:
         "201":
           description: Order creation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                    format: uuid
+              examples:
+                es335:
+                  summary: ES 335 order request
+                  value:
+                    orderId: 292a485f-a56a-4938-8f1a-bbbbbbbbbbc2
         "400":
           description: The request is invalid (probably the guitars IDs)
         "500":
@@ -316,6 +329,19 @@ paths:
       responses:
         "201":
           description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quoteId:
+                    type: string
+                    format: uuid
+              examples:
+                es335:
+                  summary: ES 335 quote
+                  value:
+                    quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
         "400":
           description: 'Request invalid '
         "500":
@@ -326,7 +352,6 @@ info:
   title: Guitar Heaven API
   version: 1.0.1
   description: "Your guitar is probably here, check it out!"
-  termsOfService: Free to use
   contact:
     name: Alexandre Touret
     email: techsupport@example.com

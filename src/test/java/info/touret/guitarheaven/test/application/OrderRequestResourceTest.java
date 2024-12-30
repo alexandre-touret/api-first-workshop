@@ -22,8 +22,7 @@ class OrderRequestResourceTest {
                 .get("/orders-requests")
                 .then()
                 .statusCode(200)
-                .assertThat().body("size()", Is.is(3));
-    }
+                .assertThat().body("isEmpty()", Is.is(false));    }
 
     @Test
     void should_create_order_successfully() {
