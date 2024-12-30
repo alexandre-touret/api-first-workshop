@@ -18,6 +18,7 @@
         <surefire-plugin.version>3.5.0</surefire-plugin.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <archunit-junit5.version>1.3.0</archunit-junit5.version>
+        <quarkus-microcks.version>0.2.7</quarkus-microcks.version>
     </properties>
 
     <dependencyManagement>
@@ -53,7 +54,7 @@
         <dependency>
             <groupId>io.github.microcks.quarkus</groupId>
             <artifactId>quarkus-microcks</artifactId>
-            <version>0.2.7</version>
+            <version>${quarkus-microcks.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -189,7 +190,7 @@
                     <compilerArgs>
                         <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
                         <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
-                        <arg>-Amapstruct.verbose=true</arg>
+                        <arg>-Amapstruct.verbose=false</arg>
                         <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
                     </compilerArgs>
                     <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
@@ -202,6 +203,7 @@
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
+                        <quarkus.log.level>INFO</quarkus.log.level>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
