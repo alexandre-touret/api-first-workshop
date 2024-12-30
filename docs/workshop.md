@@ -1230,37 +1230,54 @@ Here we specified the ``order_es335`` example
 
 ```yaml
     post:
-      summary: Creates an order
-      operationId: create
+      summary: Creates a guitar
+      operationId: createGuitar
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrderRequest"
+              $ref: "#/components/schemas/Guitar"
             examples:
-              order_es335:
-                summary: Order of a GIBSON ES 335
+              es335:
                 value:
-                  guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
-                  discountRequested: 100
-                  createdAt: "2004-10-19T08:23:54Z"
+                  name: "ES 335"
+                  type: ELECTRIC
+                  priceInUSD: 2500
+                  stock: 10
+              stratocaster:
+                value:
+                  name: "Stratocaster"
+                  type: ELECTRIC
+                  priceInUSD: 1500
+                  stock: 5
         required: true
       responses:
         "201":
-          description: Order creation successful
+          description: Guitar creation successful
           content:
             application/json:
+              schema:
+                type: object
+                properties:
+                  guitarId:
+                    type: string
+                    format: uuid
               examples:
                 es335:
-                  summary: ES 335 order request
+                  summary: ES 335 created
                   value:
-                    orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+                    guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                stratocaster:
+                  summary: Stratocaster created
+                  value:
+                    guitarId: 628226d4-fee3-46dd-8bcb-426cffb4a665
         "400":
-          description: The request is invalid (probably the guitars IDs)
+          description: 'The request is invalid '
         "500":
           description: Server unavailable
+
       tags:
-        - Order Request Resource
+        - Guitar Resource
 
 ```
 
@@ -1289,12 +1306,12 @@ For instance, for the ``DELETE /guitars`` endpoint:
           examples:
             es335:
               summary: "ES 335"
-              value: 756733e5-c247-49d8-bf40-9a481c2f0bc3
+              value: 628226d4-fee3-46dd-8bcb-426cffb4a685
             stratocaster:
               summary: "Fender Stratocaster"
-              value: 44411351-5897-497f-a9c8-22341a078ad2
+              value: 628226d4-fee3-46dd-8bcb-426cffb4a666
       responses:
-        "200":
+        "204":
           description: 'Guitar update successful '
           x-microcks-refs:
             - es335
@@ -1305,10 +1322,67 @@ For instance, for the ``DELETE /guitars`` endpoint:
           description: Server unavailable
       tags:
         - Guitar Resource
+
 ```
 
 ### Contract testing
 
+We have now an API built using an OpenAPI description.
+How to be fully sure your program fully complies with your specification? 
+
+You can use the [Contract Testing](https://martinfowler.com/bliki/ContractTest.html) for that!
+
+![contract testing](./img/contract_testing.png)
+
+If you want to know more about contract testing, you can check out :
+* [This documentation from Microsoft](https://microsoft.github.io/code-with-engineering-playbook/automated-testing/cdc-testing/).
+* [This article from L BROUDOUX (Microcks)](https://medium.com/@lbroudoux/different-levels-of-api-contract-testing-with-microcks-ccc0847f8c97)
+* [The introduction of conformance testing (Microcks)](https://microcks.io/documentation/explanations/conformance-testing/)
+
+These tests could be implemented in a different ways:
+* Testing against a  remote server to check if it is compliant with the OpenAPI specification
+* Testing during the integration test phase (i.e., in a  ``@QuarkusTest``)
+
+In this workshop, we will implement the latter.
+
+Create the following class in the ``src/test/resouces`` directory and in the ``info.touret.guitarheaven.test.application`` package:
+
+```java
+@QuarkusTest
+public class APIContractTest {
+    private final static Logger LOGGER = LoggerFactory.getLogger(APIContractTest.class);
+
+    @ConfigProperty(name = "quarkus.http.test-port")
+    int quarkusHttpPort;
+
+    @ConfigProperty(name = "quarkus.microcks.default.http")
+    String microcksContainerUrl;
+
+    @Inject
+    ObjectMapper mapper;
+
+    @Test
+    public void testOpenAPIContract() throws Exception {
+        TestRequest testRequest = new TestRequest.Builder()
+                .serviceId("Guitar Heaven API with Examples:1.0.1")
+                .runnerType(TestRunnerType.OPEN_API_SCHEMA.name())
+                .testEndpoint("http://host.testcontainers.internal:" + quarkusHttpPort)
+                .build();
+        TestResult testResult = MicrocksContainer.testEndpoint(microcksContainerUrl, testRequest);
+        LOGGER.error(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(testResult));
+        assertTrue(testResult.isSuccess());
+    }
+}
+```
+
+This test will run Microcks under the hood and checks every endpoint declared in the OpenAPI using the examples filled earlier.
+
+Stop the Quarkus Dev and run the integration tests.
+
+```shell
+$ ./mvnw clean verify
+```
+It would end successfully.
 
 ## AsyncAPI
 
