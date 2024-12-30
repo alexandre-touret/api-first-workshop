@@ -4,6 +4,8 @@ import info.touret.guitarheaven.application.dto.QuoteDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Is;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.IsNull;
 import org.hamcrest.text.MatchesPattern;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +22,7 @@ public class QuoteResourceTest {
                 .get("/quotes")
                 .then()
                 .statusCode(200)
-                .assertThat().body("isEmpty()", Is.is(false));
+                .assertThat().body("isEmpty()", IsNot.not(IsNull.nullValue()));
     }
 
 
