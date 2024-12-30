@@ -1,0 +1,547 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    Guitar:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        guitarId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/TYPE"
+          type: string
+        priceInUSD:
+          type: number
+          format: double
+          minimum: 0
+        stock:
+          type: integer
+          format: int32
+          minimum: 0
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+        first:
+          type: string
+        prev:
+          type: string
+        next:
+          type: string
+        last:
+          type: string
+    OrderRequest:
+      type: object
+      required:
+        - guitarIds
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        guitarIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+        discountRequested:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+    PageableGuitar:
+      type: object
+      properties:
+        guitars:
+          type: array
+          items:
+            $ref: "#/components/schemas/Guitar"
+        links:
+          $ref: "#/components/schemas/Links"
+    Quote:
+      type: object
+      properties:
+        quoteId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        discount:
+          type: number
+          format: double
+          minimum: 0
+        totalPriceWithDiscount:
+          type: number
+          format: double
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+    TYPE:
+      type: string
+      enum:
+        - ELECTRIC
+        - CLASSIC
+        - FOLK
+        - GIPSY
+        - JAZZ
+paths:
+  /guitars:
+    get:
+      summary: Gets all guitars
+      operationId: retrieveAllGuitars
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Guitar"
+              examples:
+                list:
+                  value:
+                    - guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                      name: "ES 335"
+                      type: "ELECTRIC"
+                      priceInUSD: 2500
+                      stock: 10
+                    - guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+                      name: "Stratocaster"
+                      type: "ELECTRIC"
+                      priceInUSD: 1500
+                      stock: 5
+                    - guitarId: "640ed5e0-8894-408a-9cd1-a9269d71349f"
+                      name: "Les Paul"
+                      type: "ELECTRIC"
+                      priceInUSD: 3000
+                      stock: 2
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+
+    post:
+      summary: Creates a guitar
+      operationId: createGuitar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Guitar"
+            examples:
+              es335:
+                summary: Example for Gibson ES 335
+                value:
+                  name: "ES 335"
+                  type: "ELECTRIC"
+                  priceInUSD: "2500"
+                  stock: 10
+              stratocaster:
+                summary: Example Fender Stratocaster
+                value:
+                  guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+                  name: "Stratocaster"
+                  type: "ELECTRIC"
+                  priceInUSD: 1500
+                  stock: 5
+        required: true
+      responses:
+        "201":
+          description: Guitar creation successful
+          content:
+            application/json:
+              examples:
+                es335:
+                  summary: ES 335 created
+                  value:
+                    guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                stratocaster:
+                  summary: Stratocaster created
+                  value:
+                    guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+
+      tags:
+        - Guitar Resource
+  /guitars/pages:
+    get:
+      summary: Gets all guitars and paginate the results
+      operationId: findAllGuitarsWithPagination
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+          examples:
+            list:
+              value: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+          examples:
+            list:
+              value: 10
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageableGuitar"
+              examples:
+                list:
+                  value:
+                    guitars:
+                      - guitarId: "19fd8f49-745d-42e7-9e66-d0449442e3d1"
+                        name: "ES 335"
+                        type: "ELECTRIC"
+                        priceInUSD: 2500
+                        stock": 10
+                      - guitarId: "5ef4d8fc-7d71-4599-a46e-c8693e7f5de7"
+                        name: "Stratocaster"
+                        type: "ELECTRIC"
+                        priceInUSD: 1500
+                        stock: 5
+                      - guitarId: "0f29005c-cfac-4a6b-ba2f-7c21d7fbd3a2"
+                        name: "Les Paul"
+                        type: "ELECTRIC"
+                        priceInUSD: 3000
+                        stock: 2
+                    links:
+                      self: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      first: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      prev: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      next: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=1"
+                      last: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=9"
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+  /guitars/{guitarId}:
+    put:
+      summary: Updates a guitar
+      operationId: updateGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            es335:
+              summary: "ES 335"
+              value: 756733e5-c247-49d8-bf40-9a481c2f0bc3
+            stratocaster:
+              summary: "Fender Stratocaster"
+              value: 44411351-5897-497f-a9c8-22341a078ad2
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Guitar"
+            examples:
+              es335:
+                summary: Example for Gibson ES 335
+                value:
+                  guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                  name: "ES 335"
+                  type: "ELECTRIC"
+                  priceInUSD: "2500"
+                  stock: 10
+              stratocaster:
+                summary: Example Fender Stratocaster
+                value:
+                  guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+                  name: "Stratocaster"
+                  type: "ELECTRIC"
+                  priceInUSD: 1500
+                  stock: 5
+        required: true
+      responses:
+        "200":
+          description: 'Guitar update successful '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guitar"
+              examples:
+                es335:
+                  summary: Example for Gibson ES 335
+                  value:
+                    guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                    name: "ES 335"
+                    type: "ELECTRIC"
+                    priceInUSD: "2500"
+                    stock: 10
+                stratocaster:
+                  summary: Example Fender Stratocaster
+                  value:
+                    guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+                    name: "Stratocaster"
+                    type: "ELECTRIC"
+                    priceInUSD: 1500
+                    stock: 5
+
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+    get:
+      summary: Gets a guitar
+      operationId: getGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            es335:
+              summary: "ES 335"
+              value: 756733e5-c247-49d8-bf40-9a481c2f0bc3
+            stratocaster:
+              summary: "Fender Stratocaster"
+              value: 44411351-5897-497f-a9c8-22341a078ad2
+      responses:
+        "200":
+          description: 'Guitar update successful '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guitar"
+              examples:
+                es335:
+                  summary: Example for Gibson ES 335
+                  value:
+                    guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
+                    name: "ES 335"
+                    type: "ELECTRIC"
+                    priceInUSD: "2500"
+                    stock: 10
+                stratocaster:
+                  summary: Example Fender Stratocaster
+                  value:
+                    guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
+                    name: "Stratocaster"
+                    type: "ELECTRIC"
+                    priceInUSD: 1500
+                    stock: 5
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+    delete:
+      summary: Deletes a guitar
+      operationId: deleteGuitar
+      parameters:
+        - name: guitarId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            es335:
+              summary: "ES 335"
+              value: 756733e5-c247-49d8-bf40-9a481c2f0bc3
+            stratocaster:
+              summary: "Fender Stratocaster"
+              value: 44411351-5897-497f-a9c8-22341a078ad2
+      responses:
+        "200":
+          description: 'Guitar update successful '
+          x-microcks-refs:
+            - es335
+            - stratocaster
+        "400":
+          description: 'The request is invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+  /orders-requests:
+    get:
+      summary: Gets all orders
+      operationId: getAllOrders
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderRequest"
+              examples:
+                list:
+                  summary: Order of one ES 335
+                  value:
+                    - orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+                      guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
+                      discountRequested: 100
+                      createdAt: "2004-10-19T08:23:54Z"
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+    post:
+      summary: Creates an order
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequest"
+            examples:
+              order_es335:
+                summary: Order of a GIBSON ES 335
+                value:
+                  guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
+                  discountRequested: 100
+                  createdAt: "2004-10-19T08:23:54Z"
+        required: true
+      responses:
+        "201":
+          description: Order creation successful
+          content:
+            application/json:
+              examples:
+                es335:
+                  summary: ES 335 order request
+                  value:
+                    orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+        "400":
+          description: The request is invalid (probably the guitars IDs)
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+  /orders-requests/{orderId}:
+    get:
+      summary: Gets an order
+      operationId: getOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            order_es335:
+              value: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRequest"
+              examples:
+                order_es335:
+                  summary: Order of a GIBSON ES 335
+                  value:
+                    orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+                    guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
+                    discountRequested: 100
+                    createdAt: "2004-10-19T08:23:54Z"
+        "400":
+          description: The request is invalid (probably the guitars IDs)
+        "500":
+          description: Server unavailable
+      tags:
+        - Order Request Resource
+  /quotes:
+    get:
+      summary: Gets all quotes
+      operationId: findAll
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quote"
+              examples:
+                quote_es335:
+                  value:
+                    - quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
+                      orderId": "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+                      discount: 100,
+                      totalPriceWithDiscount: 1100
+                      createdAt: "2022-03-10T12:15:50-04:00"
+
+        "500":
+          description: Server unavailable
+      tags:
+        - Quote Resource
+    post:
+      summary: Creates a quote
+      operationId: createQuote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Quote"
+            examples:
+              quote_es335:
+                value:
+                  orderId": "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
+                  discount: 100
+                  totalPriceWithDiscount: 1100
+                  createdAt: "2022-03-10T12:15:50-04:00"
+        required: true
+      responses:
+        "201":
+          description: 'Success '
+          content:
+            application/json:
+              examples:
+                es335:
+                  summary: ES 335 quote
+                  value:
+                    quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
+        "400":
+          description: 'Request invalid '
+        "500":
+          description: Server unavailable
+      tags:
+        - Quote Resource
+info:
+  title: Guitar Heaven API with Examples
+  version: 1.0.1
+  description: "Your guitar is probably here, check it out!"
+  contact:
+    name: Alexandre Touret
+    email: techsupport@example.com
+    url: https://blog.touret.info/contact/
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
