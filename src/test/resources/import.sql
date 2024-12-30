@@ -34,7 +34,16 @@ insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
 values (100, 2500, '2004-10-19 10:23:54+02', 1002, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc1'::UUID);
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (1002, 1002);
+
+insert into guitarquote(discount, totalpricewithdiscount, createdat, id, quoteid)
+VALUES (10, 1000, '2004-10-19 10:23:54+02', 1000, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc2'::UUID);
+insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId,quote_id)
+values (100, 2500, '2004-10-19 10:23:54+02', 1005, '292a485f-a56a-4938-8f1a-bbbbbabbbbc1'::UUID,1000);
+insert into Guitar_GuitarOrder(orders_id, guitars_id)
+values (1005, 1002);
+
 ---
+
 
 
 -- For Microcks
