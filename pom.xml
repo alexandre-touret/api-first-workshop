@@ -157,7 +157,6 @@
 
             </plugin>
 
-
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
@@ -227,6 +226,8 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </build>
 
