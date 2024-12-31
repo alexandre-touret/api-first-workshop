@@ -1384,9 +1384,106 @@ $ ./mvnw clean verify
 ```
 It would end successfully.
 
-## AsyncAPI
+## AsyncAPI introduction
 
-Add the AsyncAPI in the classpath
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+>
+> - A sneak peek of the AsyncAPI standard 
+> - How to keep having an API-First approach with asynchronous workflows
+
+### 👀 Looking into the existing code
+
+Check out the infrastructure code in the package ``info.touret.guitarheaven.infrastructure.kafka``.
+You could find the following classes:
+
+* ``GuitarRequest``: The POJO used to broadcast messages through Kafka
+* ``GuitarRequestDeserializer`` : A simple deserializer
+* ``GuitarRequestSerializer``: A simple serializer
+* ``KafkaClient``: The Kafka client used to broadcast & fetch messages
+* ``SupplyChainAdapter``: The adapter of the domain's SupplyChainPort
+
+If we want to apply the same principes we implemented before, this client layer should be generated from a specification.
+
+How to do that for even-driven APIs?
+The [AsyncAPI] standard could help us in this challenge!
+
+It is based on OpenAPI and specifies event-driven APIs based on Kafka, AMQP or MQTT.
+
+### Drafting an event-driven API
+
+In this chapter, we will automatically generate the POJO from an AsyncAPI specification.
+
+First, create the file ``supplychain-asyncapi.yaml`` in the folder ``src/main/resources/asyncapi`` and copy the following content:
+
+```yaml
+asyncapi: 3.0.0
+info:
+  title: Guitar Supply Chain API
+  version: 1.0.0
+  description: This API is notified whenever the stock is too low
+
+servers:
+  dev:
+    host: kafka://localhost:8092
+    description: Kafka broker running in a Quarkus Dev Service
+    protocol: kafka
+
+operations:
+  onGuitarRequestOut:
+    action: send
+    channel:
+      $ref: '#/channels/guitar-requests-out'
+  onGuitarRequestIn:
+    action: receive
+    channel:
+      $ref: '#/channels/guitar-requests-in'
+
+channels:
+  guitar-requests-out:
+    description: This channel is used to broadcast guitars supply requests
+    address: guitar-requests
+    messages:
+      guitarRequest:
+        $ref: '#/components/messages/guitarRequest'
+  guitar-requests-in:
+    description: This channel is used to fetch guitar requests
+    address: guitar-requests
+    messages:
+      guitarRequest:
+        $ref: '#/components/messages/guitarRequest'
+components:
+  messages:
+    guitarRequest:
+      name: guitarRequest
+      title: Guitar Request
+      contentType: application/json
+      payload:
+        $id: "GuitarRequest"
+        $ref: '#/components/schemas/guitarRequest'
+  schemas:
+    guitarRequest:
+      additionalProperties: false
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: This property describes the UUID of the request
+        guitarName:
+          type: string
+          description: This property describes the name of the guitar
+        quantity:
+          type: integer
+          description: The quantity to order and supply
+
+```
+
+####
+
+
+asyncapi generate models java src/main/resources/asyncapi/supplychain-asyncapi.yaml --packageName=info.touret.guitarheaven.infrastructure.kafka.generated -o target/generated-sources/info/touret/guitarheaven/infrastructure/kafka/generated  --javaJackson --javaConstraints
+
 
 Remove the useless code
 
