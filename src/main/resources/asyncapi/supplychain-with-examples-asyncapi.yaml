@@ -1,0 +1,90 @@
+asyncapi: 3.0.0
+info:
+  title: Guitar Supply Chain API
+  version: 1.0.0
+  description: This API is notified whenever the stock is too low
+
+defaultContentType: application/json
+channels:
+  guitar-requests-out:
+    address: guitar-requests
+    description: Requests
+    messages:
+      guitarRequest.message:
+        description: Event to ask a guitar
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            requestId:
+              type: string
+              format: uuid
+            guitarName:
+              type: string
+            quantity:
+              type: integer
+        examples:
+          - name: "Gibson ES 335"
+            summary: "Example for Gibson ES 335"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213bf
+              guitarName: "Gibson ES 335"
+              quantity: 10
+          - name: "Fender Stratocaster"
+            summary: "Example for Fender Stratocaster"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213be
+              guitarName: "Fender Stratocaster"
+              quantity: 5
+  guitar-requests-in:
+    address: guitar-requests
+    description: Requests
+    messages:
+      guitarRequest.message:
+        description: Event to ask a guitar
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            requestId:
+              type: string
+              format: uuid
+            guitarName:
+              type: string
+            quantity:
+              type: integer
+        examples:
+          - name: "Gibson ES 335"
+            summary: "Example for Gibson ES 335"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213bf
+              guitarName: "Gibson ES 335"
+              quantity: 10
+          - name: "Fender Stratocaster"
+            summary: "Example for Fender Stratocaster"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213be
+              guitarName: "Fender Stratocaster"
+              quantity: 5
+operations:
+  onGuitarRequestOut:
+    action: send
+    channel:
+      $ref: '#/channels/guitar-requests-out'
+    summary: Send command
+    messages:
+      - $ref: '#/channels/guitar-requests-out/messages/guitarRequest.message'
+  onGuitarRequestin:
+    action: receive
+    channel:
+      $ref: '#/channels/guitar-requests-in'
+    summary: Fetches command
+    messages:
+      - $ref: '#/channels/guitar-requests-in/messages/guitarRequest.message'
+
+
+servers:
+  dev:
+    host: kafka://localhost:8092
+    description: Kafka broker running in a Quarkus Dev Service
+    protocol: kafka
