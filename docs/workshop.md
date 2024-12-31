@@ -1384,17 +1384,19 @@ $ ./mvnw clean verify
 ```
 It would end successfully.
 
-## AsyncAPI introduction
+## AsyncAPI & Event Driven APIs
 
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
 >
 > - A sneak peek of the AsyncAPI standard 
 > - How to keep having an API-First approach with asynchronous workflows
+> - How to validate an event driven API specification
 
 ### 👀 Looking into the existing code
 
-Check out the infrastructure code in the package ``info.touret.guitarheaven.infrastructure.kafka``.
+Check out the infrastructure code in the package ``info.touret.guitarheaven.infrastructure.kafka`` and see how the connection to Kakfa is handled.
+
 You could find the following classes:
 
 * ``GuitarRequest``: The POJO used to broadcast messages through Kafka
@@ -1412,7 +1414,9 @@ It is based on OpenAPI and specifies event-driven APIs based on Kafka, AMQP or M
 
 ### Drafting an event-driven API
 
-In this chapter, we will automatically generate the POJO from an AsyncAPI specification.
+In this chapter, we will 
+* See how to validate a AsyncAPI file
+* Generate the POJO from an AsyncAPI specification
 
 First, create the file ``supplychain-asyncapi.yaml`` in the folder ``src/main/resources/asyncapi`` and copy the following content:
 
@@ -1479,11 +1483,212 @@ components:
 
 ```
 
-####
+If you want to know more about the different elements, you can browse 
+* [this notion explorer](https://www.asyncapi.com/docs/reference/specification/v3.0.0-explorer).
+* [The spec](https://www.asyncapi.com/docs/concepts)
+
+#### Validation 
+The Async API initiative provides some tools. We will use in this workshop [the cli](https://www.asyncapi.com/en/tools/cli) & the [generator](https://www.asyncapi.com/tools/generator). 
+
+Unfortunately, the [generator](https://www.asyncapi.com/tools/generator) doesn't provide any model for Quarkus.
+
+We will use it through its Docker image.
+
+Run then the following command:
+
+```shell
+bin/asyncapi-validate.sh
+```
+
+You would get such an output:
+
+```shell
+bin/asyncapi-validate.sh 
+Pulling & Running ASYNCAPIh  (command)  …asyncapi-validate.sh  (command)
+
+AsyncAPI anonymously tracks command executions to improve the specification and tools, ensuring no sensitive data reaches our servers. It aids in comprehending how AsyncAPI tools are used and adopted, facilitating ongoing improvements to our specifications and tools.
+
+To disable tracking, please run the following command:
+  asyncapi config analytics --disable
+
+Once disabled, if you want to enable tracking back again then run:
+  asyncapi config analytics --enable
 
 
-asyncapi generate models java src/main/resources/asyncapi/supplychain-asyncapi.yaml --packageName=info.touret.guitarheaven.infrastructure.kafka.generated -o target/generated-sources/info/touret/guitarheaven/infrastructure/kafka/generated  --javaJackson --javaConstraints
+File /app/example/main/resources/asyncapi/supplychain-asyncapi.yaml is valid! File /app/example/main/resources/asyncapi/supplychain-asyncapi.yaml and referenced documents don't have governance issues.
 
+```
+
+If you want to edit it you can also use [the AsyncAPI studio](https://studio.asyncapi.com/).
+
+#### Model Generation
+
+This chapter is just for illustrating the model generation at build time. We won't include this step in our app's build workfow.
+
+Run the following command:
+
+```shell
+$ bin/asyncapi-generate-model.sh
+```
+
+You would get the following output:
+
+```shell
+Pulling & Running ASYNCAPIh  (command)  …asyncapi-validate.sh  (command)
+
+AsyncAPI anonymously tracks command executions to improve the specification and tools, ensuring no sensitive data reaches our servers. It aids in comprehending how AsyncAPI tools are used and adopted, facilitating ongoing improvements to our specifications and tools.
+
+To disable tracking, please run the following command:
+  asyncapi config analytics --disable
+
+Once disabled, if you want to enable tracking back again then run:
+  asyncapi config analytics --enable
+
+│
+ ›   Warning: Overwriting existing model with name guitarRequest, are there two models with the same name present? Overwriting the old model.
+◇  Successfully generated the following models: GuitarRequest
+
+```
+
+and the generated class in the ``target/generated-sources/asyncapi`` folder.
+
+#### Mocking your Event-Driven API
+
+We can mock our Event Driven API in the same way we did for our REST API.
+
+Start Quarkus
+
+```shell
+./mvnw quarkus:dev
+```
+
+Go then to the Microcks extension page and check out the ``Guitar Supply Chain API``.
+
+You can see its conformance index is low. 
+It is the same reason as before. 
+We must therefore add examples. 
+
+Now, import this new description with examples:
+
+Create the ``supplychain-with-examples-asyncapi.yaml`` with the following content:
+
+```yaml
+asyncapi: 3.0.0
+info:
+  title: Guitar Supply Chain API
+  version: 1.0.0
+  description: This API is notified whenever the stock is too low
+
+defaultContentType: application/json
+channels:
+  guitar-requests-out:
+    address: guitar-requests
+    description: Requests
+    messages:
+      guitarRequest.message:
+        description: Event to ask a guitar
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            requestId:
+              type: string
+              format: uuid
+            guitarName:
+              type: string
+            quantity:
+              type: integer
+        examples:
+          - name: "Gibson ES 335"
+            summary: "Example for Gibson ES 335"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213bf
+              guitarName: "Gibson ES 335"
+              quantity: 10
+          - name: "Fender Stratocaster"
+            summary: "Example for Fender Stratocaster"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213be
+              guitarName: "Fender Stratocaster"
+              quantity: 5
+  guitar-requests-in:
+    address: guitar-requests
+    description: Requests
+    messages:
+      guitarRequest.message:
+        description: Event to ask a guitar
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            requestId:
+              type: string
+              format: uuid
+            guitarName:
+              type: string
+            quantity:
+              type: integer
+        examples:
+          - name: "Gibson ES 335"
+            summary: "Example for Gibson ES 335"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213bf
+              guitarName: "Gibson ES 335"
+              quantity: 10
+          - name: "Fender Stratocaster"
+            summary: "Example for Fender Stratocaster"
+            payload:
+              requestId: ba4bf043-ee08-47c7-8b4f-75427d7213be
+              guitarName: "Fender Stratocaster"
+              quantity: 5
+operations:
+  onGuitarRequestOut:
+    action: send
+    channel:
+      $ref: '#/channels/guitar-requests-out'
+    summary: Send command
+    messages:
+      - $ref: '#/channels/guitar-requests-out/messages/guitarRequest.message'
+  onGuitarRequestin:
+    action: receive
+    channel:
+      $ref: '#/channels/guitar-requests-in'
+    summary: Fetches command
+    messages:
+      - $ref: '#/channels/guitar-requests-in/messages/guitarRequest.message'
+
+
+servers:
+  dev:
+    host: kafka://localhost:8092
+    description: Kafka broker running in a Quarkus Dev Service
+    protocol: kafka
+
+```
+
+Go back to the dev-ui Microcks web page.
+
+Delete the ``Guitar Heaven Supply Chain API`` 
+
+![microcks delete](./img/microcks-delete.png)
+
+Go to the ``Importers`` menu and Click on ``Upload``
+
+![microcks importer](./img/microcks-importers.png)
+
+Select the new file and click on ``Upload``.
+
+![microcks upload](./img/microcks_upload.png)
+
+Go back to the ``APIs|Services`` menu and look into the ``Guitar Heaven Supply Chain API`` to check if there are samples now.
+
+![microcks asyncapi](./img/microcks_asyncapi.png)
+
+Unfortunately, we  will not go further during this workshop. 
+
+If you want to see a demo on how you can integrate Microcks & Kafka, you can check out [this example](https://github.com/microcks/microcks-quarkus-demo/blob/main/step-5-write-async-tests.md).
+
+JSONAPI
 
 Remove the useless code
 
