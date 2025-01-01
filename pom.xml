@@ -114,6 +114,13 @@
             <artifactId>archunit-junit5</artifactId>
             <version>${archunit-junit5.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.quarkiverse.openapi.generator</groupId>
+            <artifactId>quarkus-openapi-generator</artifactId>
+            <version>2.7.1-lts</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -121,14 +128,16 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.9.0</version>
+                <version>7.10.0</version>
                 <executions>
                     <execution>
+                        <id>generate-server</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml
+                            </inputSpec>
                             <generatorName>jaxrs-spec</generatorName>
                             <configOptions>
                                 <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
@@ -149,14 +158,13 @@
                                 <useSwaggerAnnotations>false</useSwaggerAnnotations>
                                 <withXml>false</withXml>
                             </configOptions>
+                            <output>${project.build.directory}/generated-sources/open-api-yaml</output>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <modelNameSuffix>Dto</modelNameSuffix>
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
-
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
@@ -192,8 +200,26 @@
                         <arg>-Amapstruct.verbose=false</arg>
                         <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
                     </compilerArgs>
-                    <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/open-api-yaml</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
