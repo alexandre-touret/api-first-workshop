@@ -13,7 +13,12 @@ public class OrderRequestEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany(mappedBy = "orders")
+    @ManyToMany( cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "Guitar_GuitarOrder",
+            joinColumns = { @JoinColumn(name = "orders_id") },
+            inverseJoinColumns = { @JoinColumn(name = "guitars_id") }
+    )
     private Set<GuitarEntity> guitars;
 
     private UUID orderId;
@@ -78,5 +83,18 @@ public class OrderRequestEntity {
 
     public void setDiscountRequested(Double discountRequested) {
         this.discountRequested = discountRequested;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderRequestEntity{" +
+                "id=" + id +
+                ", guitars=" + guitars +
+                ", orderId=" + orderId +
+                ", discountRequested=" + discountRequested +
+                ", totalPrice=" + totalPrice +
+                ", createdAt=" + createdAt +
+                ", quote=" + quote +
+                '}';
     }
 }
