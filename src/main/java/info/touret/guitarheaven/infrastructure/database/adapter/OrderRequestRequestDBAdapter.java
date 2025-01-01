@@ -9,6 +9,8 @@ import info.touret.guitarheaven.infrastructure.database.repository.OrderReposito
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +23,11 @@ public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     private final OrderEntityMapper orderEntityMapper;
     private final GuitarRepository guitarRepository;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderRequestRequestDBAdapter.class);
+
     @Override
     public List<OrderRequest> findAllOrders() {
-        return orderEntityMapper.toOrders(orderRepository.listAll());
+        return orderEntityMapper.toOrders(orderRepository.findAllOrders());
     }
 
     @Inject
@@ -37,9 +41,13 @@ public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     @Override
     public void saveOrder(OrderRequest orderRequest) {
         var orderEntity = orderEntityMapper.toOrderEntity(orderRequest);
-        var guitarEntityList = guitarRepository.findGuitarsyUUIDs(orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
+
+        var guitarEntityList = guitarRepository.findGuitarsByUUIDs(orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
+        LOGGER.info("Found {} guitars for order {}", guitarEntityList.size(),orderRequest.orderId());
         orderEntity.setGuitars(Set.copyOf(guitarEntityList));
         orderRepository.persist(orderEntity);
+        orderRepository.flush();
+        LOGGER.info("Saved order {}", orderEntity);
     }
 
     @Override

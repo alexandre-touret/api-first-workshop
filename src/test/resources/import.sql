@@ -58,3 +58,6 @@ values (1003, 1007);
 
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (1004, 1005);
+
+insert into Guitar (id, guitarId, name, type, price, stock)
+values (1008, '628226d4-fee3-46dd-8bcb-426cefb4a666'::UUID, 'Fender Stratocaster', 'ELECTRIC', 2500, 10);

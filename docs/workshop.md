@@ -605,18 +605,21 @@ In the ``build>plugins`` section, add the following plugin:
 <plugin>
     <groupId>org.openapitools</groupId>
     <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>7.9.0</version>
+    <version>7.10.0</version>
     <executions>
         <execution>
+            <id>generate-server</id>
             <goals>
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
+                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml
+                </inputSpec>
                 <generatorName>jaxrs-spec</generatorName>
                 <configOptions>
                     <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
                     <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
+                    <library>quarkus</library>
                     <dateLibrary>java8</dateLibrary>
                     <generateBuilders>true</generateBuilders>
                     <openApiNullable>false</openApiNullable>
@@ -632,11 +635,12 @@ In the ``build>plugins`` section, add the following plugin:
                     <useSwaggerAnnotations>false</useSwaggerAnnotations>
                     <withXml>false</withXml>
                 </configOptions>
+                <output>${project.build.directory}/generated-sources/open-api-yaml</output>
                 <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                <modelNameSuffix>Dto</modelNameSuffix>
             </configuration>
         </execution>
     </executions>
-
 </plugin>
 
 ```
@@ -651,12 +655,33 @@ The plugin generates useless classes for Quarkus. We can ignore their creation a
 pom.xml
 ```
 
-Add then the following line in the ``build>plugins>maven-compiler-plugin>configuration`` section:
+Add then the following plugin in the ``build>plugins>`` section:
 
 ```xml
 
-<generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <version>3.6.0</version>
+    <executions>
+        <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>add-source</goal>
+            </goals>
+            <configuration>
+                <sources>
+                    <source>${project.build.directory}/generated-sources/open-api-yaml</source>
+                </sources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
 ```
+
+This configuration enables the support of two separate source folders in your project.
 
 Now this plugin should be configured as following:
 
@@ -1679,9 +1704,116 @@ Unfortunately, we  will not go further during this workshop.
 
 If you want to see a demo on how you can integrate Microcks & Kafka, you can check out [this example](https://github.com/microcks/microcks-quarkus-demo/blob/main/step-5-write-async-tests.md).
 
-JSONAPI
+## Streamline the EBay API Client
 
-Remove the useless code
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+>
+> - Generate an API client layer using the [``Quarkus OpenAPI Generator``](https://docs.quarkiverse.io/quarkus-openapi-generator/dev/index.html)
 
-conclusion
+Now, let us streamline our API client.
 
+Check out how the API Client is built in the ``info.touret.guitarheaven.infrastructure.ebay`` package.
+
+We have the following classes:
+
+* ``EbayDiscounterAdapter`` : The domain DiscountPort adapter
+* ``EbayClient``: The API Client
+* ``Image``, ``ItemSummary``,``Price``, ``SearchPagedCollection`` : The DTO
+
+You can also browse the OpenAPI description located in the ``src/main/resources/openapi-client`` folder.
+
+### Updating the Maven configuration 
+
+We need to enable the [Quarkus OpenAPI Generator extension](https://docs.quarkiverse.io/quarkus-openapi-generator/dev/index.html).
+
+Add therefore a new dependency into the ``pom.xml``:
+
+```xml
+<dependency>
+  <groupId>io.quarkiverse.openapi.generator</groupId>
+  <artifactId>quarkus-openapi-generator</artifactId>
+  <version>2.7.1-lts</version>
+</dependency>
+```
+
+### Updating the Quarkus configuration
+
+We must define the Quarkus configuration extension with some items  
+
+In the file ``src/main/resources/application.properties`` add the following properties:
+
+```properties
+quarkus.openapi-generator.codegen.input-base-dir=src/main/resources/openapi-client
+quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.base-package=info.touret.guitarheaven.infrastructure.ebay
+quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.model-name-suffix=Dto
+quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.use-bean-validation=true
+
+```
+
+In both the files ``src/main/resources/application.properties`` and ``src/test/resources/application.properties`` add the following properties:
+Remove the property ``quarkus.rest-client."info.touret.guitarheaven.infrastructure.ebay.EbayClient".url`` and add the new property:
+
+```properties
+quarkus.rest-client.ebay_buy_openapi_yaml.url=${quarkus.microcks.default.http}/rest/Browse+API/v1.19.9
+```
+
+### Update the Ebay API client code
+
+Now, let us streamline our API Client code.
+
+In the package ``info.touret.guitarheaven.infrastructure.ebay``, only keep the ``EbayDiscounterAdapter`` class.  
+Remove the others.
+
+Modify the adapter with the following code:
+
+```java
+@ApplicationScoped
+public class EbayDiscounterAdapter implements SupplierCatalogPort {
+
+    public static final int SEARCH_THRESHOLD = 1;
+    @RestClient
+    private ItemSummaryApi ebayClient;
+
+    @Override
+    public OptionalDouble getAverageGuitarPrice(String guitarName) {
+
+        var searchPagedCollection = ebayClient.search(guitarName, "foo", "foo", "foo");
+
+        if (searchPagedCollection.getTotal() > SEARCH_THRESHOLD) {
+            return searchPagedCollection.getItemSummaries()
+                    .stream()
+                    .mapToDouble(value -> value.getPrice().getValue().doubleValue())
+                    .average();
+        } else return OptionalDouble.empty();
+    }
+
+    @ClientExceptionMapper
+    static RuntimeException toException(Response response) {
+        if (response.getStatus() == 400) {
+            return new RuntimeException("The remote service responded with HTTP 400");
+        }
+        // Disabling some issues with the EBAY Mock
+        return null;
+    }
+}
+```
+
+
+### Verification
+
+Check if the code compiles first:
+
+```shell
+$ ./mvnw clean compile
+ ```
+
+Check then if the integration tests run well:
+
+```shell
+$ ./mvnw clean verify
+ ```
+
+Now you can run the Quarkus app and the modification should be transparent in a customer point of view.
+
+To check it, you can run the SmallRye SwaggerUI and try the API.
