@@ -32,7 +32,7 @@ public class GuitarEntity {
         this.guitarId = guitarId;
     }
 
-    @ManyToMany()
+    @ManyToMany(mappedBy = "guitars")
     private Set<OrderRequestEntity> orders;
 
     public Set<OrderRequestEntity> getOrders() {
@@ -81,5 +81,18 @@ public class GuitarEntity {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public String toString() {
+        return "GuitarEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", priceInUSD=" + priceInUSD +
+                ", stock=" + stock +
+                ", guitarId=" + guitarId +
+
+                '}';
     }
 }

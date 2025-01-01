@@ -155,11 +155,3 @@ components:
       properties:
         imageUrl:
           type: string
-securitySchemes:
-  api_auth:
-    type: oauth2
-    flows:
-      clientCredentials:
-        tokenUrl: https://api.ebay.com/identity/v1/oauth2/token
-        scopes:
-          https://api.ebay.com/oauth/api_scope: eBay OAuth scope
