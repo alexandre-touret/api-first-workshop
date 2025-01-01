@@ -68,7 +68,7 @@ public class GuitarDBAdapter implements GuitarPort {
 
     @Override
     public List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds) {
-        return guitarEntityMapper.toGuitars(guitarRepository.findGuitarsyUUIDs(guitarIds));
+        return guitarEntityMapper.toGuitars(List.copyOf(guitarRepository.findGuitarsByUUIDs(guitarIds)));
     }
 
     @Override

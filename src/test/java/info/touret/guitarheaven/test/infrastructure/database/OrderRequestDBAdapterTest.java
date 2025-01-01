@@ -2,6 +2,7 @@ package info.touret.guitarheaven.test.infrastructure.database;
 
 import info.touret.guitarheaven.domain.model.OrderRequest;
 import info.touret.guitarheaven.infrastructure.database.adapter.OrderRequestRequestDBAdapter;
+import info.touret.guitarheaven.infrastructure.database.repository.OrderRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ class OrderRequestDBAdapterTest {
     @Inject
     OrderRequestRequestDBAdapter orderRequestDBAdapter;
 
+    @Inject
+    OrderRepository orderRepository;
+
     @Test
     void should_find_orders() {
         assertFalse(orderRequestDBAdapter.findAllOrders().isEmpty());
@@ -25,8 +29,12 @@ class OrderRequestDBAdapterTest {
 
     @Test
     void should_save_one_order_successfully() {
-        OrderRequest orderRequest = new OrderRequest(null, List.of(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")), 10, OffsetDateTime.now());
+        var guitarId = UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685");
+        var orderId = UUID.randomUUID();
+        OrderRequest orderRequest = new OrderRequest(orderId, List.of(guitarId), 10, OffsetDateTime.now());
         assertDoesNotThrow(() -> orderRequestDBAdapter.saveOrder(orderRequest));
+        assertTrue(orderRequestDBAdapter.findAllOrders().stream().noneMatch(orderRequest1 -> orderRequest1.guitarIds().isEmpty()));
+        assertTrue(orderRequestDBAdapter.findAllOrders().stream().anyMatch(orderRequest1 -> orderRequest1.orderId().equals(orderId) && orderRequest1.guitarIds().getFirst().equals(guitarId)));
     }
 
     @Test
