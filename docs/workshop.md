@@ -314,12 +314,12 @@ You can then open this project in either your local VS Code or directly in your 
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
 >
-> You will set up the environment and understand how to run it
+> You will set up the environment in Github Codespaces and understand how to run it
 
-### Open Github Codespaces
+### 🛠  Open Github Codespaces
 
 * Log on [GitHub](https://github.com/) and
-  fork [this repository](https://github.com/alexandre-touret/api-first-workshop).
+  [fork this repository](https://github.com/alexandre-touret/api-first-workshop/fork).
 * Click on ``Code>Codespaces>Create a codespace`` on the ``main`` branch
 
 ![start codespace](./img/start_build_codespace.png)
@@ -377,7 +377,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 >
 > - You will use the API
 > - Check how smooth the onboarding is from a customer/user point of view.
-> - Generate the changelog and pinpoint breaking changes in OpenAPI
+> - Generate the changelog and pinpoint breaking changes in an OpenAPI contract
 > - Pinpoint the main drawbacks
 
 ### 👀 From a user perspective
@@ -510,7 +510,7 @@ bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-corde-first-op
 
 ```
 
-__Remark: The ``/data`` prefix is only mentioned for compatibility with the Docker image used for running OASDIFF.__
+Remark: The ``/data`` prefix is only mentioned for compatibility with the Docker image used for running OASDIFF.
 
 You would get such an output:
 
@@ -575,7 +575,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 > generate the changelog.
 >
 
-## Moving our app to API-First
+## Shifting to API-First
 
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
@@ -586,9 +586,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 > - How to easily remove the boilerplate code
 > - Stick to the specification
 
-### 👀 Comparing the generated file with a homemade OpenAPI file
-
-### 🛠 Updating the Maven configuration
+### 📝 Updating the Maven configuration
 
 ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the
 ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
@@ -688,7 +686,7 @@ Now this plugin should be configured as following:
 </plugin>
 ```
 
-Now let us check it. Run the following command:
+✅ Now let us check it. Run the following command:
 
 ```bash
 ./mvnw clean compile
@@ -755,7 +753,7 @@ Normally, it ends successfully and you would get such an output:
 
 ```
 
-### 🛠 Updating the server code
+### 📝 Updating the server code
 
 #### DTO
 
@@ -792,7 +790,7 @@ public class GuitarResource implements GuitarsApi {...
 ```
 
 > aside positive
-> 👀 **What the heck is this interface?**
+> 👀 **What is this interface?**
 >
 > This class is the Java representation of the OpenAPI.
 >
@@ -813,8 +811,10 @@ For instance:
 ```
 
 Change all the method declarations.
+
 Remove the ``jakarta.validation.constraints`` annotations such as ``@NotNull``
-Instead of returning a POJO, you will have now to return a ``Response`` object
+
+Instead of returning a POJO, you will have now to return a ``Response`` object.
 
 For instance:
 
@@ -835,7 +835,7 @@ public Response deleteGuitar(@NotNull UUID guitarId) {
 }
 ```
 
-At the end, you will have these API resources:
+At the end, you will have these API resource classes:
 
 **GuitarResource**
 
@@ -996,17 +996,7 @@ return new LinksDto(self, first, prev, next, last);
 to:
 
 ```java
-return new LinksDto().
-
-self(self.toString()).
-
-first(first.toString()).
-
-prev(prev.toString()).
-
-next(next.toString()).
-
-last(last.toString());
+return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.toString()).next(next.toString()).last(last.toString());
 ```
 
 #### Integration tests
@@ -1036,7 +1026,7 @@ Run the following command:
 ./mvnw clean verify
 ```
 
-It should be successful.
+It might be successful.
 
 Now, you can run again the application and go to the ``dev-ui``
 
@@ -1044,15 +1034,15 @@ Now, you can run again the application and go to the ``dev-ui``
 ./mvnw quarkus:dev
 ```
 
-## Let us improve the OpenAPI
+## Improving the OpenAPI contract
 
-### Object Naming
+### 👀 Object Naming
 
 If we look into our API specification carefully, we can guess our backend is built on top of a Java platform.
 
 To make it fully agnostic, let us revamp it without (mostly) impacting the Java code.
 
-#### Dto
+#### 📝 Dto
 
 In the ``guitarheaven-openapi.yaml`` file, remove all the ``Dto`` suffixes.
 
@@ -1131,7 +1121,7 @@ import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECT
 
 _Yes it is a side effect :-(_
 
-#### Date Time
+#### 📝 Date Time
 
 In the OpenAPI, remove the ``OffsetDateTime`` schema type and update the fields using it as following:
 
@@ -1157,8 +1147,9 @@ You can go through the SmallRye Swagger UI to see the differences.
 
 > aside positive
 >
-> ℹ️ If you want, you can now add more constraints to your API using the OpenAPI supported keywords such as ``minimum``
-> or ``minItems``.
+> ℹ️ If you want, you can now add more constraints to your API using the OpenAPI supported keywords such as [``minimum``](> ℹ️ If you want, you can now add more constraints to your API using the OpenAPI supported keywords such as [``minimum``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays)
+)
+> or [``minItems``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays).
 >
 
 ## Your API from a customer perspective
@@ -1283,8 +1274,8 @@ Here we specified the ``order_es335`` example
 
 In this way, your customer must stick to your specification during their tests.
 
-Be aware, to be detected and usable my Microcks, the name of the examples declared in the request must be also present
-in the response.
+Be aware, to be detected and usable in Microcks, the name of the examples declared in the request must also be  present
+in the response specification.
 
 Now, how to deal with endpoints which don't return any content?
 
@@ -1408,15 +1399,15 @@ You could find the following classes:
 If we want to apply the same principes we implemented before, this client layer should be generated from a specification.
 
 How to do that for even-driven APIs?
-The [AsyncAPI] standard could help us in this challenge!
+The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challenge!
 
-It is based on OpenAPI and specifies event-driven APIs based on Kafka, AMQP or MQTT.
+It is based on OpenAPI and specifies event-driven APIs accessible through Kafka, AMQP or MQTT.
 
-### Drafting an event-driven API
+### 🛠️ Drafting an event-driven API
 
 In this chapter, we will 
-* See how to validate a AsyncAPI file
-* Generate the POJO from an AsyncAPI specification
+* See how to validate an AsyncAPI file
+* Generate the POJO from it
 
 First, create the file ``supplychain-asyncapi.yaml`` in the folder ``src/main/resources/asyncapi`` and copy the following content:
 
@@ -1487,7 +1478,7 @@ If you want to know more about the different elements, you can browse
 * [this notion explorer](https://www.asyncapi.com/docs/reference/specification/v3.0.0-explorer).
 * [The spec](https://www.asyncapi.com/docs/concepts)
 
-#### Validation 
+#### ✅ Validation 
 The Async API initiative provides some tools. We will use in this workshop [the cli](https://www.asyncapi.com/en/tools/cli) & the [generator](https://www.asyncapi.com/tools/generator). 
 
 Unfortunately, the [generator](https://www.asyncapi.com/tools/generator) doesn't provide any model for Quarkus.
@@ -1521,9 +1512,9 @@ File /app/example/main/resources/asyncapi/supplychain-asyncapi.yaml is valid! Fi
 
 If you want to edit it you can also use [the AsyncAPI studio](https://studio.asyncapi.com/).
 
-#### Model Generation
+#### 🛠️ Model Generation
 
-This chapter is just for illustrating the model generation at build time. We won't include this step in our app's build workfow.
+This chapter only illustrates the model generation at build time. We won't include this step in our app's build workflow.
 
 Run the following command:
 
@@ -1554,7 +1545,7 @@ and the generated class in the ``target/generated-sources/asyncapi`` folder.
 
 #### Mocking your Event-Driven API
 
-We can mock our Event Driven API in the same way we did for our REST API.
+We can then mock our Event Driven API in the same way we did for our REST API.
 
 Start Quarkus
 
