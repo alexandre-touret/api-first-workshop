@@ -26,7 +26,7 @@ public class QuoteResourceTest {
 
     @Test
     void should_create_successfully() {
-        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discount(10D).totalPriceWithDiscount(null).createdAt(OffsetDateTime.now());
+        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -41,7 +41,7 @@ public class QuoteResourceTest {
 
     @Test
     void should_create_and_fail() {
-        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discount(10D).totalPriceWithDiscount(null).createdAt(OffsetDateTime.now());
+        var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

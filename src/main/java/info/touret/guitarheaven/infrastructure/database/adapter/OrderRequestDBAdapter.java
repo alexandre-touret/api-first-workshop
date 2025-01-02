@@ -27,7 +27,7 @@ public class OrderRequestDBAdapter implements OrderRequestPort {
 
     @Override
     public List<OrderRequest> findAllOrders() {
-        return orderEntityMapper.toOrders(orderRepository.listAll());
+        return orderEntityMapper.toOrders(orderRepository.findAllOrders());
     }
 
     @Inject
@@ -40,11 +40,11 @@ public class OrderRequestDBAdapter implements OrderRequestPort {
     @Transactional
     @Override
     public void saveOrder(OrderRequest orderRequest) {
-        LOGGER.info("Saving Order Request {}",orderRequest.orderId());
+        LOGGER.info("Saving Order Request {}", orderRequest.orderId());
         var orderEntity = orderEntityMapper.toOrderEntity(orderRequest);
         var guitarUuids = orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList();
         var guitarEntityList = guitarRepository.findGuitarsByUUIDs(guitarUuids);
-        LOGGER.info("Found {} guitars for order {}", guitarEntityList.size(),orderRequest.orderId());
+        LOGGER.info("Found {} guitars for order {}", guitarEntityList.size(), orderRequest.orderId());
         orderEntity.setGuitars(Set.copyOf(guitarEntityList));
         orderRepository.persist(orderEntity);
         LOGGER.info("Saved Order Request {} for guitars {}", orderEntity.getOrderId(), guitarUuids);

@@ -51,7 +51,7 @@ components:
           items:
             type: string
             format: uuid
-        discountRequested:
+        discountRequestedInUSD:
           type: number
           format: double
         createdAt:
@@ -75,11 +75,11 @@ components:
         orderId:
           type: string
           format: uuid
-        discount:
+        discountInUSD:
           type: number
           format: double
           minimum: 0
-        totalPriceWithDiscount:
+        totalPriceWithDiscountInUSD:
           type: number
           format: double
           minimum: 0
@@ -404,7 +404,7 @@ paths:
                   value:
                     - orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
                       guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
-                      discountRequested: 100
+                      discountRequestedInUSD: 100
                       createdAt: "2004-10-19T08:23:54Z"
         "500":
           description: Server unavailable
@@ -423,7 +423,7 @@ paths:
                 value:
                   guitarIds:
                     - 628226d4-fee3-46dd-8bcb-426cffb4b685
-                  discountRequested: 100
+                  discountRequestedInUSD: 100
                   createdAt: "2004-10-19T08:23:54Z"
         required: true
       responses:
@@ -476,7 +476,7 @@ paths:
                   value:
                     orderId: "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
                     guitarIds: [ "756733e5-c247-49d8-bf40-9a481c2f0bc3" ]
-                    discountRequested: 100
+                    discountRequestedInUSD: 100
                     createdAt: "2004-10-19T08:23:54Z"
         "400":
           description: The request is invalid (probably the guitars IDs)
@@ -502,7 +502,7 @@ paths:
                   value:
                     - quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
                       orderId": "292a485f-a56a-4938-8f1a-bbbbbbbbbbb1"
-                      discount: 100,
+                      discountInUSD: 100,
                       totalPriceWithDiscount: 1100
                       createdAt: "2022-03-10T12:15:50-04:00"
 
@@ -522,8 +522,8 @@ paths:
               es335:
                 value:
                   orderId: 292a485f-a56a-4938-8f1a-bbbbbbbabbc2
-                  discount: 100
-                  totalPriceWithDiscount: 1100
+                  discountInUSD: 100
+                  totalPriceWithDiscountInUSD: 1100
                   createdAt: "2022-03-10T12:15:50-04:00"
         required: true
       responses:

@@ -89,7 +89,7 @@ class QuoteServiceTest {
         when(orderRequestService.findByUUID(any(UUID.class))).thenReturn(Optional.of(orderRequest));
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());
-        assertEquals(10D, quoteArgumentCaptor.getValue().discount());
+        assertEquals(10D, quoteArgumentCaptor.getValue().discountInUSD());
     }
 
     @Test
@@ -106,7 +106,7 @@ class QuoteServiceTest {
         ArgumentCaptor<Quote> quoteArgumentCaptor = ArgumentCaptor.forClass(Quote.class);
         assertNotNull(quoteService.createQuote(quote));
         verify(quotePort).saveQuote(quoteArgumentCaptor.capture());
-        assertEquals(20D, quoteArgumentCaptor.getValue().discount());
+        assertEquals(20D, quoteArgumentCaptor.getValue().discountInUSD());
     }
 
     @Test
