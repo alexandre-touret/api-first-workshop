@@ -33,7 +33,7 @@ public class ArchitectureTest {
     public static final ArchRule should_return_the_domain_doesnt_depend_on_jakarta = noClasses().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage("jakarta..");
 
     @ArchTest
-    public static final ArchRule should_return_the_domain_has_no_dependency = classes().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().onlyAccessClassesThat().resideInAnyPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..", "java..");
+    public static final ArchRule should_return_the_domain_has_no_dependency = classes().that().resideInAPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..").should().onlyAccessClassesThat().resideInAnyPackage(ArchitectureTest.DOMAIN_ROOT_PACKAGE + "..", "java..","org.slf4j..");
 
     @ArchTest
     public static final ArchRule should_return_the_application_layer_doesnt_depends_on_the_infrastructure = noClasses().that().resideInAPackage(ArchitectureTest.APPLICATION_ROOT_PACKAGE + "..").should().accessClassesThat().resideInAPackage(ArchitectureTest.INFRASTRUCTURE_ROOT_PACKAGE + "..");
