@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.dto.OrderRequestDto;
+import info.touret.guitarheaven.application.generated.model.OrderRequestDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import org.hamcrest.core.Every;
@@ -15,6 +15,7 @@ import java.util.UUID;
 @QuarkusTest
 class OrderRequestResourceTest {
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
+
     @Test
     void should_get_a_list_successfully() {
         RestAssured.given()
@@ -25,7 +26,7 @@ class OrderRequestResourceTest {
 
     @Test
     void should_create_order_successfully() {
-        var orderDto = new OrderRequestDto(null, List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
+        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()

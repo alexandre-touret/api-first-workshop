@@ -54,7 +54,7 @@ public class QuoteService {
     }
 
     /**
-     * Creates a quote. Before saving it, it calculates the discount comparing to the priceInUSD of the market and the order request. Then, if needed, it broadcasts to a Supply Chain Backoffice, the commands for new furniture.
+     * Creates a quote. Before saving it, it calculates the discountInUSD comparing to the priceInUSD of the market and the order request. Then, if needed, it broadcasts to a Supply Chain Backoffice, the commands for new furniture.
      *
      * @param quote The quote to save
      * @return The UUID of the new quote
@@ -66,16 +66,16 @@ public class QuoteService {
         if (relatedGuitars == null || relatedGuitars.isEmpty()) {
             throw new EntityNotFoundException("Quote creation error: The order {} is  invalid" + quote.orderId());
         }
-        double totalPrice = relatedGuitars.stream().mapToDouble(Guitar::priceInUSD).sum();
-        // if the requested discount is below the market, we only apply it
-        double discount = discountService.getTotalDiscount(relatedGuitars);
-        if (discount > orderRequest.discountRequested()) {
-            discount = orderRequest.discountRequested();
+        double totalPriceInUSD = relatedGuitars.stream().mapToDouble(Guitar::priceInUSD).sum();
+        // if the requested discountInUSD is below the market, we only apply it
+        double discountInUSD = discountService.getTotalDiscount(relatedGuitars);
+        if (discountInUSD > orderRequest.discountRequestedInUSD()) {
+            discountInUSD = orderRequest.discountRequestedInUSD();
         }
-        LOGGER.info("Discount calculated for order {}: {}", quote.orderId(), discount);
+        LOGGER.info("Discount calculated for order {}: USD {} ", quote.orderId(), discountInUSD);
         // ask for suppliers for furniture
         relatedGuitars.forEach(this::checkAndSupplyForNewFurniture);
-        Quote quoteToCreate = new Quote(UUID.randomUUID(), orderRequest.orderId(), discount, totalPrice - discount, OffsetDateTime.now());
+        Quote quoteToCreate = new Quote(UUID.randomUUID(), orderRequest.orderId(), discountInUSD, totalPriceInUSD - discountInUSD, OffsetDateTime.now());
         LOGGER.info("Saving quote {}:", quote.quoteId());
         quotePort.saveQuote(quoteToCreate);
         return quoteToCreate.quoteId();

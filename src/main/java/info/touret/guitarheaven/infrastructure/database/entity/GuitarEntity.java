@@ -18,7 +18,6 @@ public class GuitarEntity {
     private String name;
     @Enumerated(EnumType.STRING)
     private TYPE type;
-    @Column(name = "price")
     private Double priceInUSD;
     private int stock;
 

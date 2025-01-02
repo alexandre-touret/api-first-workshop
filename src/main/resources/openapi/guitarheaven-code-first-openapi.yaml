@@ -2,7 +2,7 @@
 openapi: 3.1.0
 components:
   schemas:
-    Guitar:
+    GuitarDto:
       type: object
       required:
         - name
@@ -10,12 +10,13 @@ components:
       properties:
         guitarId:
           type: string
-          format: uuid
         name:
           type: string
+          pattern: \S
         type:
           $ref: "#/components/schemas/TYPE"
           type: string
+          pattern: \S
         priceInUSD:
           type: number
           format: double
@@ -24,7 +25,7 @@ components:
           type: integer
           format: int32
           minimum: 0
-    Links:
+    LinksDto:
       type: object
       properties:
         self:
@@ -37,44 +38,62 @@ components:
           type: string
         last:
           type: string
-    OrderRequest:
+    OffsetDateTime:
+      type: string
+      format: date-time
+      examples:
+        - 2022-03-10T12:15:50-04:00
+    OrderRequestDto:
       type: object
       required:
         - guitarIds
       properties:
         orderId:
           type: string
-          format: uuid
+          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         guitarIds:
           type: array
           minItems: 1
           items:
             type: string
-            format: uuid
         discountRequestedInUSD:
           type: number
           format: double
         createdAt:
-          type: string
-          format: date-time
-    PageableGuitar:
+          $ref: "#/components/schemas/OffsetDateTime"
+    PageableGuitarDto:
       type: object
       properties:
         guitars:
           type: array
           items:
-            $ref: "#/components/schemas/Guitar"
+            $ref: "#/components/schemas/GuitarDto"
         links:
-          $ref: "#/components/schemas/Links"
+          $ref: "#/components/schemas/LinksDto"
     Quote:
       type: object
       properties:
         quoteId:
+          $ref: "#/components/schemas/UUID"
+        orderId:
+          $ref: "#/components/schemas/UUID"
+        discountInUSD:
+          type: number
+          format: double
+        totalPriceWithDiscountInUSD:
+          type: number
+          format: double
+        createdAt:
+          $ref: "#/components/schemas/OffsetDateTime"
+    QuoteDto:
+      type: object
+      properties:
+        quoteId:
           type: string
-          format: uuid
+          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         orderId:
           type: string
-          format: uuid
+          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         discountInUSD:
           type: number
           format: double
@@ -84,8 +103,7 @@ components:
           format: double
           minimum: 0
         createdAt:
-          type: string
-          format: date-time
+          $ref: "#/components/schemas/OffsetDateTime"
     TYPE:
       type: string
       enum:
@@ -94,6 +112,10 @@ components:
         - FOLK
         - GIPSY
         - JAZZ
+    UUID:
+      type: string
+      format: uuid
+      pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
 paths:
   /guitars:
     get:
@@ -107,7 +129,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Guitar"
+                  $ref: "#/components/schemas/GuitarDto"
         "500":
           description: Server unavailable
       tags:
@@ -119,7 +141,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Guitar"
+              $ref: "#/components/schemas/GuitarDto"
         required: true
       responses:
         "201":
@@ -151,7 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageableGuitar"
+                $ref: "#/components/schemas/PageableGuitarDto"
         "500":
           description: Server unavailable
       tags:
@@ -166,12 +188,12 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
+            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Guitar"
+              $ref: "#/components/schemas/GuitarDto"
         required: true
       responses:
         "200":
@@ -179,7 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Guitar"
+                $ref: "#/components/schemas/GuitarDto"
         "400":
           description: 'The request is invalid '
         "500":
@@ -194,15 +216,14 @@ paths:
           in: path
           required: true
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       responses:
         "200":
           description: 'Guitar update successful '
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Guitar"
+                $ref: "#/components/schemas/GuitarDto"
         "400":
           description: 'The request is invalid '
         "500":
@@ -218,7 +239,7 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
+            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       responses:
         "200":
           description: 'Guitar update successful '
@@ -240,7 +261,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OrderRequest"
+                  $ref: "#/components/schemas/OrderRequestDto"
         "500":
           description: Server unavailable
       tags:
@@ -252,24 +273,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrderRequest"
+              $ref: "#/components/schemas/OrderRequestDto"
         required: true
       responses:
         "201":
           description: Order creation successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  orderId:
-                    type: string
-                    format: uuid
-              examples:
-                es335:
-                  summary: ES 335 order request
-                  value:
-                    orderId: 292a485f-a56a-4938-8f1a-bbbbbbbbbbc2
         "400":
           description: The request is invalid (probably the guitars IDs)
         "500":
@@ -286,14 +294,14 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
+            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       responses:
         "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderRequest"
+                $ref: "#/components/schemas/OrderRequestDto"
         "400":
           description: The request is invalid (probably the guitars IDs)
         "500":
@@ -324,24 +332,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Quote"
+              $ref: "#/components/schemas/QuoteDto"
         required: true
       responses:
         "201":
           description: 'Success '
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  quoteId:
-                    type: string
-                    format: uuid
-              examples:
-                es335:
-                  summary: ES 335 quote
-                  value:
-                    quoteId: "22678d39-Ef57-87C1-CdA6-bFc69321474a"
         "400":
           description: 'Request invalid '
         "500":
@@ -352,6 +347,7 @@ info:
   title: Guitar Heaven API
   version: 1.0.1
   description: "Your guitar is probably here, check it out!"
+  termsOfService: Free to use
   contact:
     name: Alexandre Touret
     email: techsupport@example.com
