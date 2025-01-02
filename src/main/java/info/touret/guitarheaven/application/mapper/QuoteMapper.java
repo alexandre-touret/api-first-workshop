@@ -6,7 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface QuoteMapper {
-    QuoteDto toDto(Quote quote);
-
     Quote fromDto(QuoteDto quoteDto);
 }
