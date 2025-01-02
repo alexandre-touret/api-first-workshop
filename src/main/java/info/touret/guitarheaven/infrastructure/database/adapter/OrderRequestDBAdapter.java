@@ -18,12 +18,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @ApplicationScoped
-public class OrderRequestRequestDBAdapter implements OrderRequestPort {
+public class OrderRequestDBAdapter implements OrderRequestPort {
     private final OrderRepository orderRepository;
     private final OrderEntityMapper orderEntityMapper;
     private final GuitarRepository guitarRepository;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRequestRequestDBAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRequestDBAdapter.class);
 
     @Override
     public List<OrderRequest> findAllOrders() {
@@ -31,7 +31,7 @@ public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     }
 
     @Inject
-    public OrderRequestRequestDBAdapter(OrderRepository orderRepository, OrderEntityMapper orderEntityMapper, GuitarRepository guitarRepository) {
+    public OrderRequestDBAdapter(OrderRepository orderRepository, OrderEntityMapper orderEntityMapper, GuitarRepository guitarRepository) {
         this.orderRepository = orderRepository;
         this.orderEntityMapper = orderEntityMapper;
         this.guitarRepository = guitarRepository;
