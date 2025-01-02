@@ -20,10 +20,8 @@ public interface OrderEntityMapper {
             GuitarEntity guitar = new GuitarEntity();
             guitar.setGuitarId(uuid);
             return guitar;
-        }).collect(Collectors.toSet()), orderRequest.orderId(), orderRequest.discountRequested(), null, orderRequest.createdAt(), null);
+        }).collect(Collectors.toSet()), orderRequest.orderId(), orderRequest.discountRequested(),  orderRequest.createdAt(), null);
     }
-
-    List<OrderRequestEntity> toOrderEntities(List<OrderRequest> orderRequests);
 
     List<OrderRequest> toOrders(List<OrderRequestEntity> orderEntities);
 }

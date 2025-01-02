@@ -9,6 +9,8 @@ import info.touret.guitarheaven.infrastructure.database.repository.QuoteReposito
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class QuoteDBAdapter implements QuotePort {
     private final QuoteRepository quoteRepository;
     private final QuoteEntityMapper quoteEntityMapper;
     private final OrderRepository orderRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuoteDBAdapter.class);
 
     @Inject
     public QuoteDBAdapter(QuoteRepository quoteRepository, QuoteEntityMapper quoteEntityMapper, OrderRepository orderRepository) {
@@ -29,8 +32,10 @@ public class QuoteDBAdapter implements QuotePort {
     @Transactional
     @Override
     public void saveQuote(Quote quote) {
+        LOGGER.info("Saving Quote {}", quote.quoteId());
         var quoteEntity = quoteEntityMapper.toQuoteEntity(quote);
         var orderEntity = orderRepository.findByUUID(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Quote Order :" + quote.orderId()));
+        LOGGER.info("Found related Order {}", orderEntity.getOrderId());
         quoteEntity.setOrder(orderEntity);
         quoteRepository.persist(quoteEntity);
     }
