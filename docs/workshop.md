@@ -35,7 +35,7 @@ Feel free to raise any issues or participate if you want!
 
 ### Main functionalities
 
-This platform exposes a set of APIs providing the following functionalities:
+This platform exposes a set of API providing the following functionalities:
 
 #### Guitar management
 
@@ -1400,7 +1400,7 @@ $ ./mvnw clean verify
 ```
 It would end successfully.
 
-## AsyncAPI & Event Driven APIs
+## AsyncAPI & Event Driven API
 
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
@@ -1423,10 +1423,10 @@ You could find the following classes:
 
 If we want to apply the same principes we implemented before, this client layer should be generated from a specification.
 
-How to do that for even-driven APIs?
+How to do that for even-driven API?
 The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challenge!
 
-It is based on OpenAPI and specifies event-driven APIs accessible through Kafka, AMQP or MQTT.
+It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
 ### 🛠️ Drafting an event-driven API
 
