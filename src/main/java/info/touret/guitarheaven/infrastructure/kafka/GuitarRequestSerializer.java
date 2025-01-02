@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
 
+/**
+ * Simple Serializer for Kafka (Write the content to a JSON Text file)
+ */
 public class GuitarRequestSerializer implements Serializer<GuitarRequest> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

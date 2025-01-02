@@ -23,11 +23,11 @@ public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     private final OrderEntityMapper orderEntityMapper;
     private final GuitarRepository guitarRepository;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(OrderRequestRequestDBAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRequestRequestDBAdapter.class);
 
     @Override
     public List<OrderRequest> findAllOrders() {
-        return orderEntityMapper.toOrders(orderRepository.findAllOrders());
+        return orderEntityMapper.toOrders(orderRepository.listAll());
     }
 
     @Inject
@@ -40,14 +40,14 @@ public class OrderRequestRequestDBAdapter implements OrderRequestPort {
     @Transactional
     @Override
     public void saveOrder(OrderRequest orderRequest) {
+        LOGGER.info("Saving Order Request {}",orderRequest.orderId());
         var orderEntity = orderEntityMapper.toOrderEntity(orderRequest);
-
-        var guitarEntityList = guitarRepository.findGuitarsByUUIDs(orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList());
+        var guitarUuids = orderEntity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList();
+        var guitarEntityList = guitarRepository.findGuitarsByUUIDs(guitarUuids);
         LOGGER.info("Found {} guitars for order {}", guitarEntityList.size(),orderRequest.orderId());
         orderEntity.setGuitars(Set.copyOf(guitarEntityList));
         orderRepository.persist(orderEntity);
-        orderRepository.flush();
-        LOGGER.info("Saved order {}", orderEntity);
+        LOGGER.info("Saved Order Request {} for guitars {}", orderEntity.getOrderId(), guitarUuids);
     }
 
     @Override

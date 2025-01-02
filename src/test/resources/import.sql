@@ -30,8 +30,8 @@ values (1001, 1001);
 insert into Guitar (id, guitarId, name, type, price, stock)
 values (1002, '628226d4-fee3-46dd-8bcb-426cffb4d685'::UUID, 'Gibson ES 335', 'ELECTRIC', 2500, 10);
 
-insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
-values (100, 2500, '2004-10-19 10:23:54+02', 1002, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc1'::UUID);
+insert into GuitarOrder (discountRequested, createdAt, id, orderId)
+values (100, '2004-10-19 10:23:54+02', 1002, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc1'::UUID);
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (1002, 1002);
 ---
@@ -49,10 +49,10 @@ values (1005, '628226d4-fee3-46dd-8bcb-426cffb4a665'::UUID, 'Fender Stratocaster
 insert into Guitar (id, guitarId, name, type, price, stock)
 values (1006, '628226d4-fee3-46dd-8bcb-426cffb4a666'::UUID, 'Fender Stratocaster', 'ELECTRIC', 2500, 10);
 
-insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
-values (100, 2500, '2004-10-19 10:23:54+02', 1003, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc2'::UUID);
-insert into GuitarOrder (discountRequested, totalPrice, createdAt, id, orderId)
-values (100, 2500, '2004-10-19 10:23:54+02', 1004, '292a485f-a56a-4938-8f1a-bbbbbbbabbc2'::UUID);
+insert into GuitarOrder (discountRequested,  createdAt, id, orderId)
+values (100, '2004-10-19 10:23:54+02', 1003, '292a485f-a56a-4938-8f1a-bbbbbbbbbbc2'::UUID);
+insert into GuitarOrder (discountRequested, createdAt, id, orderId)
+values (100, '2004-10-19 10:23:54+02', 1004, '292a485f-a56a-4938-8f1a-bbbbbbbabbc2'::UUID);
 insert into Guitar_GuitarOrder(orders_id, guitars_id)
 values (1003, 1007);
 

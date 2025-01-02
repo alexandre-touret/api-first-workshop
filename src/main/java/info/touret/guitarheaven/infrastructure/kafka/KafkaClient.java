@@ -14,7 +14,7 @@ import java.util.UUID;
 @ApplicationScoped
 public class KafkaClient {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(KafkaClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaClient.class);
 
     @Inject
     @Channel("guitar-requests-out")

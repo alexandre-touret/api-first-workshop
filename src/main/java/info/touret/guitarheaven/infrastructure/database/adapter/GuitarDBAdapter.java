@@ -9,6 +9,8 @@ import info.touret.guitarheaven.infrastructure.database.repository.GuitarReposit
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +20,8 @@ public class GuitarDBAdapter implements GuitarPort {
 
     private final GuitarRepository guitarRepository;
     private final GuitarEntityMapper guitarEntityMapper;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuitarDBAdapter.class);
 
     @Inject
     public GuitarDBAdapter(GuitarRepository guitarRepository, GuitarEntityMapper guitarEntityMapper) {
@@ -40,6 +44,7 @@ public class GuitarDBAdapter implements GuitarPort {
     @Transactional
     @Override
     public Guitar update(Guitar guitar) {
+        LOGGER.info("Updating Guitar {}",guitar.guitarId());
         var mapperGuitarEntity = guitarEntityMapper.toGuitarEntity(guitar);
         var guitarEntity = guitarRepository.findByUUID(mapperGuitarEntity.getGuitarId()).orElseThrow(() -> new EntityNotFoundException("Guitar not found :" + guitar.guitarId()));
         guitarEntity.setType(mapperGuitarEntity.getType());
@@ -54,6 +59,7 @@ public class GuitarDBAdapter implements GuitarPort {
     @Override
     public boolean deleteByUUID(UUID guitarId) {
         boolean status = false;
+        LOGGER.info("Deleting Guitar {}",guitarId);
         var optionalGuitarEntity = guitarRepository.findByUUID(guitarId);
         if (optionalGuitarEntity.isPresent()) {
             status = guitarRepository.deleteById(optionalGuitarEntity.get().getId());

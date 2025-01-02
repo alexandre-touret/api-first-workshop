@@ -14,6 +14,7 @@ public interface GuitarEntityMapper {
 
     List<Guitar> toGuitars(List<GuitarEntity> guitars);
 
+    @Mapping(target = "orders", ignore = true)
     GuitarEntity toGuitarEntity(Guitar guitar);
 
 

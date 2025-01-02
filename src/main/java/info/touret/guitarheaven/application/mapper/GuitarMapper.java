@@ -3,6 +3,7 @@ package info.touret.guitarheaven.application.mapper;
 import info.touret.guitarheaven.application.generated.model.GuitarDto;
 import info.touret.guitarheaven.domain.model.Guitar;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -13,5 +14,6 @@ public interface GuitarMapper {
 
     List<GuitarDto> toGuitarsDto(List<Guitar> guitars);
 
+    @Mapping(target = "id", ignore = true)
     Guitar toGuitar(GuitarDto guitarDto);
 }

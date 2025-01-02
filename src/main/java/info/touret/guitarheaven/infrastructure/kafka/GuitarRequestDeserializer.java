@@ -5,6 +5,9 @@ import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;
 
+/**
+ * Simple Deserializer for Kafka (Extract the content from a JSON Text file)
+ */
 public class GuitarRequestDeserializer implements Deserializer<GuitarRequest> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

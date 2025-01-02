@@ -25,7 +25,7 @@ public class OrderRequestEntity {
 
     private Double discountRequested;
 
-    private Double totalPrice;
+
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime createdAt;
 
@@ -35,12 +35,11 @@ public class OrderRequestEntity {
     public OrderRequestEntity() {
     }
 
-    public OrderRequestEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested, Double totalPrice, OffsetDateTime createdAt, QuoteEntity quote) {
+    public OrderRequestEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested,  OffsetDateTime createdAt, QuoteEntity quote) {
         this.id = id;
         this.guitars = guitars;
         this.orderId = orderId;
         this.discountRequested = discountRequested;
-        this.totalPrice = totalPrice;
         this.createdAt = createdAt;
         this.quote = quote;
     }
@@ -92,7 +91,6 @@ public class OrderRequestEntity {
                 ", guitars=" + guitars +
                 ", orderId=" + orderId +
                 ", discountRequested=" + discountRequested +
-                ", totalPrice=" + totalPrice +
                 ", createdAt=" + createdAt +
                 ", quote=" + quote +
                 '}';
