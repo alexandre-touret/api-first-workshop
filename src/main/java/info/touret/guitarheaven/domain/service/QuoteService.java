@@ -6,6 +6,8 @@ import info.touret.guitarheaven.domain.model.OrderRequest;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.domain.port.QuotePort;
 import info.touret.guitarheaven.domain.port.SupplyChainPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -23,8 +25,11 @@ public class QuoteService {
     private final SupplyChainPort supplyChainPort;
     private final OrderRequestService orderRequestService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuoteService.class);
+
     /**
      * Constructor. All of these fields are normally injected by CDI.
+     *
      * @param guitarService
      * @param discountService
      * @param quotePort
@@ -55,10 +60,11 @@ public class QuoteService {
      * @return The UUID of the new quote
      */
     public UUID createQuote(Quote quote) {
+        LOGGER.info("Creating quote for order {}", quote.orderId());
         OrderRequest orderRequest = orderRequestService.findByUUID(quote.orderId()).orElseThrow(() -> new EntityNotFoundException("Invalid Order:" + quote.orderId()));
         List<Guitar> relatedGuitars = guitarService.findGuitarsByGuitarIds(orderRequest.guitarIds());
-        if(relatedGuitars==null || relatedGuitars.isEmpty()) {
-            throw new EntityNotFoundException("Quote creation error -> Invalid Order:" + quote.orderId());
+        if (relatedGuitars == null || relatedGuitars.isEmpty()) {
+            throw new EntityNotFoundException("Quote creation error: The order {} is  invalid" + quote.orderId());
         }
         double totalPrice = relatedGuitars.stream().mapToDouble(Guitar::priceInUSD).sum();
         // if the requested discount is below the market, we only apply it
@@ -66,15 +72,18 @@ public class QuoteService {
         if (discount > orderRequest.discountRequested()) {
             discount = orderRequest.discountRequested();
         }
+        LOGGER.info("Discount calculated for order {}: {}", quote.orderId(), discount);
         // ask for suppliers for furniture
         relatedGuitars.forEach(this::checkAndSupplyForNewFurniture);
         Quote quoteToCreate = new Quote(UUID.randomUUID(), orderRequest.orderId(), discount, totalPrice - discount, OffsetDateTime.now());
+        LOGGER.info("Saving quote {}:", quote.quoteId());
         quotePort.saveQuote(quoteToCreate);
         return quoteToCreate.quoteId();
     }
 
     private void checkAndSupplyForNewFurniture(Guitar guitar) {
         if (guitar.stock() < SUPPLY_CHAIN_THRESHOLD) {
+            LOGGER.info("Requesting for more guitars: {}", guitar);
             supplyChainPort.requestForAdditionalGuitars(guitar.name(), SUPPLY_CHAIN_THRESHOLD - guitar.stock());
         }
     }

@@ -3,6 +3,8 @@ package info.touret.guitarheaven.domain.service;
 import info.touret.guitarheaven.domain.model.Guitar;
 import info.touret.guitarheaven.domain.model.Page;
 import info.touret.guitarheaven.domain.port.GuitarPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +15,7 @@ import java.util.UUID;
 public class GuitarService {
 
     private final GuitarPort guitarPort;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuitarService.class);
 
     /**
      * @param guitarPort the Port for reaching the infrastructure
@@ -30,16 +33,6 @@ public class GuitarService {
         return guitarPort.listAll();
     }
 
-    /**
-     * Finds all the guitars matching the IDs
-     *
-     * @param ids list of Guitar IDs
-     * @return The list of guitars. It will be empty if no guitar is found
-     */
-    public List<Guitar> findGuitarsByIds(List<Long> ids) {
-        return guitarPort.findGuitarsByIds(ids);
-    }
-
     public List<Guitar> findGuitarsByGuitarIds(List<UUID> guitarIds) {
         return guitarPort.findGuitarsByGuitarIds(guitarIds);
     }
@@ -51,6 +44,7 @@ public class GuitarService {
      */
     public UUID createGuitar(Guitar guitar) {
         final var guitarId = UUID.randomUUID();
+        LOGGER.info("Saving guitar {}", guitarId);
         guitar = new Guitar(guitar.id(), guitarId, guitar.name(), guitar.type(), guitar.priceInUSD(), guitar.stock());
         guitarPort.save(guitar);
         return guitarId;

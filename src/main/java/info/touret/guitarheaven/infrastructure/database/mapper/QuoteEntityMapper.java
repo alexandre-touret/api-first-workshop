@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper(uses = {OrderEntityMapper.class, GuitarEntityMapper.class})
 public interface QuoteEntityMapper {
     @InheritInverseConfiguration
+    @Mapping(target = "id", ignore = true)
     QuoteEntity toQuoteEntity(Quote quote);
 
     @Mapping(source = "order.orderId", target = "orderId")
