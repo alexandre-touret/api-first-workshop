@@ -13,7 +13,7 @@ public class OrderRequestEntity {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany( cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @ManyToMany( cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "Guitar_GuitarOrder",
             joinColumns = { @JoinColumn(name = "orders_id") },
@@ -23,7 +23,7 @@ public class OrderRequestEntity {
 
     private UUID orderId;
 
-    private Double discountRequested;
+    private Double discountRequestedInUSD;
 
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,11 +35,11 @@ public class OrderRequestEntity {
     public OrderRequestEntity() {
     }
 
-    public OrderRequestEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequested,  OffsetDateTime createdAt, QuoteEntity quote) {
+    public OrderRequestEntity(Long id, Set<GuitarEntity> guitars, UUID orderId, Double discountRequestedInUSD, OffsetDateTime createdAt, QuoteEntity quote) {
         this.id = id;
         this.guitars = guitars;
         this.orderId = orderId;
-        this.discountRequested = discountRequested;
+        this.discountRequestedInUSD = discountRequestedInUSD;
         this.createdAt = createdAt;
         this.quote = quote;
     }
@@ -76,12 +76,12 @@ public class OrderRequestEntity {
         this.orderId = orderId;
     }
 
-    public Double getDiscountRequested() {
-        return discountRequested;
+    public Double getDiscountRequestedInUSD() {
+        return discountRequestedInUSD;
     }
 
-    public void setDiscountRequested(Double discountRequested) {
-        this.discountRequested = discountRequested;
+    public void setDiscountRequestedInUSD(Double discountRequested) {
+        this.discountRequestedInUSD = discountRequested;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class OrderRequestEntity {
                 "id=" + id +
                 ", guitars=" + guitars +
                 ", orderId=" + orderId +
-                ", discountRequested=" + discountRequested +
+                ", discountRequestedInUSD=" + discountRequestedInUSD +
                 ", createdAt=" + createdAt +
                 ", quote=" + quote +
                 '}';

@@ -42,7 +42,7 @@ public class OrderRequestService {
         } else if (orderRequest.orderId() != null && orderRequestPort.findOrderByUUID(orderRequest.orderId()).isPresent()) {
             throw new IllegalArgumentException("The Order " + orderRequest.orderId() + " already exists");
         } else {
-            OrderRequest finalOrderRequest = new OrderRequest(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), orderRequest.discountRequested(), OffsetDateTime.now());
+            OrderRequest finalOrderRequest = new OrderRequest(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), orderRequest.discountRequestedInUSD(), OffsetDateTime.now());
             LOGGER.info("Saving order {}", orderRequest.orderId());
             orderRequestPort.saveOrder(finalOrderRequest);
             return finalOrderRequest.orderId();

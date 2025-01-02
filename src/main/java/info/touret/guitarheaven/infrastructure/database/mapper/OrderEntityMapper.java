@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public interface OrderEntityMapper {
 
     default OrderRequest toOrder(OrderRequestEntity entity) {
-        return new OrderRequest(entity.getOrderId(), entity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList(), entity.getDiscountRequested(), entity.getCreatedAt());
+        return new OrderRequest(entity.getOrderId(), entity.getGuitars().stream().map(GuitarEntity::getGuitarId).toList(), entity.getDiscountRequestedInUSD(), entity.getCreatedAt());
     }
 
     default OrderRequestEntity toOrderEntity(OrderRequest orderRequest) {
@@ -20,7 +20,7 @@ public interface OrderEntityMapper {
             GuitarEntity guitar = new GuitarEntity();
             guitar.setGuitarId(uuid);
             return guitar;
-        }).collect(Collectors.toSet()), orderRequest.orderId(), orderRequest.discountRequested(),  orderRequest.createdAt(), null);
+        }).collect(Collectors.toSet()), orderRequest.orderId(), orderRequest.discountRequestedInUSD(),  orderRequest.createdAt(), null);
     }
 
     List<OrderRequest> toOrders(List<OrderRequestEntity> orderEntities);

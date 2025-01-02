@@ -12,7 +12,7 @@ import java.util.UUID;
 public class OrderRepository implements PanacheRepository<OrderRequestEntity> {
 
     public Optional<OrderRequestEntity> findByUUID(UUID uuid) {
-        return list("orderId = ?1", uuid).stream().findFirst();
+        return list("select order from OrderRequestEntity order join order.guitars where orderId = ?1", uuid).stream().findFirst();
     }
 
     public List<OrderRequestEntity> findAllOrders() {

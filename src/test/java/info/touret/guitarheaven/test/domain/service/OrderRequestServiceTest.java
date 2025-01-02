@@ -58,7 +58,7 @@ class OrderRequestServiceTest {
         var orderId = orderRequestService.create(orderRequest);
         assertNotNull(orderId);
         verify(orderRequestPort).saveOrder(orderArgumentCaptor.capture());
-        assertEquals(100D, orderArgumentCaptor.getValue().discountRequested());
+        assertEquals(100D, orderArgumentCaptor.getValue().discountRequestedInUSD());
     }
 
     @Test
@@ -71,7 +71,7 @@ class OrderRequestServiceTest {
         var orderId = orderRequestService.create(orderRequest);
         assertNotNull(orderId);
         verify(orderRequestPort).saveOrder(orderArgumentCaptor.capture());
-        assertEquals(300D, orderArgumentCaptor.getValue().discountRequested());
+        assertEquals(300D, orderArgumentCaptor.getValue().discountRequestedInUSD());
     }
 
     @Test

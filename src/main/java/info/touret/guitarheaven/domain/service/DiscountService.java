@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Uses to calculate the discount for a order request.
+ * Uses to calculate the discountInUSD for a order request.
  */
 public class DiscountService {
 
@@ -23,20 +23,20 @@ public class DiscountService {
     }
 
     /**
-     * Calculate the discount fetching data from Ebay. After getting an average of the priceInUSD of the market, we compare it with the internal priceInUSD and propose a discount in the middle if needed.
+     * Calculate the discountInUSD fetching data from Ebay. After getting an average of the priceInUSD of the market, we compare it with the internal priceInUSD and propose a discountInUSD in the middle if needed.
      *
      * @param guitar The guitar to evaluate
-     * @return The potential discount
+     * @return The potential discountInUSD
      * @see SupplierCatalogPort#getAverageGuitarPrice(String)
      */
-    public Double getDiscount(Guitar guitar) {
+    public Double getDiscountInUSD(Guitar guitar) {
         if (guitar == null || guitar.name() == null || guitar.name().isEmpty()) {
             throw new IllegalArgumentException("Guitar or the Guitar's name is null or empty");
         }
         // If there is no priceInUSD stored, we assume the average priceInUSD is the same as the value stored in our system
-        Double averagePrice = supplierCatalogPort.getAverageGuitarPrice(guitar.name()).orElse(guitar.priceInUSD());
-        LOGGER.info("Average price found {} for guitar {}", averagePrice, guitar.name());
-        double difference = guitar.priceInUSD() - averagePrice;
+        Double averagePriceInUSD = supplierCatalogPort.getAverageGuitarPrice(guitar.name()).orElse(guitar.priceInUSD());
+        LOGGER.info("Average price found {} for guitar {}", averagePriceInUSD, guitar.name());
+        double difference = guitar.priceInUSD() - averagePriceInUSD;
         if (difference <= 0) {
             return 0.0;
         } else {
@@ -45,7 +45,7 @@ public class DiscountService {
     }
 
     public Double getTotalDiscount(List<Guitar> guitars) {
-        return guitars.stream().mapToDouble(this::getDiscount).sum();
+        return guitars.stream().mapToDouble(this::getDiscountInUSD).sum();
     }
 
 }
