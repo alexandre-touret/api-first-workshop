@@ -56,7 +56,7 @@ components:
           minItems: 1
           items:
             type: string
-        discountRequested:
+        discountRequestedInUSD:
           type: number
           format: double
         createdAt:
@@ -77,10 +77,10 @@ components:
           $ref: "#/components/schemas/UUID"
         orderId:
           $ref: "#/components/schemas/UUID"
-        discount:
+        discountInUSD:
           type: number
           format: double
-        totalPriceWithDiscount:
+        totalPriceWithDiscountInUSD:
           type: number
           format: double
         createdAt:
@@ -94,11 +94,11 @@ components:
         orderId:
           type: string
           pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-        discount:
+        discountInUSD:
           type: number
           format: double
           minimum: 0
-        totalPriceWithDiscount:
+        totalPriceWithDiscountInUSD:
           type: number
           format: double
           minimum: 0

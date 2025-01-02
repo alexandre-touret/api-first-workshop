@@ -21,6 +21,7 @@ class OrderRequestDBAdapterTest {
     @Test
     void should_find_orders() {
         assertFalse(orderRequestDBAdapter.findAllOrders().isEmpty());
+        orderRequestDBAdapter.findAllOrders().forEach(orderRequest -> assertFalse(orderRequest.guitarIds().isEmpty()));
     }
 
     @Test

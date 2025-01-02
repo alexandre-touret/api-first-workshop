@@ -51,7 +51,7 @@ components:
           items:
             type: string
             format: uuid
-        discountRequested:
+        discountRequestedInUSD:
           type: number
           format: double
         createdAt:
@@ -75,11 +75,11 @@ components:
         orderId:
           type: string
           format: uuid
-        discount:
+        discountInUSD:
           type: number
           format: double
           minimum: 0
-        totalPriceWithDiscount:
+        totalPriceWithDiscountInUSD:
           type: number
           format: double
           minimum: 0

@@ -21,10 +21,10 @@ public class QuoteEntity {
     private OrderRequestEntity order;
 
     @Min(0)
-    private Double totalPriceWithDiscount;
+    private Double totalPriceWithDiscountInUSD;
 
     @Min(0)
-    private Double discount;
+    private Double discountInUSD;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
@@ -54,20 +54,20 @@ public class QuoteEntity {
         this.order = order;
     }
 
-    public Double getTotalPriceWithDiscount() {
-        return totalPriceWithDiscount;
+    public Double getTotalPriceWithDiscountInUSD() {
+        return totalPriceWithDiscountInUSD;
     }
 
-    public void setTotalPriceWithDiscount(Double totalPriceWithDiscount) {
-        this.totalPriceWithDiscount = totalPriceWithDiscount;
+    public void setTotalPriceWithDiscountInUSD(Double totalPriceWithDiscount) {
+        this.totalPriceWithDiscountInUSD = totalPriceWithDiscount;
     }
 
-    public Double getDiscount() {
-        return discount;
+    public Double getDiscountInUSD() {
+        return discountInUSD;
     }
 
-    public void setDiscount(Double discount) {
-        this.discount = discount;
+    public void setDiscountInUSD(Double discount) {
+        this.discountInUSD = discount;
     }
 
     public OffsetDateTime getCreatedAt() {

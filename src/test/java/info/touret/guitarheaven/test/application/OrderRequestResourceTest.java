@@ -26,7 +26,7 @@ class OrderRequestResourceTest {
 
     @Test
     void should_create_order_successfully() {
-        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequested(10D).createdAt(OffsetDateTime.now());
+        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
