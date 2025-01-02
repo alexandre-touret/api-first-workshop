@@ -1,8 +1,7 @@
 package info.touret.guitarheaven.test.infrastructure.database;
 
 import info.touret.guitarheaven.domain.model.OrderRequest;
-import info.touret.guitarheaven.infrastructure.database.adapter.OrderRequestRequestDBAdapter;
-import info.touret.guitarheaven.infrastructure.database.repository.OrderRepository;
+import info.touret.guitarheaven.infrastructure.database.adapter.OrderRequestDBAdapter;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -17,10 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderRequestDBAdapterTest {
 
     @Inject
-    OrderRequestRequestDBAdapter orderRequestDBAdapter;
-
-    @Inject
-    OrderRepository orderRepository;
+    OrderRequestDBAdapter orderRequestDBAdapter;
 
     @Test
     void should_find_orders() {
