@@ -78,6 +78,7 @@ public class QuoteService {
         Quote quoteToCreate = new Quote(UUID.randomUUID(), orderRequest.orderId(), discountInUSD, totalPriceInUSD - discountInUSD, OffsetDateTime.now());
         LOGGER.info("Saving quote {}:", quote.quoteId());
         quotePort.saveQuote(quoteToCreate);
+        LOGGER.info("Saved quote {}:", quote.quoteId());
         return quoteToCreate.quoteId();
     }
 

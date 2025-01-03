@@ -79,7 +79,9 @@ public class GuitarResource {
     @Path("/{guitarId}")
     @DELETE
     public void deleteGuitar(@RestPath("guitarId") @NotNull UUID guitarId) {
-        guitarService.deleteGuitarByUUID(guitarId);
+        if (!guitarService.deleteGuitarByUUID(guitarId)) {
+            throw new WebApplicationException("Guitar " + guitarId + " not found", Status.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "Gets a guitar")

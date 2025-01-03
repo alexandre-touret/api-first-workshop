@@ -38,9 +38,12 @@ public class DiscountService {
         LOGGER.info("Average price found {} for guitar {}", averagePriceInUSD, guitar.name());
         double difference = guitar.priceInUSD() - averagePriceInUSD;
         if (difference <= 0) {
+            LOGGER.debug("Difference calculated : 0");
             return 0.0;
         } else {
-            return difference * 0.5;
+            var differenceCalculated = difference * 0.5;
+            LOGGER.debug("Difference calculated : {}",differenceCalculated);
+            return differenceCalculated;
         }
     }
 

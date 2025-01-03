@@ -75,7 +75,7 @@ class GuitarResourceTest {
     void should_fail_deleting() {
         RestAssured.given()
                 .when()
-                .delete("/guitars/111226d4-fee3-46dd-8bcb-426cefb4a666")
+                .delete("/guitars/114226d4-fee3-46dd-8bcb-426cefb4a666")
                 .then()
                 .statusCode(404).contentType(ContentType.fromContentType("application/problem+json"));
     }
