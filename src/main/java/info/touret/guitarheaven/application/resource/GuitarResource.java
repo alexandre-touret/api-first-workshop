@@ -2,7 +2,7 @@ package info.touret.guitarheaven.application.resource;
 
 import info.touret.guitarheaven.application.PaginationLinksFactory;
 import info.touret.guitarheaven.application.generated.model.GuitarDto;
-import info.touret.guitarheaven.application.generated.model.PageableGuitarDto;
+import info.touret.guitarheaven.application.generated.model.GuitarsDto;
 import info.touret.guitarheaven.application.generated.resource.GuitarsApi;
 import info.touret.guitarheaven.application.mapper.GuitarMapper;
 import info.touret.guitarheaven.domain.service.GuitarService;
@@ -42,11 +42,6 @@ public class GuitarResource implements GuitarsApi {
     private UriInfo uriInfo;
 
     @Override
-    public Response retrieveAllGuitars() {
-        return Response.ok(guitarMapper.toGuitarsDto(guitarService.findAllGuitars())).build();
-    }
-
-    @Override
     public Response createGuitar(GuitarDto guitarDto) {
         return Response.status(201).entity(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
     }
@@ -59,8 +54,8 @@ public class GuitarResource implements GuitarsApi {
     @Override
     public Response deleteGuitar(UUID guitarId) {
         var deleted = guitarService.deleteGuitarByUUID(guitarId);
-        if(!deleted){
-            throw new WebApplicationException("Guitar {} not found",Response.Status.NOT_FOUND);
+        if (!deleted) {
+            throw new WebApplicationException("Guitar {} not found", Response.Status.NOT_FOUND);
         }
         return Response.noContent().build();
     }
@@ -79,7 +74,7 @@ public class GuitarResource implements GuitarsApi {
     public Response findAllGuitarsWithPagination(Integer pageNumber, Integer pageSize) {
         var guitarsByPage = guitarService.findAllGuitarsByPage(pageNumber, pageSize);
         try {
-            return Response.ok(new PageableGuitarDto().guitars(guitarMapper.toGuitarsDto(guitarsByPage.entities())).links(pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize))).build();
+            return Response.ok(new GuitarsDto().guitars(guitarMapper.toGuitarsDto(guitarsByPage.entities())).links(pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize))).build();
         } catch (URISyntaxException | MalformedURLException e) {
             throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
         }

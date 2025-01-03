@@ -15,7 +15,6 @@ components:
           type: string
         type:
           $ref: "#/components/schemas/TYPE"
-          type: string
         priceInUSD:
           type: number
           format: double
@@ -96,22 +95,6 @@ components:
         - JAZZ
 paths:
   /guitars:
-    get:
-      summary: Gets all guitars
-      operationId: retrieveAllGuitars
-      responses:
-        "200":
-          description: 'Success '
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Guitar"
-        "500":
-          description: Server unavailable
-      tags:
-        - Guitar Resource
     post:
       summary: Creates a guitar
       operationId: createGuitar
@@ -130,21 +113,24 @@ paths:
           description: Server unavailable
       tags:
         - Guitar Resource
-  /guitars/pages:
     get:
       summary: Gets all guitars and paginate the results
       operationId: findAllGuitarsWithPagination
       parameters:
         - name: pageNumber
           in: query
+          required: true
           schema:
             type: integer
             format: int32
+            minimum: 0
         - name: pageSize
           in: query
+          required: true
           schema:
             type: integer
             format: int32
+            maximum: 10
       responses:
         "200":
           description: 'Success '
@@ -152,6 +138,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PageableGuitar"
+        "400":
+          description: 'The request is invalid '
         "500":
           description: Server unavailable
       tags:
