@@ -136,7 +136,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-with-examples-openapi.yaml
                             </inputSpec>
                             <generatorName>jaxrs-spec</generatorName>
                             <configOptions>

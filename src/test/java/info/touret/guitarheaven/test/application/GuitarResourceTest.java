@@ -25,10 +25,16 @@ class GuitarResourceTest {
     @Test
     void should_get_a_list_successfully() {
         RestAssured.given()
-                .get("/guitars")
+                .get("/guitars?pageNumber=0&pageSize=10")
                 .then()
                 .statusCode(200)
-                .assertThat().body("isEmpty()", Is.is(false));
+                .assertThat().body("isEmpty()", Is.is(false))
+                .assertThat().body("links.size()", Is.is(5))
+                .assertThat().body("links.self", IsAnything.anything())
+                .assertThat().body("links.next", IsAnything.anything())
+                .assertThat().body("links.last", IsAnything.anything())
+                .assertThat().body("links.prev", IsAnything.anything())
+                .assertThat().body("links.first", IsAnything.anything());
     }
 
     @Order(2)
@@ -102,7 +108,7 @@ class GuitarResourceTest {
     @Test
     void should_find_guitar_page_successfully() {
         RestAssured.given()
-                .get("/guitars/pages?pageNumber=0&pageSize=10")
+                .get("/guitars?pageNumber=0&pageSize=10")
                 .then()
                 .statusCode(200)
                 .assertThat().body("links.size()", Is.is(5))

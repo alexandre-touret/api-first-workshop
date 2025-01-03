@@ -15,7 +15,6 @@ components:
           type: string
         type:
           $ref: "#/components/schemas/TYPE"
-          type: string
         priceInUSD:
           type: number
           format: double
@@ -57,7 +56,7 @@ components:
         createdAt:
           type: string
           format: date-time
-    PageableGuitar:
+    Guitars:
       type: object
       properties:
         guitars:
@@ -98,34 +97,60 @@ paths:
   /guitars:
     get:
       summary: Gets all guitars
-      operationId: retrieveAllGuitars
+      operationId: findAllGuitarsWithPagination
+      parameters:
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+          examples:
+            list:
+              value: 0
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            maximum: 10
+          examples:
+            list:
+              value: 10
       responses:
         "200":
           description: 'Success '
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Guitar"
+                $ref: "#/components/schemas/Guitars"
               examples:
                 list:
                   value:
-                    - guitarId: "756733e5-c247-49d8-bf40-9a481c2f0bc3"
-                      name: "ES 335"
-                      type: "ELECTRIC"
-                      priceInUSD: 2500
-                      stock: 10
-                    - guitarId: "44411351-5897-497f-a9c8-22341a078ad2"
-                      name: "Stratocaster"
-                      type: "ELECTRIC"
-                      priceInUSD: 1500
-                      stock: 5
-                    - guitarId: "640ed5e0-8894-408a-9cd1-a9269d71349f"
-                      name: "Les Paul"
-                      type: "ELECTRIC"
-                      priceInUSD: 3000
-                      stock: 2
+                    guitars:
+                      - guitarId: "19fd8f49-745d-42e7-9e66-d0449442e3d1"
+                        name: "ES 335"
+                        type: "ELECTRIC"
+                        priceInUSD: 2500
+                        stock": 10
+                      - guitarId: "5ef4d8fc-7d71-4599-a46e-c8693e7f5de7"
+                        name: "Stratocaster"
+                        type: "ELECTRIC"
+                        priceInUSD: 1500
+                        stock: 5
+                      - guitarId: "0f29005c-cfac-4a6b-ba2f-7c21d7fbd3a2"
+                        name: "Les Paul"
+                        type: "ELECTRIC"
+                        priceInUSD: 3000
+                        stock: 2
+                    links:
+                      self: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      first: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      prev: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      next: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=1"
+                      last: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=9"
         "500":
           description: Server unavailable
       tags:
@@ -178,63 +203,6 @@ paths:
         "500":
           description: Server unavailable
 
-      tags:
-        - Guitar Resource
-  /guitars/pages:
-    get:
-      summary: Gets all guitars and paginate the results
-      operationId: findAllGuitarsWithPagination
-      parameters:
-        - name: pageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-          examples:
-            list:
-              value: 0
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-          examples:
-            list:
-              value: 10
-      responses:
-        "200":
-          description: 'Success '
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PageableGuitar"
-              examples:
-                list:
-                  value:
-                    guitars:
-                      - guitarId: "19fd8f49-745d-42e7-9e66-d0449442e3d1"
-                        name: "ES 335"
-                        type: "ELECTRIC"
-                        priceInUSD: 2500
-                        stock": 10
-                      - guitarId: "5ef4d8fc-7d71-4599-a46e-c8693e7f5de7"
-                        name: "Stratocaster"
-                        type: "ELECTRIC"
-                        priceInUSD: 1500
-                        stock: 5
-                      - guitarId: "0f29005c-cfac-4a6b-ba2f-7c21d7fbd3a2"
-                        name: "Les Paul"
-                        type: "ELECTRIC"
-                        priceInUSD: 3000
-                        stock: 2
-                    links:
-                      self: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
-                      first: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
-                      prev: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
-                      next: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=1"
-                      last: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=9"
-        "500":
-          description: Server unavailable
       tags:
         - Guitar Resource
   /guitars/{guitarId}:
