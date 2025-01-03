@@ -60,6 +60,6 @@ public class OrderRequestResource {
     @Path("{orderId}")
     public OrderRequestDto getOrder(@NotNull UUID orderId) {
         return orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
-                () -> new WebApplicationException(Response.Status.NOT_FOUND)));
+                () -> new WebApplicationException("Order "+orderId+ "not found",Response.Status.NOT_FOUND)));
     }
 }

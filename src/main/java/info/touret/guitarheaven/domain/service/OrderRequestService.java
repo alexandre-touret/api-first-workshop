@@ -45,6 +45,7 @@ public class OrderRequestService {
             OrderRequest finalOrderRequest = new OrderRequest(UUID.randomUUID(), relatedGuitars.stream().map(Guitar::guitarId).toList(), orderRequest.discountRequestedInUSD(), OffsetDateTime.now());
             LOGGER.info("Saving order {}", orderRequest.orderId());
             orderRequestPort.saveOrder(finalOrderRequest);
+            LOGGER.debug("Saved order {}", orderRequest.orderId());
             return finalOrderRequest.orderId();
         }
     }

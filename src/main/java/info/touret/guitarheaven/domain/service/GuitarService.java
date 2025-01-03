@@ -47,6 +47,7 @@ public class GuitarService {
         LOGGER.info("Saving guitar {}", guitarId);
         guitar = new Guitar(guitar.id(), guitarId, guitar.name(), guitar.type(), guitar.priceInUSD(), guitar.stock());
         guitarPort.save(guitar);
+        LOGGER.debug("Saved guitar {}", guitar.guitarId());
         return guitarId;
     }
 
