@@ -43,7 +43,7 @@ Handle the stock of guitars. The data is stored into a PostgreSQL database and e
 
 * ``GET /guitars`` : Fetches all the guitars
 * ``POST /guitars``: Creates a guitar
-* ``GET /guitars/pages``: Fetches all the guitars and paginate the results
+* ``GET /guitars/pages``: Fetches all the guitars and paginate the results (_We will fix this endpoint in the chapter about pagination & JSONAPI standard_)
 * ``PUT /guitars/{guitarId}``: Updates one guitar
 * ``GET /guitars/{guitarId}``: Gets one guitar
 * ``DELETE /guitars/{guitarId}``: Removes one guitar
@@ -387,9 +387,6 @@ Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI.
 For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swagger-ui``.
 
 * Try out the different REST API queries.
-* Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based
-  on [the JSON API specification](https://jsonapi.org/examples/#pagination) and
-  the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
 * Check out the different samples
 
 > aside positive
@@ -1817,3 +1814,34 @@ $ ./mvnw clean verify
 Now you can run the Quarkus app and the modification should be transparent in a customer point of view.
 
 To check it, you can run the SmallRye SwaggerUI and try the API.
+
+## Update the API
+
+> aside positive
+> ℹ️ **What will you do and learn in this chapter?**
+>
+> - A bit of [the JSON API specification](https://jsonapi.org/examples/#pagination) and
+    the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html)  
+> - How to update your API following the API-First Approach 
+
+
+### JSONAPI Introduction
+
+Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based
+  on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
+
+
+### Updating the API
+
+Modifying the OpenAPI
+
+Swagger editor
+OASDIFF
+LINT
+
+Updating the Resource
+
+Updating the tests
+
+### Building it again
+
