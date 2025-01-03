@@ -3,6 +3,7 @@ package info.touret.guitarheaven.test.application;
 import info.touret.guitarheaven.application.generated.model.OrderRequestDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.hamcrest.core.Every;
 import org.hamcrest.core.Is;
 import org.hamcrest.text.MatchesPattern;
@@ -22,7 +23,8 @@ class OrderRequestResourceTest {
                 .get("/orders-requests")
                 .then()
                 .statusCode(200)
-                .assertThat().body("isEmpty()", Is.is(false));    }
+                .assertThat().body("isEmpty()", Is.is(false));
+    }
 
     @Test
     void should_create_order_successfully() {
@@ -36,6 +38,21 @@ class OrderRequestResourceTest {
                 .then()
                 .statusCode(201)
                 .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+
+    }
+
+    @Test
+    void should_fail_creating_order() {
+        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fdd3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());
+        RestAssured.given()
+                .header("Content-Type", "application/json")
+                .and()
+                .body(orderDto)
+                .when()
+                .post("/orders-requests")
+                .then()
+                .statusCode(417)
+                .contentType(ContentType.fromContentType("application/problem+json"));
 
     }
 

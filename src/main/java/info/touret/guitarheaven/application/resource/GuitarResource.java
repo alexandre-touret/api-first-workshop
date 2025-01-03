@@ -58,7 +58,10 @@ public class GuitarResource implements GuitarsApi {
 
     @Override
     public Response deleteGuitar(UUID guitarId) {
-        guitarService.deleteGuitarByUUID(guitarId);
+        var deleted = guitarService.deleteGuitarByUUID(guitarId);
+        if(!deleted){
+            throw new WebApplicationException("Guitar {} not found",Response.Status.NOT_FOUND);
+        }
         return Response.noContent().build();
     }
 

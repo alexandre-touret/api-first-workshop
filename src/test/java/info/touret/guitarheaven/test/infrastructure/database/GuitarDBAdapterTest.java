@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.util.List;
 import java.util.UUID;
 
 import static info.touret.guitarheaven.domain.model.Guitar.TYPE.GIPSY;
@@ -72,5 +73,20 @@ class GuitarDBAdapterTest {
         assertEquals(0, allGuitarByPage.entities().size());
         assertFalse(allGuitarByPage.hasNext());
         assertTrue(allGuitarByPage.hasPrevious());
+    }
+
+    @Test
+    void should_find_guitars_IDs_successfully() {
+        var ids = List.of(1002L, 1003L);
+        var guitarsByIds = guitarDBAdapter.findGuitarsByIds(ids);
+        assertEquals(2, guitarsByIds.size());
+        assertTrue(guitarsByIds.stream().allMatch(guitar -> ids.contains(guitar.id())));
+    }
+
+    @Test
+    void should_find_no_guitars_IDs_successfully() {
+        var ids = List.of(1104L, 1105L);
+        var guitarsByIds = guitarDBAdapter.findGuitarsByIds(ids);
+        assertEquals(0, guitarsByIds.size());
     }
 }
