@@ -337,8 +337,7 @@ During the first startup, the maven build is automatically started. Please wait 
 In a new terminal, start the Quarkus Dev environment:
 
 ```jshelllanguage
-$. / mvnw quarkus:
-dev
+$ ./mvnw quarkus:dev
 ```
 
 👀 Wait a while until you get the following output:
@@ -460,7 +459,7 @@ For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
 Open a new shell in VSCode and run the following command at the project's root folder:
 
 ```shell
-$ bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml
+$ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml
 ```
 
 You would get the following output summary:
@@ -711,7 +710,7 @@ Now this plugin should be configured as following:
 ✅ Now let us check it. Run the following command:
 
 ```bash
-./mvnw clean compile
+$ ./mvnw clean compile
 ```
 
 Normally, it ends successfully and you would get such an output:
@@ -1045,7 +1044,7 @@ Update then the import declarations.
 Run the following command:
 
 ```shell
-./mvnw clean verify
+$ ./mvnw clean verify
 ```
 
 It might be successful.
@@ -1053,7 +1052,7 @@ It might be successful.
 Now, you can run again the application and go to the ``dev-ui``
 
 ```shell
-./mvnw quarkus:dev
+$ ./mvnw quarkus:dev
 ```
 
 ## Improving the OpenAPI contract
@@ -1510,9 +1509,8 @@ We will use it through its Docker image.
 Run then the following command:
 
 ```shell
-bin/asyncapi-validate.sh
+$ ./bin/asyncapi-validate.sh
 ```
-
 You would get such an output:
 
 ```shell
@@ -1541,7 +1539,7 @@ This chapter only illustrates the model generation at build time. We won't inclu
 Run the following command:
 
 ```shell
-$ bin/asyncapi-generate-model.sh
+$ ./bin/asyncapi-generate-model.sh
 ```
 
 You would get the following output:
@@ -1572,7 +1570,7 @@ We can then mock our Event Driven API in the same way we did for our REST API.
 Start Quarkus
 
 ```shell
-./mvnw quarkus:dev
+$ ./mvnw quarkus:dev
 ```
 
 Go then to the Microcks extension page and check out the ``Guitar Supply Chain API``.
@@ -1830,18 +1828,229 @@ To check it, you can run the SmallRye SwaggerUI and try the API.
 Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based
   on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
 
+> aside negative
+> What about this standard?
+>
+> It is not really standard like ISO, IETF ones. It is merely a _proposition_ of standardisation. I do not use as is. Nevertheless, some principles and patterns may be helpful such as the pagination.
+> 
+> Obviously, you can configure it in another way. One common and often used pattern is to avoid [HAL links](https://stateless.co/hal_specification.html).   
 
 ### Updating the API
 
-Modifying the OpenAPI
+**We will base on our API on the ``guitarheaven-with-examples-openapi.yaml`` OpenAPI description.**
 
-Swagger editor
-OASDIFF
-LINT
+Update your ``pom.xml`` to use it instead of ``guitarheaven-openapi.yaml`` in the ``build>plugins>openapi-generator-maven-plugin`` section
 
-Updating the Resource
+```xml
+<plugin>
+  <groupId>org.openapitools</groupId>
+  <artifactId>openapi-generator-maven-plugin</artifactId>
+  <version>7.10.0</version>
+  <executions>
+      <execution>
+          <id>generate-server</id>
+          <goals>
+              <goal>generate</goal>
+          </goals>
+          <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-with-examples-openapi.yaml
+              </inputSpec>
+```
 
-Updating the tests
+Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori
+.yaml``.  
 
-### Building it again
+First, go to the ``guitarheaven-openapi-with-examples.yaml`` and merge the definition of the ``GET /guitars`` ``GET /guitars/pages`` endpoints.
 
+For the following steps, you can use [the Swagger OpenAPI Editor](https://editor.swagger.io/).
+
+Add the parameters and examples of the second one to the first one and remove the ``GET /guitars/pages`` endpoint.
+
+Change the schema of the response content schema to : 
+
+```yaml
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref: "#/components/schemas/Guitars"
+```
+
+Rename the schema ``PageableGuitar`` to ``Guitars``
+
+We can also improve the constraints on the parameters adding the ``required``, ``maximum`` and ``minimum`` constraints.
+
+You should therefore have the following endpoint:
+
+```yaml
+    get:
+      summary: Gets all guitars
+      operationId: findAllGuitarsWithPagination
+      parameters:
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+          examples:
+            list:
+              value: 0
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            maximum: 10
+          examples:
+            list:
+              value: 10
+      responses:
+        "200":
+          description: 'Success '
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guitars"
+              examples:
+                list:
+                  value:
+                    guitars:
+                      - guitarId: "19fd8f49-745d-42e7-9e66-d0449442e3d1"
+                        name: "ES 335"
+                        type: "ELECTRIC"
+                        priceInUSD: 2500
+                        stock": 10
+                      - guitarId: "5ef4d8fc-7d71-4599-a46e-c8693e7f5de7"
+                        name: "Stratocaster"
+                        type: "ELECTRIC"
+                        priceInUSD: 1500
+                        stock: 5
+                      - guitarId: "0f29005c-cfac-4a6b-ba2f-7c21d7fbd3a2"
+                        name: "Les Paul"
+                        type: "ELECTRIC"
+                        priceInUSD: 3000
+                        stock: 2
+                    links:
+                      self: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      first: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      prev: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=0"
+                      next: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=1"
+                      last: "http://localhost:8080/guitars/pages?pageNumber=http://localhost:8080/guitars/pages&pageSize=9"
+        "500":
+          description: Server unavailable
+      tags:
+        - Guitar Resource
+
+```
+
+To check this API, you can use ``vacuum``:
+
+```shell
+$ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-with-examples-openapi.yaml
+```
+
+### Pinpointing the differences
+
+Now, let us check what are the differences and specially the breaking changes:
+
+```shell
+$ ./bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-with-examples-openapi-ori.yaml /data/src/main/resources/openapi/guitarheaven-with-examples-openapi.yaml
+```
+
+### Updating the code
+
+Run the following command:
+
+```shell
+$ ./mvnw clean compile
+```
+
+Go to the ``GuitarResource``.
+
+Remove the ``retrieveAllGuitars()`` method.
+
+In the method ``findAllGuitarsWithPagination()`` `change the reference to ``PageableGuitarDto`` to ``GuitarsDto``.
+
+You will get the following content:
+
+```java
+@Override
+public Response findAllGuitarsWithPagination(Integer pageNumber, Integer pageSize) {
+    var guitarsByPage = guitarService.findAllGuitarsByPage(pageNumber, pageSize);
+    try {
+        return Response.ok(new GuitarsDto().guitars(guitarMapper.toGuitarsDto(guitarsByPage.entities())).links(pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize))).build();
+    } catch (URISyntaxException | MalformedURLException e) {
+        throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+    }
+}
+```
+
+Remove the ``PageableGuitarDto`` import declaration.
+
+### Updating the tests
+
+In the class ``GuitarResourceTest``
+
+
+Update the ``should_get_a_list_successfully()`` test with the following content:
+
+```java
+@Order(1)
+@Test
+void should_get_a_list_successfully() {
+    RestAssured.given()
+            .get("/guitars?pageNumber=0&pageSize=10")
+            .then()
+            .statusCode(200)
+            .assertThat().body("isEmpty()", Is.is(false))
+            .assertThat().body("links.size()", Is.is(5))
+            .assertThat().body("links.self", IsAnything.anything())
+            .assertThat().body("links.next", IsAnything.anything())
+            .assertThat().body("links.last", IsAnything.anything())
+            .assertThat().body("links.prev", IsAnything.anything())
+            .assertThat().body("links.first", IsAnything.anything());
+}
+```
+
+Update then the ``should_find_guitar_page_successfully()`` method:
+
+
+```java
+@Order(5)
+@Test
+void should_find_guitar_page_successfully() {
+    RestAssured.given()
+            .get("/guitars?pageNumber=0&pageSize=10")
+            .then()
+            .statusCode(200)
+            .assertThat().body("links.size()", Is.is(5))
+            .assertThat().body("links.self", IsAnything.anything())
+            .assertThat().body("links.next", IsAnything.anything())
+            .assertThat().body("links.last", IsAnything.anything())
+            .assertThat().body("links.prev", IsAnything.anything())
+            .assertThat().body("links.first", IsAnything.anything());
+}
+```
+
+
+### Verification
+
+Run the following command:
+
+```shell
+$ ./mvnw verify
+```
+
+It should be successful.
+
+### Run Quarkus
+
+You can finally check it live running Quarkus:
+
+```shell
+$ ./mvnw quarkus:dev 
+```
