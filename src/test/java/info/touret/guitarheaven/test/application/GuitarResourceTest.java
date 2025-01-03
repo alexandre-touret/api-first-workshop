@@ -3,6 +3,7 @@ package info.touret.guitarheaven.test.application;
 import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsAnything;
 import org.hamcrest.text.MatchesPattern;
@@ -69,6 +70,16 @@ class GuitarResourceTest {
                 .statusCode(204);
     }
 
+    @Order(8)
+    @Test
+    void should_fail_deleting() {
+        RestAssured.given()
+                .when()
+                .delete("/guitars/111226d4-fee3-46dd-8bcb-426cefb4a666")
+                .then()
+                .statusCode(404).contentType(ContentType.fromContentType("application/problem+json"));
+    }
+
     @Order(4)
     @Test
     void should_get_guitar_successfully() {
@@ -84,7 +95,7 @@ class GuitarResourceTest {
         RestAssured.given()
                 .get("/guitars/628766d4-fee3-46dd-8bcb-426cffb4d587")
                 .then()
-                .statusCode(404);
+                .statusCode(404).contentType(ContentType.fromContentType("application/problem+json"));
     }
 
     @Order(5)

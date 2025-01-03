@@ -1,24 +1,18 @@
 package info.touret.guitarheaven.application.resource;
 
 import info.touret.guitarheaven.application.PaginationLinksFactory;
-import info.touret.guitarheaven.application.dto.GuitarDto;
-import info.touret.guitarheaven.application.dto.PageableGuitarDto;
+import info.touret.guitarheaven.application.generated.model.GuitarDto;
+import info.touret.guitarheaven.application.generated.model.PageableGuitarDto;
+import info.touret.guitarheaven.application.generated.resource.GuitarsApi;
 import info.touret.guitarheaven.application.mapper.GuitarMapper;
 import info.touret.guitarheaven.domain.service.GuitarService;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriInfo;
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.jboss.resteasy.reactive.ResponseStatus;
-import org.jboss.resteasy.reactive.RestPath;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -29,8 +23,8 @@ import java.util.UUID;
 /**
  * Guitar API
  */
-@Path("/guitars")
-public class GuitarResource {
+@ApplicationScoped
+public class GuitarResource implements GuitarsApi {
 
     private final GuitarService guitarService;
 
@@ -44,68 +38,48 @@ public class GuitarResource {
         this.pageUtils = pageUtils;
     }
 
-    @Operation(summary = "Gets all guitars")
-    @APIResponse(responseCode = "200", description = "Success ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @GET
-    public List<GuitarDto> retrieveAllGuitars() {
-        return guitarMapper.toGuitarsDto(guitarService.findAllGuitars());
+    @Context
+    private UriInfo uriInfo;
+
+    @Override
+    public Response retrieveAllGuitars() {
+        return Response.ok(guitarMapper.toGuitarsDto(guitarService.findAllGuitars())).build();
     }
 
-    @Operation(summary = "Creates a guitar")
-    @APIResponse(responseCode = "201", description = "Guitar creation successful")
-    @APIResponse(responseCode = "400", description = "The request is invalid ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @ResponseStatus(201)
-    @POST
-    public Map<String, UUID> createGuitar(GuitarDto guitarDto) {
-        return Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)));
+    @Override
+    public Response createGuitar(GuitarDto guitarDto) {
+        return Response.status(201).entity(Map.of("guitarId", guitarService.createGuitar(guitarMapper.toGuitar(guitarDto)))).build();
     }
 
-    @Operation(summary = "Updates a guitar")
-    @APIResponse(responseCode = "200", description = "Guitar update successful ")
-    @APIResponse(responseCode = "400", description = "The request is invalid ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @Path("/{guitarId}")
-    @PUT()
-    public GuitarDto updateGuitar(@RestPath UUID guitarId, @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = GuitarDto.class))) GuitarDto guitarDto) {
-        return guitarMapper.toGuitarDto(guitarService.updateGuitar(guitarMapper.toGuitar(guitarDto)));
+    @Override
+    public Response updateGuitar(UUID guitarId, GuitarDto guitarDto) {
+        return Response.ok(guitarMapper.toGuitarDto(guitarService.updateGuitar(guitarMapper.toGuitar(guitarDto)))).build();
     }
 
-    @Operation(summary = "Deletes a guitar")
-    @APIResponse(responseCode = "200", description = "Guitar update successful ")
-    @APIResponse(responseCode = "400", description = "The request is invalid ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @Path("/{guitarId}")
-    @DELETE
-    public void deleteGuitar(@RestPath("guitarId") @NotNull UUID guitarId) {
-        guitarService.deleteGuitarByUUID(guitarId);
+    @Override
+    public Response deleteGuitar(UUID guitarId) {
+        var deleted = guitarService.deleteGuitarByUUID(guitarId);
+        if(!deleted){
+            throw new WebApplicationException("Guitar {} not found",Response.Status.NOT_FOUND);
+        }
+        return Response.noContent().build();
     }
 
-    @Operation(summary = "Gets a guitar")
-    @APIResponse(responseCode = "200", description = "Guitar update successful ")
-    @APIResponse(responseCode = "400", description = "The request is invalid ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @Path("/{guitarId}")
-    @GET
-    public GuitarDto getGuitar(@RestPath("guitarId") @NotNull UUID guitarId) {
+    @Override
+    public Response getGuitar(UUID guitarId) {
         var guitars = guitarService.findGuitarsByGuitarIds(List.of(guitarId));
         if (guitars.isEmpty()) {
             throw new WebApplicationException("Guitar " + guitarId + " not found", Status.NOT_FOUND);
         } else {
-            return guitarMapper.toGuitarDto(guitars.getFirst());
+            return Response.ok(guitarMapper.toGuitarDto(guitars.getFirst())).build();
         }
     }
 
-    @Operation(summary = "Gets all guitars and paginate the results")
-    @APIResponse(responseCode = "200", description = "Success ")
-    @APIResponse(responseCode = "500", description = "Server unavailable")
-    @GET
-    @Path("/pages")
-    public PageableGuitarDto findAllGuitarsWithPagination(@Context UriInfo uriInfo, @QueryParam("pageNumber") int pageNumber, @QueryParam("pageSize") int pageSize) {
+    @Override
+    public Response findAllGuitarsWithPagination(Integer pageNumber, Integer pageSize) {
         var guitarsByPage = guitarService.findAllGuitarsByPage(pageNumber, pageSize);
         try {
-            return new PageableGuitarDto(guitarMapper.toGuitarsDto(guitarsByPage.entities()), pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize));
+            return Response.ok(new PageableGuitarDto().guitars(guitarMapper.toGuitarsDto(guitarsByPage.entities())).links(pageUtils.createLinksDto(uriInfo, guitarsByPage, pageSize))).build();
         } catch (URISyntaxException | MalformedURLException e) {
             throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
         }
