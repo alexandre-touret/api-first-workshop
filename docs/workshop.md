@@ -587,7 +587,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 > ℹ️ This tool can be easily integrated in a CI/CD process to validate the API on every commit and to automatically generate the changelog.
 >
 
-## Shifting to API-First
+## Shift to API-First
 
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
@@ -789,7 +789,7 @@ Normally, it ends successfully and you would get such an output:
 
 ```
 
-### 📝 Updating the server code
+### 📝 Update the server code
 
 #### DTO
 
@@ -1070,7 +1070,7 @@ Now, you can run again the application and go to the ``dev-ui``
 $ ./mvnw quarkus:dev
 ```
 
-## Improving the OpenAPI contract
+## Improve the OpenAPI contract
 
 ### 👀 Object Naming
 
@@ -1227,7 +1227,7 @@ Check out the conformance index score.
 Compare with the EBay Browse API.
 As you can see, this is mainly due to the fact that no examples are provided in the OpenAPI.
 
-### Adding examples
+### Add examples
 
 For more information about OpenAPI examples,
 you [can check out the specification](https://swagger.io/docs/specification/v3_0/adding-examples/).
@@ -1402,9 +1402,9 @@ public class APIContractTest {
 }
 ```
 
-This test will run Microcks under the hood and checks every endpoint declared in the OpenAPI using the examples filled earlier.
+Under the hood, this test will run Microcks and checks every endpoint declared in the OpenAPI using the examples filled earlier.
 
-Stop the Quarkus Dev and run the integration tests.
+To check it , stop the Quarkus Dev and run the integration tests.
 
 ```shell
 $ ./mvnw clean verify
@@ -1420,26 +1420,26 @@ It would end successfully.
 > - How to keep having an API-First approach with asynchronous workflows
 > - How to validate an event driven API specification
 
-### 👀 Looking into the existing code
+### 👀 Look into the existing code
 
 Check out the infrastructure code in the package ``info.touret.guitarheaven.infrastructure.kafka`` and see how the connection to Kakfa is handled.
 
 You could find the following classes:
 
 * ``GuitarRequest``: The POJO used to broadcast messages through Kafka
-* ``GuitarRequestDeserializer`` : A simple deserializer
-* ``GuitarRequestSerializer``: A simple serializer
+* ``GuitarRequestDeserializer`` : A simple JSON deserializer
+* ``GuitarRequestSerializer``: A simple JSON serializer
 * ``KafkaClient``: The Kafka client used to broadcast & fetch messages
 * ``SupplyChainAdapter``: The adapter of the domain's SupplyChainPort
 
-If we want to apply the same principes we implemented before, this client layer should be generated from a specification.
+If we want to apply the same principes we implemented earlier, this client layer should be generated from a specification.
 
 How to do that for even-driven API?
 The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challenge!
 
 It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
-### 🛠️ Drafting an event-driven API
+### 🛠️ Draf an event-driven API
 
 In this chapter, we will 
 * See how to validate an AsyncAPI file
@@ -1515,7 +1515,7 @@ If you want to know more about the different elements, you can browse
 * [The spec](https://www.asyncapi.com/docs/concepts)
 
 #### ✅ Validation 
-The Async API initiative provides some tools. We will use in this workshop [the cli](https://www.asyncapi.com/en/tools/cli) & the [generator](https://www.asyncapi.com/tools/generator). 
+The Async API initiative provides a bunch of tools. We will use some of them in this workshop [the cli](https://www.asyncapi.com/en/tools/cli) & the [generator](https://www.asyncapi.com/tools/generator). 
 
 Unfortunately, the [generator](https://www.asyncapi.com/tools/generator) doesn't provide any model for Quarkus.
 
@@ -1549,7 +1549,7 @@ If you want to edit it you can also use [the AsyncAPI studio](https://studio.asy
 
 #### 🛠️ Model Generation
 
-This chapter only illustrates the model generation at build time. We won't include this step in our app's build workflow.
+_This chapter only illustrates the model generation at build time. We won't include this step in our app build workflow._
 
 Run the following command:
 
@@ -1588,7 +1588,7 @@ Start Quarkus
 $ ./mvnw quarkus:dev
 ```
 
-Go then to the Microcks extension page and check out the ``Guitar Supply Chain API``.
+Go then to the [Microcks extension page](https://quarkus.io/extensions/io.github.microcks.quarkus/quarkus-microcks/) and check out the ``Guitar Supply Chain API``.
 
 You can see its conformance index is low. 
 It is the same reason as before. 
@@ -1692,7 +1692,7 @@ servers:
 
 ```
 
-Go back to the dev-ui Microcks web page.
+Go back to the [dev-ui Microcks web page](https://quarkus.io/extensions/io.github.microcks.quarkus/quarkus-microcks/).
 
 Delete the ``Guitar Heaven Supply Chain API`` 
 
@@ -1706,11 +1706,11 @@ Select the new file and click on ``Upload``.
 
 ![microcks upload](./img/microcks_upload.png)
 
-Go back to the ``APIs|Services`` menu and look into the ``Guitar Heaven Supply Chain API`` to check if there are samples now.
+Go back to the ``APIs|Services`` menu and look into the ``Guitar Heaven Supply Chain API`` to check if there is samples now.
 
 ![microcks asyncapi](./img/microcks_asyncapi.png)
 
-Unfortunately, we  will not go further during this workshop. 
+Unfortunately, we will not go further during this workshop. 
 
 If you want to see a demo on how you can integrate Microcks & Kafka, you can check out [this example](https://github.com/microcks/microcks-quarkus-demo/blob/main/step-5-write-async-tests.md).
 
@@ -1733,7 +1733,7 @@ We have the following classes:
 
 You can also browse the OpenAPI description located in the ``src/main/resources/openapi-client`` folder.
 
-### Updating the Maven configuration 
+### Update the Maven configuration 
 
 We need to enable the [Quarkus OpenAPI Generator extension](https://docs.quarkiverse.io/quarkus-openapi-generator/dev/index.html).
 
@@ -1747,9 +1747,9 @@ Add therefore a new dependency into the ``pom.xml``:
 </dependency>
 ```
 
-### Updating the Quarkus configuration
+### Update the Quarkus configuration
 
-We must define the Quarkus configuration extension with some items  
+We must define the Quarkus configuration extension with some items.  
 
 In the file ``src/main/resources/application.properties`` add the following properties:
 
@@ -1824,9 +1824,9 @@ Check then if the integration tests run well:
 $ ./mvnw clean verify
  ```
 
-Now you can run the Quarkus app and the modification should be transparent in a customer point of view.
+Now you can run the Quarkus app. The modification should be transparent in a customer point of view.
 
-To check it, you can run the SmallRye SwaggerUI and try the API.
+To check it, you can go to the SmallRye SwaggerUI and try the API.
 
 ## Update the API
 
@@ -1840,8 +1840,7 @@ To check it, you can run the SmallRye SwaggerUI and try the API.
 
 ### JSONAPI Introduction
 
-Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based
-  on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
+Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` endpoint. It's based on [the JSON API specification](https://jsonapi.org/examples/#pagination) and the [Hypertext Application Language (HAL)](https://stateless.co/hal_specification.html).
 
 > aside negative
 > What about this standard?
@@ -1850,7 +1849,7 @@ Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` 
 > 
 > Obviously, you can configure it in another way. One common and often used pattern is to avoid [HAL links](https://stateless.co/hal_specification.html).   
 
-### Updating the API
+### Update the API
 
 **We will base on our API on the ``guitarheaven-with-examples-openapi.yaml`` OpenAPI description.**
 
@@ -2010,7 +2009,6 @@ Remove the ``PageableGuitarDto`` import declaration.
 
 In the class ``GuitarResourceTest``
 
-
 Update the ``should_get_a_list_successfully()`` test with the following content:
 
 ```java
@@ -2033,7 +2031,6 @@ void should_get_a_list_successfully() {
 
 Update then the ``should_find_guitar_page_successfully()`` method:
 
-
 ```java
 @Order(5)
 @Test
@@ -2051,7 +2048,6 @@ void should_find_guitar_page_successfully() {
 }
 ```
 
-
 ### Verification
 
 Run the following command:
@@ -2059,7 +2055,6 @@ Run the following command:
 ```shell
 $ ./mvnw verify
 ```
-
 It should be successful.
 
 ### Run Quarkus
