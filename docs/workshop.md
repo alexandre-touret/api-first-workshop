@@ -12,7 +12,7 @@ feedback link: https://github.com/alexandre-touret/api-first-workshop/issues
 
 This workshop aims to:
 
-- Look around the [API-First approach](https://www.postman.com/api-first/) and its benefits
+- Look into the [API-First approach](https://www.postman.com/api-first/) and its benefits
 - Present the methodologies and tools which could be used to streamline the develop process
 - Pinpoint the common pitfalls of the API-First and how to avoid/leverage them.
 
@@ -22,14 +22,14 @@ During this workshop we will use different tools, practices and languages:
 * [OpenAPI Specification](https://swagger.io/specification/)
 * [Vacuum](https://quobix.com/vacuum/) to validate the OpenAPI files
 * [OASDIFF](https://www.oasdiff.com/) to pinpoint breaking changes and generate changelogs
-* [Microcks](https://microcks.io/) for mocking our API
+* [Microcks](https://microcks.io/) to mock our API
 * [JSONAPI](https://jsonapi.org/)
 
 ### Getting involved?
 
 The source code is available on [GitHub](https://github.com/alexandre-touret/api-first-workshop/).
 
-Feel free to raise any issues or participate if you want!
+Feel free to raise [any issues](https://github.com/alexandre-touret/api-first-workshop/issues) or participate if you want!
 
 ## Overview
 
@@ -43,7 +43,7 @@ Handle the stock of guitars. The data is stored into a PostgreSQL database and e
 
 * ``GET /guitars`` : Fetches all the guitars
 * ``POST /guitars``: Creates a guitar
-* ``GET /guitars/pages``: Fetches all the guitars and paginate the results (_We will fix this endpoint in the chapter about pagination & JSONAPI standard_)
+* ``GET /guitars/pages``: Fetches all the guitars and paginate the results (_We will fix this ~~ugly~~ endpoint in the chapter about pagination & JSONAPI standard_)
 * ``PUT /guitars/{guitarId}``: Updates one guitar
 * ``GET /guitars/{guitarId}``: Gets one guitar
 * ``DELETE /guitars/{guitarId}``: Removes one guitar
@@ -88,8 +88,7 @@ Here is a sample of one orderRequest entity:
 
 After the orderRequest is stored, it's time to create a quote and provide it to our customers.
 
-First and foremost, to check if the discount is fair, the system requests the eBay API to pinpoint what is the current
-price of this guitar on the market.
+First and foremost, to check if the discount is fair, the system requests the[EBay Browse API](https://developer.ebay.com/api-docs/buy/browse/overview.html) to pinpoint what is the current price of this guitar on the market.
 Then, if the stock is too low, the system broadcasts automatically a new command to the supply chain backoffice through
 a Kafka Topic.
 
@@ -115,17 +114,15 @@ Finally, here is a sample of a quote:
 
 ![Context View](./img/guitar_heaven_context.png)
 
-1. Our platform reaches the EBAY API to challenge the discount requested by the customer against the current price of
+1. Our platform reaches the [EBAY Browse API](https://developer.ebay.com/api-docs/buy/browse/overview.html) to challenge the discount requested by the customer against the current price of
    the market on EBay.
-2. When asking for a quote, if the current stock is too low (i.e., comparing to a threshold, it automatically broadcasts
-   a message to a Supply Chain Back Office through Kafka.
+2. When asking for a quote, if the current stock is too low (i.e., comparing to a threshold), it automatically broadcasts  a message to a Supply Chain Back Office through Kafka.
 
 #### Container View
 
 ![Context View](./img/guitar_heaven_container.png)
 
-The business logic is implemented in a good old monolith built on
-a [Hexagonal Architecture way](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
+The business logic is implemented in a good old monolith built on a _light_ [Hexagonal Architecture way](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)).
 
 To cut long story short, here is a short explanation of the packaging:
 
@@ -158,7 +155,6 @@ src/main/java/info/touret/guitarheaven/application/
 src/main/java/info/touret/guitarheaven/domain/
 ├── exception
 │   ├── EntityNotFoundException.java
-│   └── GuitarOrderException.java
 ├── model
 │   ├── Guitar.java
 │   ├── OrderRequest.java
@@ -244,14 +240,44 @@ Before starting, we will use the following icons during the workshop. Let us che
 
 ### Tools
 
-#### If you want to execute this workshop on your desktop
+#### If you want to execute this workshop on your desktop with [DevContainers](https://containers.dev/)
+
+I stored a configuration to set the project up in DevContainer. You can check it out in the project [``.devcontainer/devcontainer.json``](https://github.com/alexandre-touret/api-first-workshop/tree/main/.devcontainer) file.
+
+If you want to know more about DevContainers, you can check out this [documentation](https://containers.dev/).
+
+You **MUST** have set up these tools first:
+
+* [Docker](https://docs.docker.com/)
+* An IDE: ([IntelliJ IDEA](https://www.jetbrains.com/idea) or [VSCode](https://code.visualstudio.com/).
+
+🛠️ You can validate your environment running these commands:
+
+**Docker**
+
+```jshelllanguage
+$ docker version
+    Client:
+    Docker Engine -Community
+    Version:
+    27.4.1
+    API version:1.47
+    Go version:go1.22.10
+    Git commit:b9d17ea
+    Built:Tue Dec 17 15:45:46 2024
+    OS/Arch:linux/amd64
+    Context:default
+
+```
+
+#### If you want to execute this workshop on your desktop (without DevContainer) 
 
 You **MUST** have set up these tools first:
 
 * [Java 21+](https://adoptium.net/temurin/releases/?version=21)
 * [Maven 3.9](https://www.maven.apache.org/)
 * [Docker](https://docs.docker.com/)
-* Any
+* Any 
   IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea), [VSCode](https://code.visualstudio.com/), [Netbeans](https://netbeans.apache.org/),...)
   you want
 
@@ -300,14 +326,7 @@ first and fork this repository.
 
 You can then open this project in either your local VS Code or directly in your browser.
 
-> aside positive
->
-> ℹ️ If you still want to run it on your local desktop, there is an alternative: you
-> can [use the devcontainer configuration stored in the project](https://github.com/alexandre-touret/api-first-workshop/tree/main/.devcontainer).
->
-> To do that, you MUST set up Docker before and open the project using
-> either [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-> or [Intellij Idea](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html).
+**For the rest of this workshop, I will assume you will use GitHub Codespaces.**
 
 ## Environment Setup
 
@@ -349,15 +368,17 @@ $ ./mvnw quarkus:dev
 ```
 
 ℹ️ All the stack is provided through the [Quarkus Dev Services](https://quarkus.io/guides/dev-services).
-You don't therefore have to bother yourself about ramping it up.
+You don't therefore have to bother yourself about setting it up.
 
-✅ Now validate your setup browsing the Quarkus DEV-UI. Go to the VS Code Port panel
+✅ Now validate your setup browsing the Quarkus DEV-UI. 
+
+Go to the VS Code Port panel.
 
 Select the port tab:
 
 ![Port VSCODE](./img/port_vscode.png)
 
-And now go the URL which exposes the 8080 port:
+And now, go the URL which exposes the 8080 port:
 
 ![start-8080](./img/start_dev_ui.png)
 
@@ -407,8 +428,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 
 ### Under the Hood
 
-👀 Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. See how the API
-documentation is generated.
+👀 Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. Look into how the API documentation is generated.
 
 ```shell
 tree src/main/java/info/touret/guitarheaven/application/
@@ -478,7 +498,7 @@ Examples     | 0      | 54       | 0
                                                                                 
 ```
 
-ℹ️ The current issues seem insignificant. However, they would be noteworthy for your customers to:
+ℹ️ The current issues seem insignificant. However, they would be harmful for your customers to:
 
 * Understand your API
 * Build mocks and the API client tooling.
@@ -492,18 +512,15 @@ Check how the UUID are generated and validated:
 * What are, in your view, the potential issues?
 * How to fix them?
 
-You could find in the file ``src/main/resources/openapi/guitarheaven-openapi.yaml`` several fixes of the generated
-OpenAPI to make it "Api-First compatible".
+You could find in the file ``src/main/resources/openapi/guitarheaven-openapi.yaml`` several fixes of the generated OpenAPI to make it "Api-First (or Contract-First) compatible".
 
 Let us check what are the differences:
 
 First, check them using your code editor.
-Then, let us use [OASDIFF](https://www.oasdiff.com/) to automatically pinpoint the differences and the potential
-breaking changes.
+Then, let us use [OASDIFF](https://www.oasdiff.com/) to automatically pinpoint the differences and the potential breaking changes.
 
 ```shell
 bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
-
 ```
 
 Remark: The ``/data`` prefix is only mentioned for compatibility with the Docker image used for running OASDIFF.
@@ -567,8 +584,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 
 > aside positive
 >
-> ℹ️ This tool can be easily integrated in a CI/CD process to validate the API on every commit and to automatically
-> generate the changelog.
+> ℹ️ This tool can be easily integrated in a CI/CD process to validate the API on every commit and to automatically generate the changelog.
 >
 
 ## Shifting to API-First
@@ -584,8 +600,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 
 ### 📝 Updating the Maven configuration
 
-ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the
-``src/main/resources/openapi/guitarheaven-openapi.yaml``.
+ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
 
 The corresponding source code will be generated in the ``target/generated-sources/openapi`` directory.
 
@@ -1164,7 +1179,7 @@ and now run the Quarkus dev environment to check it again:
 $ ./mvnw quarkus:dev
 ```
 
-You can go through the SmallRye Swagger UI to see the differences.
+You can go through the SmallRye Swagger UI to catch the differences.
 
 > aside positive
 >
