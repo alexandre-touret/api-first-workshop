@@ -1845,7 +1845,7 @@ Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` 
 > aside negative
 > What about this standard?
 >
-> It is not really standard like ISO, IETF ones. It is merely a _proposition_ of standardisation. I do not use as is. Nevertheless, some principles and patterns may be helpful such as the pagination.
+> It is not really standard like [W3C](https://www.w3.org/standards/) or [IETF ones](https://www.ietf.org/process/rfcs). It is merely a _proposition_ of standardisation. I do not use as is. Nevertheless, some principles and patterns may be helpful such as the pagination.
 > 
 > Obviously, you can configure it in another way. One common and often used pattern is to avoid [HAL links](https://stateless.co/hal_specification.html).   
 
