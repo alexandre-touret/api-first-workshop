@@ -1181,11 +1181,123 @@ $ ./mvnw quarkus:dev
 
 You can go through the SmallRye Swagger UI to catch the differences.
 
+#### Other Data Constraints
+
+Check out the Open API and add when it is necessary, the different constraints to the different schemas and endpoints:
+
+* [``minimum``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays)
+* [``minItems``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays)
+* [``required``](https://swagger.io/docs/specification/v3_0/describing-parameters/)
+
+
+Next, generate the code and see how they are _"converted"_ into a Java code with the following command:
+
+```shell
+./mvnw clean compile
+```
+
+For instance for the ``OrderRequest`` object: 
+
+```yaml
+OrderRequest:
+    type: object
+    required:
+      - guitarIds
+    properties:
+      orderId:
+        type: string
+        format: uuid
+      guitarIds:
+        type: array
+        minItems: 1
+        items:
+          type: string
+          format: uuid
+      discountRequestedInUSD:
+        type: number
+        format: double
+      createdAt:
+        type: string
+        format: date-time
+
+```
+
+We will have the corresponding generated Java code in the ``target/generated-sources/open-api-yaml/info/touret/guitarheaven/application/generated/model/`` folder:
+
+```java
+@org.eclipse.microprofile.openapi.annotations.media.Schema(description="")
+@JsonTypeName("OrderRequest")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-01-07T20:15:49.979612552+01:00[Europe/Paris]", comments = "Generator version: 7.10.0")
+public class OrderRequestDto   {
+    private UUID orderId;
+    private @Valid List<UUID> guitarIds = new ArrayList<>();
+    private Double discountRequestedInUSD;
+    private OffsetDateTime createdAt;
+
+    public OrderRequestDto() {
+    }
+
+    /**
+     **/
+    public OrderRequestDto orderId(UUID orderId) {
+        this.orderId = orderId;
+        return this;
+    }
+
+    @org.eclipse.microprofile.openapi.annotations.media.Schema(description = "")
+    @JsonProperty("orderId")
+    public UUID getOrderId() {
+        return orderId;
+    }
+
+    @JsonProperty("orderId")
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
+    }
+
+
+    @org.eclipse.microprofile.openapi.annotations.media.Schema(required = true, description = "")
+    @JsonProperty("guitarIds")
+    @NotNull  @Size(min=1)public List<UUID> getGuitarIds() {
+        return guitarIds;
+    }
+
+    @JsonProperty("guitarIds")
+    public void setGuitarIds(List<UUID> guitarIds) {
+        this.guitarIds = guitarIds;
+    }
+
+
+    @org.eclipse.microprofile.openapi.annotations.media.Schema(description = "")
+    @JsonProperty("discountRequestedInUSD")
+    public Double getDiscountRequestedInUSD() {
+        return discountRequestedInUSD;
+    }
+
+    @JsonProperty("discountRequestedInUSD")
+    public void setDiscountRequestedInUSD(Double discountRequestedInUSD) {
+        this.discountRequestedInUSD = discountRequestedInUSD;
+    }
+
+    @org.eclipse.microprofile.openapi.annotations.media.Schema(description = "")
+    @JsonProperty("createdAt")
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("createdAt")
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+```
+
 > aside positive
 >
-> ℹ️ If you want, you can now add more constraints to your API using the OpenAPI supported keywords such as [``minimum``](> ℹ️ If you want, you can now add more constraints to your API using the OpenAPI supported keywords such as [``minimum``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays)
-)
-> or [``minItems``](https://swagger.io/docs/specification/v3_0/data-models/data-types/#arrays).
+> ℹ️ What about output validation?
+> Usually, we only validate the data coming from the incoming requests. 
+> 
+> However, a good secure coding practice is to validate the output also. The more you will document your API and add data constraints, the easier it will be to validate both the input and the output data.
 >
 
 ## Your API from a customer perspective
