@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.UriInfo;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Generates pagination links in a HATEOS way
@@ -16,6 +15,7 @@ import java.net.URL;
 @ApplicationScoped
 public class PaginationLinksFactory {
 
+    public static final String URL_FORMAT_PATTERN = "%s?pageNumber=%1$s&pageSize=%2$s";
 
     /**
      * Creates the Links DTO to enable pagination of results
@@ -30,12 +30,11 @@ public class PaginationLinksFactory {
      */
     public <T> LinksDto createLinksDto(UriInfo uriInfo, Page<T> page, int numberOfElementsPerPage) throws URISyntaxException, MalformedURLException {
         var baseUri = uriInfo.getAbsolutePath();
-        var urlFormatPattern = "%s?pageNumber=%1$s&pageSize=%2$s";
-        URL self = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber(), page.entities().size())).toURL();
-        URL first = new URI(String.format(urlFormatPattern, baseUri, 0, numberOfElementsPerPage)).toURL();
-        URL prev = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber() >= 1 ? page.pageNumber() : 0, numberOfElementsPerPage)).toURL();
-        URL next = new URI(String.format(urlFormatPattern, baseUri, page.pageNumber() >= page.pageCount() + 1 ? page.pageNumber() : page.pageNumber() + 1, numberOfElementsPerPage)).toURL();
-        URL last = new URI(String.format(urlFormatPattern, baseUri, page.pageCount() - 1, numberOfElementsPerPage)).toURL();
+        var self = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageNumber(), page.entities().size())).toURL();
+        var first = new URI(String.format(URL_FORMAT_PATTERN, baseUri, 0, numberOfElementsPerPage)).toURL();
+        var prev = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageNumber() >= 1 ? page.pageNumber() : 0, numberOfElementsPerPage)).toURL();
+        var next = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageNumber() >= page.pageCount() + 1 ? page.pageNumber() : page.pageNumber() + 1, numberOfElementsPerPage)).toURL();
+        var last = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageCount() - 1, numberOfElementsPerPage)).toURL();
         return new LinksDto(self, first, prev, next, last);
     }
 }
