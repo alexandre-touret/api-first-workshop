@@ -498,7 +498,7 @@ Examples     | 0      | 54       | 0
 * Understand your API
 * Build mocks and the API client tooling.
 
-#### Check the OpenAPI manually & pinpoint the differences
+#### Check manually the OpenAPI & pinpoint the differences
 
 Open the OpenAPI
 
@@ -593,15 +593,15 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 > - How to easily remove the boilerplate code
 > - Stick to the specification
 
-### 📝 Updating the Maven configuration
+### 📝 Update the Maven configuration
 
-ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
+ℹ️ We will set up Maven to automatically generate the server code (i.e., model classes and API interfaces) from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
 
 The corresponding source code will be generated in the ``target/generated-sources/openapi`` directory.
 
-Let us do it now!
+Let us do it!
 
-* Stop now the Quarkus application by typing ``q`` in the command prompt.
+* Stop the Quarkus application by typing ``q`` in the command prompt.
 * Go to the ``pom.xml`` and update it as following:
 
 In the ``build>plugins`` section, add the following plugin:
@@ -651,7 +651,7 @@ In the ``build>plugins`` section, add the following plugin:
 
 ```
 
-The plugin generates useless classes for Quarkus. We can ignore their creation adding the file using the
+The plugin generates also useless classes for Quarkus. We can ignore their creation adding the file using the
 ``<ignoreFilesOverride>`` feature and creating the file ``.openapi-generator-ignore`` at the root of your project:
 
 ```properties
@@ -1047,11 +1047,41 @@ to
 var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
 ```
 
-Update then the import declarations.
+Update then the import declarations (see above in the API chapter)
+
+#### Unit Tests
+
+Go to the ``info.touret.guitarheaven.test.application.PaginationLinksFactoryTest`` test.
+
+Change the ``setUp`` method as following:
+
+```java
+@BeforeEach
+void setUp() {
+    paginationLinksFactory = new PaginationLinksFactory();
+    page = new Page<GuitarDto>(1, List.of(new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9)), 0, false, false);
+
+}
+```
+And update the ``should_return_a_list_successfully()`` method as below:
+
+```java
+@Test
+void should_return_a_list_successfully() throws MalformedURLException, URISyntaxException {
+    when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
+    paginationLinksFactory.createLinksDto(uriInfo, page, 10);
+    assertFalse(page.hasNext());
+    assertFalse(page.hasPrevious());
+    assertEquals(1, page.pageCount());
+    assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().guitarId());
+}
+```
+
+Update the Import to use the generated code instead of the deleted one.
 
 #### 🛠 Validation
 
-Run the following command:
+Run finally the following command:
 
 ```shell
 $ ./mvnw clean verify
@@ -1059,14 +1089,13 @@ $ ./mvnw clean verify
 
 It might be successful.
 
-Now, you can run again the application and go to the ``dev-ui``
+Now, you can run again the application and go to the ``dev-ui``:
 
 ```shell
 $ ./mvnw quarkus:dev
 ```
 
-## Improve the OpenAPI contract
-
+## Improve the OpenAPI contracts
 ### 👀 Object Naming
 
 If we look into our API specification carefully, we can guess our backend is built on top of a Java platform.
@@ -1081,14 +1110,12 @@ In the ``pom.xml``, add the following configuration parameter into the
 ``build>plugins>openapi-generator-maven-plugin>configuration``
 
 ```xml
-
 <modelNameSuffix>Dto</modelNameSuffix>
 ```
 
 You will therefore have the following configuration for this plugin:
 
 ```xml
-
 <plugin>
     <groupId>org.openapitools</groupId>
     <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -1130,13 +1157,13 @@ You will therefore have the following configuration for this plugin:
 
 ```
 
-Stop the quarkus dev, and generate again the code
+Stop the quarkus dev, and generate again the code:
 
 ```shell
 $ ./mvnw clean compile
 ```
 
-In the ``GuitarResourceTest`` class, update the import declaration
+In the ``GuitarResourceTest`` class, update the import declaration.
 
 From:
 
@@ -1153,7 +1180,6 @@ import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECT
 _Yes it is a side effect :-(_
 
 #### 📝 Date Time
-
 In the OpenAPI, remove the ``OffsetDateTime`` schema type and update the fields using it as following:
 
 ```yaml
@@ -1292,7 +1318,7 @@ public class OrderRequestDto   {
 > ℹ️ What about output validation?
 > Usually, we only validate the data coming from the incoming requests. 
 > 
-> However, a good secure coding practice is to validate the output also. The more you will document your API and add data constraints, the easier it will be to validate both the input and the output data.
+> However, a good secure coding practice is to validate also the output. The more you will document your API and add data constraints, the easier it will be to validate both the input and the output data.
 >
 
 ## Your API from a customer perspective
@@ -1304,7 +1330,7 @@ public class OrderRequestDto   {
 > - Use [Microcks](https://microcks.io/)
 > - Add examples to your OpenAPI
 
-### 👀 Explore Microcks
+### 👀 Explore Mirocks
 
 To be in your customer's shoes, we will experiment how they would use your API during their development.
 After testing the API through a [Swagger UI](https://editor.swagger.io/)
@@ -1313,11 +1339,9 @@ or [Redocly console](https://redocly.github.io/redoc/), they would probably inte
 Among other things, mocking external API help isolate the code from external resources and streamline the SDLC (Software
 Development LifeCycle).
 
-Some projects could help in this
-field : [Microcks](https://microcks.io/), [Wiremock](https://wiremock.org/), [MockServer](https://www.mock-server.com/).
+Some projects could help in this field : [Microcks](https://microcks.io/), [Wiremock](https://wiremock.org/), [MockServer](https://www.mock-server.com/).
 
-In this workshop, we will use the first one. Beyond simply mocking external endpoints, it may help to do contract
-testing and provide a standalone mock which could be sat up in an easy way.
+In this workshop, we will use the first one. Beyond simply mocking external endpoints, it may help to do contract testing and provide a standalone mock which could be sat up in an easy way.
 
 Go to the dev-ui and select the ``Extensions>Microcks`` extension.
 
@@ -1357,8 +1381,7 @@ You will get the output configured in the OpenAPI.
 
 Let us dig into it and see what is under the hood:
 
-If you look into the ``POST /guitars`` endpoint definition, you will see we coded examples for both the request and the
-results:
+If you look into the ``POST /guitars`` endpoint definition, you will see we coded examples for both the request and the results:
 
 Here we specified the ``order_es335`` example
 
@@ -1412,13 +1435,11 @@ Here we specified the ``order_es335`` example
 
       tags:
         - Guitar Resource
-
 ```
 
 In this way, your customer must stick to your specification during their tests.
 
-Be aware, to be detected and usable in Microcks, the name of the examples declared in the request must also be  present
-in the response specification.
+Be aware, to be detected and usable in Microcks, the name of the examples declared in the request must also be declared in the response specification.
 
 Now, how to deal with endpoints which don't return any content?
 
@@ -1511,7 +1532,7 @@ public class APIContractTest {
 
 Under the hood, this test will run Microcks and checks every endpoint declared in the OpenAPI using the examples filled earlier.
 
-To check it , stop the Quarkus Dev and run the integration tests.
+To check it, stop the Quarkus Dev and run the integration tests.
 
 ```shell
 $ ./mvnw clean verify
@@ -1546,7 +1567,7 @@ The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challen
 
 It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
-### 🛠️ Draf an event-driven API
+### 🛠️ Draft an event-driven API
 
 In this chapter, we will 
 * See how to validate an AsyncAPI file
@@ -1633,6 +1654,7 @@ Run then the following command:
 ```shell
 $ ./bin/asyncapi-validate.sh
 ```
+
 You would get such an output:
 
 ```shell
@@ -1919,7 +1941,9 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
 ### Verification
 
-Check if the code compiles first:
+Stop Quarkus.
+
+Next, check if the code compiles:
 
 ```shell
 $ ./mvnw clean compile
@@ -2083,6 +2107,8 @@ $ ./bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-with-examp
 ```
 
 ### Updating the code
+
+Stop Quarkus if it is still running.
 
 Run the following command:
 
