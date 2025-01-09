@@ -43,7 +43,7 @@ Handle the stock of guitars. The data is stored into a PostgreSQL database and e
 
 * ``GET /guitars`` : Fetches all the guitars
 * ``POST /guitars``: Creates a guitar
-* ``GET /guitars/pages``: Fetches all the guitars and paginate the results (_We will fix this ~~ugly~~ endpoint in the chapter about pagination & JSONAPI standard_)
+* ``GET /guitars/pages``: Fetches all the guitars and paginate the results (_We will fix this ugly endpoint in the chapter about pagination & JSONAPI standard_)
 * ``PUT /guitars/{guitarId}``: Updates one guitar
 * ``GET /guitars/{guitarId}``: Gets one guitar
 * ``DELETE /guitars/{guitarId}``: Removes one guitar
@@ -221,12 +221,12 @@ You can check out the whole workflow below:
 
 ### Skills
 
-| Skill                                     | Level      | 
-|-------------------------------------------|------------|
-| [Java](https://www.oracle.com/java/)      | novice     |   
-| [Maven](https://www.maven.apache.org/)    | novice     |
-| [Quarkus](https://quarkus.io)             | novice     |
-| [REST API](https://www.maven.apache.org/) | proficient |
+| Skill                                     | Level        | 
+|-------------------------------------------|--------------|
+| [Java](https://www.oracle.com/java/)      | intermediate |   
+| [Maven](https://www.maven.apache.org/)    | novice       |
+| [Quarkus](https://quarkus.io)             | novice       |
+| [REST API](https://www.maven.apache.org/) | proficient   |
 
 ### Icons & Conventions
 
@@ -249,7 +249,7 @@ If you want to know more about DevContainers, you can check out this [documentat
 You **MUST** have set up these tools first:
 
 * [Docker](https://docs.docker.com/)
-* An IDE: ([IntelliJ IDEA](https://www.jetbrains.com/idea) or [VSCode](https://code.visualstudio.com/).
+* An IDE: ([IntelliJ IDEA](https://www.jetbrains.com/idea) or [VSCode](https://code.visualstudio.com/)).
 
 🛠️ You can validate your environment running these commands:
 
@@ -272,14 +272,12 @@ $ docker version
 
 #### If you want to execute this workshop on your desktop (without DevContainer) 
 
-You **MUST** have set up these tools first:
+You **MUST** have sat up these tools first:
 
 * [Java 21+](https://adoptium.net/temurin/releases/?version=21)
 * [Maven 3.9](https://www.maven.apache.org/)
 * [Docker](https://docs.docker.com/)
-* Any 
-  IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea), [VSCode](https://code.visualstudio.com/), [Netbeans](https://netbeans.apache.org/),...)
-  you want
+* Any IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea), [VSCode](https://code.visualstudio.com/), [Netbeans](https://netbeans.apache.org/),...) you want.
 
 🛠️ You can validate your environment running these commands:
 
@@ -287,46 +285,45 @@ You **MUST** have set up these tools first:
 
 ```jshelllanguage
 $ java -version
-    openjdk version "21.0.1" 2023 - 10 - 17 LTS
-    OpenJDK Runtime Environment Temurin-21.0.1 + 12 (build 21.0.1 + 12 - LTS)
-    OpenJDK 64-Bit Server VM Temurin-21.0.1+12(build21.0.1+12-LTS,mixed mode,sharing)
+openjdk version "21.0.1" 2023 - 10 - 17 LTS
+OpenJDK Runtime Environment Temurin-21.0.1 + 12 (build 21.0.1 + 12 - LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.1+12(build21.0.1+12-LTS,mixed mode,sharing)
 ```
 
 **Maven**
 
 ```jshelllanguage
 $ mvn --version
-    Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
-    Maven home:/home/alexandre/.sdkman/candidates/maven/current
-    Java version:21.0.4,vendor:Eclipse Adoptium,runtime:/home/alexandre/.sdkman/candidates/java/21.0.4-tem
-    Default locale:en,platform encoding:UTF-8
-    OS name:"linux",version:"5.15.153.1-microsoft-standard-wsl2",arch:"amd64",family:"unix"
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /home/alexandre/.sdkman/candidates/maven/current
+Java version: 21.0.5, vendor: Eclipse Adoptium, runtime: /home/alexandre/.sdkman/candidates/java/21.0.5-tem
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.15.167.4-microsoft-standard-wsl2", arch: "amd64", family: "unix"
 ```
 
 **Docker**
 
 ```jshelllanguage
 $ docker version
-    Client:
-    Docker Engine -Community
-    Version:
-    27.4.1
-    API version:1.47
-    Go version:go1.22.10
-    Git commit:b9d17ea
-    Built:Tue Dec 17 15:45:46 2024
-    OS/Arch:linux/amd64
-    Context:default
+Client:
+Version:           27.2.1-rd
+API version:       1.45 (downgraded from 1.47)
+Go version:        go1.22.7
+Git commit:        cc0ee3e
+Built:             Tue Sep 10 15:41:39 2024
+OS/Arch:           linux/amd64
+Context:           default
+
 
 ```
 
 **If you don't want to bother with a local setup**
 It's strongly recommended to use [Github Codespaces](https://github.com/features/codespaces). You must create an account
-first and fork this repository.
+first and [fork this repository](https://github.com/alexandre-touret/api-first-workshop/fork).
 
 You can then open this project in either your local VS Code or directly in your browser.
 
-**For the rest of this workshop, I will assume you will use GitHub Codespaces.**
+**For the rest of this workshop, I will assume you will use GitHub CodeSpaces.**
 
 ## Environment Setup
 
@@ -335,7 +332,7 @@ You can then open this project in either your local VS Code or directly in your 
 >
 > You will set up the environment in Github Codespaces and understand how to run it
 
-### 🛠  Open Github Codespaces
+### 🛠  Open Github CodeSpaces
 
 * Log on [GitHub](https://github.com/) and
   [fork this repository](https://github.com/alexandre-touret/api-first-workshop/fork).
@@ -343,13 +340,13 @@ You can then open this project in either your local VS Code or directly in your 
 
 ![start codespace](./img/start_build_codespace.png)
 
-When a messages invites you making a URL public, select and validate it.
+When a message invites you making a URL public, select and validate it.
 
-Wait until the codespace is ready.
+Wait until the codeSpace is ready.
 
 ![build codespace](./img/build_codespace.png)
 
-During the first startup, the maven build is automatically started. Please wait until it is finished.
+During the first startup, the maven build is automatically started. Please wait until it is completely finished.
 
 ### 🛠 Start the app
 
@@ -363,8 +360,8 @@ $ ./mvnw quarkus:dev
 
 ```jshelllanguage
 2024 - 12 - 26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
-    2024-12-26 22:27:42,815INFO[io.quarkus](Quarkus Main Thread)Profile dev activated.Live Coding activated.
-    2024-12-26 22:27:42,816INFO[io.quarkus](Quarkus Main Thread)Installed features:[agroal,cdi,hibernate-orm,hibernate-orm-panache,hibernate-validator,jdbc-postgresql,kafka-client,messaging,messaging-kafka,microcks,narayana-jta,rest,rest-client,rest-client-jackson,rest-jackson,resteasy-problem,smallrye-context-propagation,smallrye-openapi,swagger-ui,vertx]
+2024-12-26 22:27:42,815INFO[io.quarkus](Quarkus Main Thread)Profile dev activated.Live Coding activated.
+2024-12-26 22:27:42,816INFO[io.quarkus](Quarkus Main Thread)Installed features:[agroal,cdi,hibernate-orm,hibernate-orm-panache,hibernate-validator,jdbc-postgresql,kafka-client,messaging,messaging-kafka,microcks,narayana-jta,rest,rest-client,rest-client-jackson,rest-jackson,resteasy-problem,smallrye-context-propagation,smallrye-openapi,swagger-ui,vertx]
 ```
 
 ℹ️ All the stack is provided through the [Quarkus Dev Services](https://quarkus.io/guides/dev-services).
@@ -395,10 +392,10 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 > aside positive
 > ℹ️ **What will you do and learn in this chapter?**
 >
-> - You will use the API
+> - Use the API
 > - Check how smooth the onboarding is from a customer/user point of view.
 > - Generate the changelog and pinpoint breaking changes in an OpenAPI contract
-> - Pinpoint the main drawbacks
+> - Pinpoint the main drawbacks of code first approach
 
 ### 👀 From a user perspective
 
@@ -454,7 +451,7 @@ public List<GuitarDto> retrieveAllGuitars() {
 }
 ```
 
-#### 👀 Pinpoint the drawbacks
+#### 👀 Pinpoint drawbacks
 
 A bunch of examples:
 
@@ -467,9 +464,7 @@ A bunch of examples:
 
 #### Automatic validation
 
-🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI
-``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to the
-``src/main/resources/openapi`` folder (create the ``openapi`` subfolder first).
+🛠 Go to the generated OpenAPI through the ``Extensions>SmallRye OpenAPI`` menu (or through this URI ``/q/dev-ui/io.quarkus.quarkus-smallrye-openapi/schema-yaml``) and download the OPENAPI to the ``src/main/resources/openapi`` folder (create the ``openapi`` subfolder first).
 
 Name it adding the suffix ``-code-first-openapi.yaml`` (e.g.,: ``guitarheaven-code-first-openapi.yaml``).
 
@@ -479,7 +474,7 @@ For this workshop, we will use [Vacuum](https://quobix.com/vacuum/).
 Open a new shell in VSCode and run the following command at the project's root folder:
 
 ```shell
-$ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml
+$ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-code-first-openapi.yaml
 ```
 
 You would get the following output summary:
@@ -520,10 +515,10 @@ First, check them using your code editor.
 Then, let us use [OASDIFF](https://www.oasdiff.com/) to automatically pinpoint the differences and the potential breaking changes.
 
 ```shell
-bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+$ bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-code-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
 ```
 
-Remark: The ``/data`` prefix is only mentioned for compatibility with the Docker image used for running OASDIFF.
+Remark: The ``/data`` prefix is only mentioned for assuring the compatibility with the Docker image used for running OASDIFF.
 
 You would get such an output:
 
@@ -543,10 +538,10 @@ You would get such an output:
 
 ```
 
-You can then generate the changelog with the following command
+You can then generate the changelog with the following command:
 
 ```shell
-bin/oasdiff.sh changelog /data/src/main/resources/openapi/guitarheaven-corde-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+$ bin/oasdiff.sh changelog /data/src/main/resources/openapi/guitarheaven-code-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
 ```
 
 You would get such a content:
