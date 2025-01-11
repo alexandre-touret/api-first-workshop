@@ -359,7 +359,7 @@ $ ./mvnw quarkus:dev
 👀 Wait a while until you get the following output:
 
 ```jshelllanguage
-2024 - 12 - 26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
+2024-12-26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
 2024-12-26 22:27:42,815INFO[io.quarkus](Quarkus Main Thread)Profile dev activated.Live Coding activated.
 2024-12-26 22:27:42,816INFO[io.quarkus](Quarkus Main Thread)Installed features:[agroal,cdi,hibernate-orm,hibernate-orm-panache,hibernate-validator,jdbc-postgresql,kafka-client,messaging,messaging-kafka,microcks,narayana-jta,rest,rest-client,rest-client-jackson,rest-jackson,resteasy-problem,smallrye-context-propagation,smallrye-openapi,swagger-ui,vertx]
 ```
@@ -399,7 +399,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 
 ### 👀 From a user perspective
 
-Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI.
+Click then to ``SwaggerUI`` or go directly to the ``/q/swagger-ui/`` URI.
 
 For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swagger-ui``.
 
@@ -453,7 +453,7 @@ public List<GuitarDto> retrieveAllGuitars() {
 
 #### 👀 Pinpoint drawbacks
 
-A bunch of examples:
+For instance:
 
 * How the error descriptions stick to their implementation?
 * How to avoid gaps between the specification and the implementation?
@@ -651,8 +651,7 @@ In the ``build>plugins`` section, add the following plugin:
 
 ```
 
-The plugin generates also useless classes for Quarkus. We can ignore their creation adding the file using the
-``<ignoreFilesOverride>`` feature and creating the file ``.openapi-generator-ignore`` at the root of your project:
+The plugin generates also useless classes for Quarkus. We can ignore their creation adding the file using the ``<ignoreFilesOverride>`` feature and creating the file ``.openapi-generator-ignore`` at the root of your project:
 
 ```properties
 # Exclude Configurator classes
@@ -689,33 +688,6 @@ Add then the following plugin in the ``build>plugins>`` section:
 
 This configuration enables the support of two separate source folders in your project.
 
-Now this plugin should be configured as following:
-
-```xml
-
-<plugin>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>${compiler-plugin.version}</version>
-    <configuration>
-        <parameters>true</parameters>
-        <annotationProcessorPaths>
-            <path>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${org.mapstruct.version}</version>
-            </path>
-            <!-- other annotation processors -->
-        </annotationProcessorPaths>
-        <compilerArgs>
-            <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
-            <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
-            <arg>-Amapstruct.verbose=true</arg>
-            <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
-        </compilerArgs>
-        <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
-    </configuration>
-</plugin>
-```
 
 ✅ Now let us check it. Run the following command:
 
@@ -784,6 +756,12 @@ Normally, it ends successfully and you would get such an output:
 
 ```
 
+The generated classes should be located then in the ``target/generated-sources/open-api-yaml`` folder.
+
+Reload the project in your IDE to detect this new source folder.
+
+![reload_maven_vscode](./img/reload_maven_project.png)
+
 ### 📝 Update the server code
 
 #### DTO
@@ -845,7 +823,7 @@ Change all the method declarations.
 
 Remove the ``jakarta.validation.constraints`` annotations such as ``@NotNull``
 
-Instead of returning a POJO, you will have now to return a ``Response`` object.
+Instead of returning a POJO, you will have now to return a ``jakarta.ws.rs.core.Response`` object.
 
 For instance:
 
@@ -866,11 +844,12 @@ public Response deleteGuitar(@NotNull UUID guitarId) {
 }
 ```
 
+For the ``GuitarResource`` the UriInfo can't be injected into the method parameters anymore. 
+Hopefully, we can inject it as a field.
+
 At the end, you will have these API resource classes:
 
-**GuitarResource**
-
-```java
+**GuitarResource**let us revamp it without (mostly) impacting the Java code.
 
 @ApplicationScoped
 public class GuitarResource implements GuitarsApi {
@@ -907,9 +886,13 @@ public class GuitarResource implements GuitarsApi {
 
     @Override
     public Response deleteGuitar(UUID guitarId) {
-        guitarService.deleteGuitarByUUID(guitarId);
+        var deleted = guitarService.deleteGuitarByUUID(guitarId);
+        if (!deleted) {
+            throw new WebApplicationException("Guitar {} not found", Response.Status.NOT_FOUND);
+        }
         return Response.noContent().build();
     }
+
 
     @Override
     public Response getGuitar(UUID guitarId) {
@@ -930,6 +913,7 @@ public class GuitarResource implements GuitarsApi {
             throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }
 ```
@@ -976,7 +960,7 @@ public class OrderRequestResource implements OrdersRequestsApi {
 public class QuoteResource implements QuotesApi {
 
 
-    private final QuoteService quoteService;
+     private final QuoteService quoteService;
     private final QuoteMapper quoteMapper;
 
     @Inject
@@ -1016,7 +1000,7 @@ to
 import info.touret.guitarheaven.application.generated.model.GuitarDto;
 ```
 
-#### LinksFactory
+#### PaginationLinksFactory
 
 Update the import declaration as above and change the creation of the ``LinksDto`` class from:
 
@@ -1035,19 +1019,126 @@ return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.to
 Change then the DTO creation in the integration tests : ``GuitarResourceTest``,``OrderRequestResourceTest`` and
 ``QuoteResourceTest``.
 
-For example, change
+
+**``GuitarResourceTest``**
+Update the ``GuitarDto`` creation lines
 
 ```java
-var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9);
-```
-
-to
-
-```java
-var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
+@Order(1)
+@Test
+void should_create_successfully() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(201)
+            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+}
+@Order(3)
+@Test
+void should_create_and_fail() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+    }
 ```
 
 Update then the import declarations (see above in the API chapter)
+
+Fix the static import.
+
+Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.application.generated.model.TYPEDto`` class.
+
+The import of the ``ELECTRIC`` is now:
+
+```java
+import static ``info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+```
+
+Finally, change the name of the method called ``price`` to ``priceInUSD``.
+
+**``OrderRequestResourceTest``**
+
+Update then the import declarations (see above in the API chapter)
+
+Update in the same way the ``OrderRequestDto`` creation:
+
+```java
+ @Test
+void should_create_order_successfully() {
+    var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());        
+    RestAssured.given()
+            .header("Content-Type", "application/json")
+            .and()
+            .body(orderDto)
+            .when()
+            .post("/orders-requests")
+            .then()
+            .statusCode(201)
+            .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+    }
+
+ @Test
+ void should_fail_creating_order() {
+ var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fdd3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());   
+      RestAssured.given()
+         .header("Content-Type", "application/json")
+         .and()
+         .body(orderDto)
+         .when()
+         .post("/orders-requests")
+         .then()
+         .statusCode(417)
+         .contentType(ContentType.fromContentType("application/problem+json"));
+
+}
+```
+
+**``QuoteResourceTest``**
+
+Update then the import declarations (see above in the API chapter) and the object creation:
+
+```java
+@Order(1)
+@Test
+void should_create_successfully() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(201)
+                .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+
+}
+
+@Order(3)
+@Test
+void should_create_and_fail() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+}
+```
 
 #### Unit Tests
 
@@ -1057,23 +1148,24 @@ Change the ``setUp`` method as following:
 
 ```java
 @BeforeEach
-void setUp() {
-    paginationLinksFactory = new PaginationLinksFactory();
-    page = new Page<GuitarDto>(1, List.of(new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9)), 0, false, false);
+    void setUp() {
+        paginationLinksFactory = new PaginationLinksFactory();
+        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
+        page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
+    }
 
-}
 ```
 And update the ``should_return_a_list_successfully()`` method as below:
 
 ```java
 @Test
 void should_return_a_list_successfully() throws MalformedURLException, URISyntaxException {
-    when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
-    paginationLinksFactory.createLinksDto(uriInfo, page, 10);
-    assertFalse(page.hasNext());
-    assertFalse(page.hasPrevious());
-    assertEquals(1, page.pageCount());
-    assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().guitarId());
+  when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
+  paginationLinksFactory.createLinksDto(uriInfo, page, 10);
+  assertFalse(page.hasNext());
+  assertFalse(page.hasPrevious());
+  assertEquals(1, page.pageCount());
+  assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().getGuitarId());
 }
 ```
 
@@ -1098,109 +1190,25 @@ $ ./mvnw quarkus:dev
 ## Improve the OpenAPI contracts
 ### 👀 Object Naming
 
-If we look into our API specification carefully, we can guess our backend is built on top of a Java platform.
-
-To make it fully agnostic, let us revamp it without (mostly) impacting the Java code.
+It is important to make our API fully agnostic. What is why we removed the ``Dto`` suffixes and made some arrangements with the OpenAPI code:
 
 #### 📝 Dto
 
-In the ``guitarheaven-openapi.yaml`` file, remove all the ``Dto`` suffixes.
-
-In the ``pom.xml``, add the following configuration parameter into the
+To do that and keep them in the code we applied the following configuration parameter into the
 ``build>plugins>openapi-generator-maven-plugin>configuration``
 
 ```xml
 <modelNameSuffix>Dto</modelNameSuffix>
 ```
 
-You will therefore have the following configuration for this plugin:
-
-```xml
-<plugin>
-    <groupId>org.openapitools</groupId>
-    <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>7.9.0</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-            <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
-                <generatorName>jaxrs-spec</generatorName>
-                <configOptions>
-                    <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
-                    <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
-                    <library>quarkus</library>
-                    <dateLibrary>java8</dateLibrary>
-                    <generateBuilders>true</generateBuilders>
-                    <openApiNullable>false</openApiNullable>
-                    <useBeanValidation>true</useBeanValidation>
-                    <generatePom>false</generatePom>
-                    <interfaceOnly>true</interfaceOnly>
-                    <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
-                    <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
-                    <returnResponse>true</returnResponse>
-                    <sourceFolder>.</sourceFolder>
-                    <useJakartaEe>true</useJakartaEe>
-                    <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
-                    <useSwaggerAnnotations>false</useSwaggerAnnotations>
-                    <withXml>false</withXml>
-                </configOptions>
-                <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
-                <modelNameSuffix>Dto</modelNameSuffix>
-            </configuration>
-        </execution>
-    </executions>
-
-</plugin>
-
-```
-
-Stop the quarkus dev, and generate again the code:
-
-```shell
-$ ./mvnw clean compile
-```
-
-In the ``GuitarResourceTest`` class, update the import declaration.
-
-From:
-
-```java
-import static info.touret.guitarheaven.application.generated.model.TYPE.ELECTRIC;
-```
-
-to:
-
-```java
-import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
-```
-
-_Yes it is a side effect :-(_
-
 #### 📝 Date Time
-In the OpenAPI, remove the ``OffsetDateTime`` schema type and update the fields using it as following:
+Check out the generated OpenAPI it declares an ``OffsetDateTime`` schema type. It is useless. You can use this instead:
 
 ```yaml
 createdAt:
   type: string
   format: date-time
 ```
-
-Run again the following command:
-
-```shell
-$ ./mvnw clean compile
-```
-
-and now run the Quarkus dev environment to check it again:
-
-```shell
-$ ./mvnw quarkus:dev
-```
-
-You can go through the SmallRye Swagger UI to catch the differences.
 
 #### Other Data Constraints
 

@@ -5,11 +5,11 @@ components:
     GuitarDto:
       type: object
       required:
-        - name
-        - type
+      - name
+      - type
       properties:
         guitarId:
-          type: string
+          $ref: "#/components/schemas/UUID"
         name:
           type: string
           pattern: \S
@@ -42,20 +42,21 @@ components:
       type: string
       format: date-time
       examples:
-        - 2022-03-10T12:15:50-04:00
+      - 2022-03-10T12:15:50-04:00
     OrderRequestDto:
       type: object
       required:
-        - guitarIds
+      - guitarIds
       properties:
         orderId:
-          type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          $ref: "#/components/schemas/UUID"
         guitarIds:
           type: array
           minItems: 1
           items:
             type: string
+            format: uuid
+            pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         discountRequestedInUSD:
           type: number
           format: double
@@ -89,29 +90,25 @@ components:
       type: object
       properties:
         quoteId:
-          type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          $ref: "#/components/schemas/UUID"
         orderId:
-          type: string
-          pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          $ref: "#/components/schemas/UUID"
         discountInUSD:
           type: number
           format: double
-          minimum: 0
         totalPriceWithDiscountInUSD:
           type: number
           format: double
-          minimum: 0
         createdAt:
           $ref: "#/components/schemas/OffsetDateTime"
     TYPE:
       type: string
       enum:
-        - ELECTRIC
-        - CLASSIC
-        - FOLK
-        - GIPSY
-        - JAZZ
+      - ELECTRIC
+      - CLASSIC
+      - FOLK
+      - GIPSY
+      - JAZZ
     UUID:
       type: string
       format: uuid
@@ -133,7 +130,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
     post:
       summary: Creates a guitar
       operationId: createGuitar
@@ -151,22 +148,22 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
   /guitars/pages:
     get:
       summary: Gets all guitars and paginate the results
       operationId: findAllGuitarsWithPagination
       parameters:
-        - name: pageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
+      - name: pageNumber
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          format: int32
       responses:
         "200":
           description: 'Success '
@@ -177,18 +174,17 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
   /guitars/{guitarId}:
     put:
       summary: Updates a guitar
       operationId: updateGuitar
       parameters:
-        - name: guitarId
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      - name: guitarId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
       requestBody:
         content:
           application/json:
@@ -207,16 +203,16 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
     get:
       summary: Gets a guitar
       operationId: getGuitar
       parameters:
-        - name: guitarId
-          in: path
-          required: true
-          schema:
-            $ref: "#/components/schemas/UUID"
+      - name: guitarId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
       responses:
         "200":
           description: 'Guitar update successful '
@@ -229,17 +225,16 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
     delete:
       summary: Deletes a guitar
       operationId: deleteGuitar
       parameters:
-        - name: guitarId
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      - name: guitarId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
       responses:
         "200":
           description: 'Guitar update successful '
@@ -248,7 +243,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Guitar Resource
+      - Guitar Resource
   /orders-requests:
     get:
       summary: Gets all orders
@@ -265,7 +260,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Order Request Resource
+      - Order Request Resource
     post:
       summary: Creates an order
       operationId: create
@@ -283,18 +278,17 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Order Request Resource
+      - Order Request Resource
   /orders-requests/{orderId}:
     get:
       summary: Gets an order
       operationId: getOrder
       parameters:
-        - name: orderId
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
       responses:
         "200":
           description: Success
@@ -307,7 +301,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Order Request Resource
+      - Order Request Resource
   /quotes:
     get:
       summary: Gets all quotes
@@ -324,7 +318,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Quote Resource
+      - Quote Resource
     post:
       summary: Creates a quote
       operationId: createQuote
@@ -342,7 +336,7 @@ paths:
         "500":
           description: Server unavailable
       tags:
-        - Quote Resource
+      - Quote Resource
 info:
   title: Guitar Heaven API
   version: 1.0.1
