@@ -1372,7 +1372,9 @@ For more information about OpenAPI examples,
 you [can check out the specification](https://swagger.io/docs/specification/v3_0/adding-examples/).
 
 To help you avoid wasting time with the examples, you can directly use the OpenAPI file
-``guitarheaven-with-examples.yaml``.
+``guitarheaven-with-examples-openapi.yaml``.
+
+Compare it with the last one to pinpoint the differences.
 
 On the Microcks web page, open then the service ``Guitar Heaven API with Examples - 1.0.1``.
 You will see the score is increased and now we have mocks.
@@ -1511,6 +1513,22 @@ In this workshop, we will implement the latter.
 Create the following class in the ``src/test/resouces`` directory and in the ``info.touret.guitarheaven.test.application`` package:
 
 ```java
+package info.touret.guitarheaven.test.application;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.microcks.testcontainers.MicrocksContainer;
+import io.github.microcks.testcontainers.model.TestRequest;
+import io.github.microcks.testcontainers.model.TestResult;
+import io.github.microcks.testcontainers.model.TestRunnerType;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @QuarkusTest
 public class APIContractTest {
     private final static Logger LOGGER = LoggerFactory.getLogger(APIContractTest.class);
