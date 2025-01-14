@@ -849,8 +849,11 @@ Hopefully, we can inject it as a field.
 
 At the end, you will have these API resource classes:
 
-**GuitarResource**let us revamp it without (mostly) impacting the Java code.
+**GuitarResource**
 
+Let us revamp it without (mostly) impacting the Java code.
+
+```java
 @ApplicationScoped
 public class GuitarResource implements GuitarsApi {
 
@@ -960,7 +963,7 @@ public class OrderRequestResource implements OrdersRequestsApi {
 public class QuoteResource implements QuotesApi {
 
 
-     private final QuoteService quoteService;
+    private final QuoteService quoteService;
     private final QuoteMapper quoteMapper;
 
     @Inject
@@ -983,7 +986,7 @@ public class QuoteResource implements QuotesApi {
 
 ```
 
-#### Mapper
+#### 📝 Mapper
 
 For the ``GuitarMapper``, ``OrderRequestMapper`` and ``QuoteMapper`` located in the
 ``info.touret.guitarheaven.application.mapper`` package, update the import declaration in the same way as before.
@@ -1000,7 +1003,7 @@ to
 import info.touret.guitarheaven.application.generated.model.GuitarDto;
 ```
 
-#### PaginationLinksFactory
+#### 📝 PaginationLinksFactory
 
 Update the import declaration as above and change the creation of the ``LinksDto`` class from:
 
@@ -1014,14 +1017,16 @@ to:
 return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.toString()).next(next.toString()).last(last.toString());
 ```
 
-#### Integration tests
+#### 📝 Integration tests
 
 Change then the DTO creation in the integration tests : ``GuitarResourceTest``,``OrderRequestResourceTest`` and
 ``QuoteResourceTest``.
 
 
 **``GuitarResourceTest``**
-Update the ``GuitarDto`` creation lines
+Update the ``GuitarDto`` creation:
+
+ℹ️ _For this test and the followings, you can replace the test methods by the code below_
 
 ```java
 @Order(1)
@@ -1062,7 +1067,7 @@ Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.applicatio
 The import of the ``ELECTRIC`` is now:
 
 ```java
-import static ``info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 ```
 
 Finally, change the name of the method called ``price`` to ``priceInUSD``.
@@ -2028,8 +2033,7 @@ Update your ``pom.xml`` to use it instead of ``guitarheaven-openapi.yaml`` in th
               </inputSpec>
 ```
 
-Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori
-.yaml``.  
+Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori.yaml``.  
 
 First, go to the ``guitarheaven-openapi-with-examples.yaml`` and merge the definition of the ``GET /guitars`` ``GET /guitars/pages`` endpoints.
 
