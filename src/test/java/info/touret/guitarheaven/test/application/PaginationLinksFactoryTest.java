@@ -1,7 +1,7 @@
 package info.touret.guitarheaven.test.application;
 
 import info.touret.guitarheaven.application.PaginationLinksFactory;
-import info.touret.guitarheaven.application.generated.model.*;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import info.touret.guitarheaven.domain.model.Page;
 import jakarta.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
+import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -31,8 +32,8 @@ class PaginationLinksFactoryTest {
     @BeforeEach
     void setUp() {
         paginationLinksFactory = new PaginationLinksFactory();
-        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
-        page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
+        page = new Page<GuitarDto>(1, List.of(new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9)), 0, false, false);
+
     }
 
     @Test
@@ -42,7 +43,7 @@ class PaginationLinksFactoryTest {
         assertFalse(page.hasNext());
         assertFalse(page.hasPrevious());
         assertEquals(1, page.pageCount());
-        assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().getGuitarId());
+        assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().guitarId());
     }
 
     @Test

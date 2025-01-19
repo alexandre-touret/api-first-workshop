@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.application.resource;
 
-import info.touret.guitarheaven.application.generated.model.*;
-import info.touret.guitarheaven.application.generated.resource.QuotesApi;
+import info.touret.guitarheaven.application.dto.QuoteDto;
 import info.touret.guitarheaven.application.mapper.QuoteMapper;
 import info.touret.guitarheaven.domain.model.Quote;
 import info.touret.guitarheaven.domain.service.QuoteService;
@@ -11,8 +10,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -26,7 +23,7 @@ import java.util.UUID;
 
 @ApplicationScoped
 @Path("/quotes")
-public class QuoteResource implements QuotesApi{
+public class QuoteResource {
 
 
     private final QuoteService quoteService;
@@ -38,14 +35,21 @@ public class QuoteResource implements QuotesApi{
         this.quoteMapper = quoteMapper;
     }
 
-
-    @Override
-    public Response createQuote(QuoteDto quoteDto) {
-        return Response.status(201).entity(Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)))).build();
+    @Operation(summary = "Creates a quote")
+    @APIResponse(responseCode = "201", description = "Success ")
+    @APIResponse(responseCode = "400", description = "Request invalid ")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @ResponseStatus(201)
+    @POST
+    public Map<String, UUID> createQuote(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = QuoteDto.class))) QuoteDto quoteDto) {
+        return Map.of("quoteId", quoteService.createQuote(quoteMapper.fromDto(quoteDto)));
     }
 
-    @Override
-    public Response findAll() {
-        return Response.ok(quoteService.findAll()).build();
+    @Operation(summary = "Gets all quotes")
+    @APIResponse(responseCode = "200", description = "Success ")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @GET
+    public List<Quote> findAll() {
+        return quoteService.findAll();
     }
 }
