@@ -455,7 +455,7 @@ public List<GuitarDto> retrieveAllGuitars() {
 
 For instance:
 
-* How the error descriptions sticks to their implementation?
+* How the error descriptions stick to their implementation?
 * How to avoid gaps between the specification and the implementation?
 * How to design & validate the API prior to coding it?
   ...
@@ -844,16 +844,12 @@ public Response deleteGuitar(@NotNull UUID guitarId) {
 }
 ```
 
-For the ``GuitarResource`` the UriInfo can't be injected into the method parameters anymore. 
-Hopefully, we can inject it as a field.
-
 At the end, you will have these API resource classes:
 
 **GuitarResource**
 
-Let us revamp it without (mostly) impacting the Java code.
-
 ```java
+
 @ApplicationScoped
 public class GuitarResource implements GuitarsApi {
 
@@ -1028,6 +1024,9 @@ Update the ``GuitarDto`` creation:
 
 ℹ️ _For this test and the followings, you can replace the test methods by the code below_
 
+**``GuitarResourceTest``**
+Update the ``GuitarDto`` creation lines
+
 ```java
 @Order(1)
 @Test
@@ -1067,6 +1066,146 @@ Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.applicatio
 The import of the ``ELECTRIC`` is now:
 
 ```java
+import static ``info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+```
+
+Finally, change the name of the method called ``price`` to ``priceInUSD``.
+
+**``OrderRequestResourceTest``**
+
+Update then the import declarations (see above in the API chapter)
+
+Update in the same way the ``OrderRequestDto`` creation:
+
+```java
+ @Test
+void should_create_order_successfully() {
+    var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());        
+    RestAssured.given()
+            .header("Content-Type", "application/json")
+            .and()
+            .body(orderDto)
+            .when()
+            .post("/orders-requests")
+            .then()
+            .statusCode(201)
+            .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+    }
+
+ @Test
+ void should_fail_creating_order() {
+ var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fdd3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());   
+      RestAssured.given()
+         .header("Content-Type", "application/json")
+         .and()
+         .body(orderDto)
+         .when()
+         .post("/orders-requests")
+         .then()
+         .statusCode(417)
+         .contentType(ContentType.fromContentType("application/problem+json"));
+
+}
+```
+
+**``QuoteResourceTest``**
+
+Update then the import declarations (see above in the API chapter) and the object creation:
+
+```java
+@Order(1)
+@Test
+void should_create_successfully() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(201)
+                .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+
+}
+
+@Order(3)
+@Test
+void should_create_and_fail() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+}
+```
+
+#### Unit Tests
+
+Go to the ``info.touret.guitarheaven.test.application.PaginationLinksFactoryTest`` test.
+
+Change the ``setUp`` method as following:
+
+```java
+@Order(1)
+@Test
+void should_create_successfully() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(201)
+            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+}
+@Order(3)
+@Test
+void should_create_and_fail() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+    }
+```
+@BeforeEach
+    void setUp() {
+        paginationLinksFactory = new PaginationLinksFactory();
+        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
+        page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
+    }
+
+```
+And update the ``should_return_a_list_successfully()`` method as below:
+Update then the import declarations (see above in the API chapter)
+
+Fix the static import.
+
+Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.application.generated.model.TYPEDto`` class.
+
+The import of the ``ELECTRIC`` is now:
+
+```java
+@Test
+void should_return_a_list_successfully() throws MalformedURLException, URISyntaxException {
+  when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
+  paginationLinksFactory.createLinksDto(uriInfo, page, 10);
+  assertFalse(page.hasNext());
+  assertFalse(page.hasPrevious());
+  assertEquals(1, page.pageCount());
+  assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().getGuitarId());
+}
 import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 ```
 
@@ -1598,7 +1737,7 @@ The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challen
 
 It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
-### 🛠️ Draft an event-driven API
+### 🛠️ Draf an event-driven API
 
 In this chapter, we will 
 * See how to validate an AsyncAPI file
