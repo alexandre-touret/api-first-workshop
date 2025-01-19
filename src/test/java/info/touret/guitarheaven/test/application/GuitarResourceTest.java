@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.generated.model.GuitarDto;
-import info.touret.guitarheaven.application.generated.model.TYPEDto;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.UUID;
 
-import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTest
@@ -26,22 +25,16 @@ class GuitarResourceTest {
     @Test
     void should_get_a_list_successfully() {
         RestAssured.given()
-                .get("/guitars?pageNumber=0&pageSize=10")
+                .get("/guitars")
                 .then()
                 .statusCode(200)
-                .assertThat().body("isEmpty()", Is.is(false))
-                .assertThat().body("links.size()", Is.is(5))
-                .assertThat().body("links.self", IsAnything.anything())
-                .assertThat().body("links.next", IsAnything.anything())
-                .assertThat().body("links.last", IsAnything.anything())
-                .assertThat().body("links.prev", IsAnything.anything())
-                .assertThat().body("links.first", IsAnything.anything());
+                .assertThat().body("isEmpty()", Is.is(false));
     }
 
     @Order(2)
     @Test
     void should_create_successfully() {
-        var guitar = new GuitarDto().guitarId(null).name("Gibson ES 135").type(TYPEDto.ELECTRIC).priceInUSD(1500.0).stock(10);
+        var guitar = new GuitarDto(null, "Gibson ES 135", ELECTRIC, 1500.0, 10);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -56,7 +49,7 @@ class GuitarResourceTest {
     @Order(3)
     @Test
     void should_update_successfully() {
-        var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).priceInUSD(2500.0).stock(9);
+        var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9);
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -109,7 +102,7 @@ class GuitarResourceTest {
     @Test
     void should_find_guitar_page_successfully() {
         RestAssured.given()
-                .get("/guitars?pageNumber=0&pageSize=10")
+                .get("/guitars/pages?pageNumber=0&pageSize=10")
                 .then()
                 .statusCode(200)
                 .assertThat().body("links.size()", Is.is(5))

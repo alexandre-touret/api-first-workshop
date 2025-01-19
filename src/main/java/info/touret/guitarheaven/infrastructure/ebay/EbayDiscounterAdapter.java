@@ -2,40 +2,31 @@ package info.touret.guitarheaven.infrastructure.ebay;
 
 
 import info.touret.guitarheaven.domain.port.SupplierCatalogPort;
-import info.touret.guitarheaven.infrastructure.ebay.api.ItemSummaryApi;
-import io.quarkus.rest.client.reactive.ClientExceptionMapper;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.OptionalDouble;
 
 @ApplicationScoped
 public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EbayDiscounterAdapter.class);
     public static final int SEARCH_THRESHOLD = 1;
     @RestClient
-    private ItemSummaryApi ebayClient;
+    private EbayClient ebayClient;
 
     @Override
     public OptionalDouble getAverageGuitarPrice(String guitarName) {
+        LOGGER.info("Searching Price on EBay for guitar {}", guitarName);
+        var searchPagedCollection = ebayClient.searchByName(guitarName);
 
-        var searchPagedCollection = ebayClient.search(guitarName, "foo", "foo", "foo");
-
-        if (searchPagedCollection.getTotal() > SEARCH_THRESHOLD) {
-            return searchPagedCollection.getItemSummaries()
+        if (searchPagedCollection.total() > SEARCH_THRESHOLD) {
+            return searchPagedCollection.itemSummaries()
                     .stream()
-                    .mapToDouble(value -> value.getPrice().getValue().doubleValue())
+                    .mapToDouble(value -> value.price().value())
                     .average();
         } else return OptionalDouble.empty();
-    }
-
-    @ClientExceptionMapper
-    static RuntimeException toException(Response response) {
-        if (response.getStatus() == 400) {
-            return new RuntimeException("The remote service responded with HTTP 400");
-        }
-        // Disabling some issues with the EBAY Mock
-        return null;
     }
 }

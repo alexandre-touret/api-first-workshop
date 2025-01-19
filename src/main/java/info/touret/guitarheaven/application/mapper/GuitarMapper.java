@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.application.mapper;
 
-import info.touret.guitarheaven.application.generated.model.GuitarDto;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import info.touret.guitarheaven.domain.model.Guitar;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

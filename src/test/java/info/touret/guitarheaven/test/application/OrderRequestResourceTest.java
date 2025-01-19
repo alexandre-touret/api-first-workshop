@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.generated.model.OrderRequestDto;
+import info.touret.guitarheaven.application.dto.OrderRequestDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -28,7 +28,7 @@ class OrderRequestResourceTest {
 
     @Test
     void should_create_order_successfully() {
-        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());
+        var orderDto = new OrderRequestDto(null, List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
@@ -38,11 +38,12 @@ class OrderRequestResourceTest {
                 .then()
                 .statusCode(201)
                 .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+
     }
 
     @Test
     void should_fail_creating_order() {
-        var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fdd3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());
+        var orderDto = new OrderRequestDto(null, List.of(UUID.fromString("625566d4-fee3-46dd-8bcb-426cffb4d685")), 10D, OffsetDateTime.now());
         RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
