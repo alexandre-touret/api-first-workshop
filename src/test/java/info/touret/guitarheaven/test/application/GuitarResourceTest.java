@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.test.application;
 
-import info.touret.guitarheaven.application.generated.model.*;
+import info.touret.guitarheaven.application.dto.GuitarDto;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.UUID;
 
-import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+import static info.touret.guitarheaven.application.dto.GuitarDto.TYPE.ELECTRIC;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTest
@@ -34,7 +34,8 @@ class GuitarResourceTest {
     @Order(2)
     @Test
     void should_create_successfully() {
-        var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).priceInUSD(2500D).stock(9);        RestAssured.given()
+        var guitar = new GuitarDto(null, "Gibson ES 135", ELECTRIC, 1500.0, 10);
+        RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
                 .body(guitar)
@@ -48,7 +49,8 @@ class GuitarResourceTest {
     @Order(3)
     @Test
     void should_update_successfully() {
-        var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).priceInUSD(2500.0).stock(9);        RestAssured.given()
+        var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9);
+        RestAssured.given()
                 .header("Content-Type", "application/json")
                 .and()
                 .body(guitar)

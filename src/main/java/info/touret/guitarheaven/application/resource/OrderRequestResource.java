@@ -1,7 +1,6 @@
 package info.touret.guitarheaven.application.resource;
 
-import info.touret.guitarheaven.application.generated.model.*;
-import info.touret.guitarheaven.application.generated.resource.OrdersRequestsApi;
+import info.touret.guitarheaven.application.dto.OrderRequestDto;
 import info.touret.guitarheaven.application.mapper.OrderRequestMapper;
 import info.touret.guitarheaven.domain.service.OrderRequestService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,7 +24,7 @@ import java.util.UUID;
 
 @ApplicationScoped
 @Path("/orders-requests")
-public class OrderRequestResource implements OrdersRequestsApi{
+public class OrderRequestResource {
 
     private final OrderRequestService orderRequestService;
     private final OrderRequestMapper orderRequestMapper;
@@ -35,19 +34,32 @@ public class OrderRequestResource implements OrdersRequestsApi{
         this.orderRequestMapper = orderRequestMapper;
     }
 
-    @Override
-    public Response create(OrderRequestDto order) {
-        return Response.status(201).entity(Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)))).build();
+    @Operation(summary = "Creates an order")
+    @APIResponse(responseCode = "201", description = "Order creation successful")
+    @APIResponse(responseCode = "400", description = "The request is invalid (probably the guitars IDs)")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @ResponseStatus(201)
+    @POST
+    public Map<String, UUID> create(@RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = OrderRequestDto.class))) OrderRequestDto order) {
+        return Map.of("orderId", orderRequestService.create(orderRequestMapper.toOrder(order)));
     }
 
-    @Override
-    public Response getAllOrders() {
-        return Response.ok(orderRequestMapper.toOrderDtoList(orderRequestService.findAllOrders())).build();
+    @Operation(summary = "Gets all orders")
+    @APIResponse(responseCode = "200", description = "Success")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @GET
+    public List<OrderRequestDto> getAllOrders() {
+        return orderRequestMapper.toOrderDtoList(orderRequestService.findAllOrders());
     }
 
-    @Override
-    public Response getOrder(UUID orderId) {
-        return Response.ok(orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
-                () -> new WebApplicationException(Response.Status.NOT_FOUND)))).build();
+    @Operation(summary = "Gets an order")
+    @APIResponse(responseCode = "200", description = "Success")
+    @APIResponse(responseCode = "400", description = "The request is invalid (probably the guitars IDs)")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @GET()
+    @Path("{orderId}")
+    public OrderRequestDto getOrder(@NotNull UUID orderId) {
+        return orderRequestMapper.toOrderDto(orderRequestService.findByUUID(orderId).orElseThrow(
+                () -> new WebApplicationException("Order "+orderId+ "not found",Response.Status.NOT_FOUND)));
     }
 }

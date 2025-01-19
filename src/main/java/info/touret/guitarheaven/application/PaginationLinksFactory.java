@@ -1,6 +1,6 @@
 package info.touret.guitarheaven.application;
 
-import info.touret.guitarheaven.application.generated.model.*;
+import info.touret.guitarheaven.application.dto.LinksDto;
 import info.touret.guitarheaven.domain.model.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.UriInfo;
@@ -35,5 +35,6 @@ public class PaginationLinksFactory {
         var prev = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageNumber() >= 1 ? page.pageNumber() : 0, numberOfElementsPerPage)).toURL();
         var next = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageNumber() >= page.pageCount() + 1 ? page.pageNumber() : page.pageNumber() + 1, numberOfElementsPerPage)).toURL();
         var last = new URI(String.format(URL_FORMAT_PATTERN, baseUri, page.pageCount() - 1, numberOfElementsPerPage)).toURL();
-        return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.toString()).next(next.toString()).last(last.toString());    }
+        return new LinksDto(self, first, prev, next, last);
+    }
 }
