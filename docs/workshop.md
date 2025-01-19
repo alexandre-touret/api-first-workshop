@@ -688,34 +688,6 @@ Add then the following plugin in the ``build>plugins>`` section:
 
 This configuration enables the support of two separate source folders in your project.
 
-Now this plugin should be configured as following:
-
-```xml
-
-<plugin>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>${compiler-plugin.version}</version>
-    <configuration>
-        <parameters>true</parameters>
-        <annotationProcessorPaths>
-            <path>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${org.mapstruct.version}</version>
-            </path>
-            <!-- other annotation processors -->
-        </annotationProcessorPaths>
-        <compilerArgs>
-            <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
-            <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
-            <arg>-Amapstruct.verbose=true</arg>
-            <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
-        </compilerArgs>
-        <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
-    </configuration>
-</plugin>
-```
-
 ✅ Now let us check it. Run the following command:
 
 ```bash
@@ -807,7 +779,6 @@ For instance, from :
 ```java
 import info.touret.guitarheaven.application.dto.GuitarDto;
 import info.touret.guitarheaven.application.dto.PageableGuitarDto;
-
 ```
 
 to
@@ -876,7 +847,6 @@ At the end, you will have these API resource classes:
 **GuitarResource**
 
 ```java
-
 @ApplicationScoped
 public class GuitarResource implements GuitarsApi {
 
@@ -939,15 +909,12 @@ public class GuitarResource implements GuitarsApi {
             throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }
 ```
 
 **OrderRequestResource**
 
 ```java
-
 @ApplicationScoped
 public class OrderRequestResource implements OrdersRequestsApi {
 
@@ -981,10 +948,8 @@ public class OrderRequestResource implements OrdersRequestsApi {
 **QuoteResource**
 
 ```java
-
 @ApplicationScoped
 public class QuoteResource implements QuotesApi {
-
 
     private final QuoteService quoteService;
     private final QuoteMapper quoteMapper;
@@ -994,7 +959,6 @@ public class QuoteResource implements QuotesApi {
         this.quoteService = quoteService;
         this.quoteMapper = quoteMapper;
     }
-
 
     @Override
     public Response createQuote(QuoteDto quoteDto) {
@@ -1044,7 +1008,6 @@ return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.to
 
 Change then the DTO creation in the integration tests : ``GuitarResourceTest``,``OrderRequestResourceTest`` and
 ``QuoteResourceTest``.
-
 
 **``GuitarResourceTest``**
 Update the ``GuitarDto`` creation:
@@ -1204,13 +1167,6 @@ void should_create_and_fail() {
             .then()
             .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
     }
-```
-@BeforeEach
-    void setUp() {
-        paginationLinksFactory = new PaginationLinksFactory();
-        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
-        page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
-    }
 
 @Order(1)
 @Test
@@ -1240,20 +1196,6 @@ void should_create_and_fail() {
             .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
     }
 ```
-
-Update then the import declarations (see above in the API chapter)
-
-Fix the static import.
-
-Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.application.generated.model.TYPEDto`` class.
-
-The import of the ``ELECTRIC`` is now:
-
-```java
-import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
-```
-
-Finally, change the name of the method called ``price`` to ``priceInUSD``.
 
 **``OrderRequestResourceTest``**
 
