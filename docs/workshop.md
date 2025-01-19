@@ -595,7 +595,7 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 
 ### 📝 Update the Maven configuration
 
-ℹ️ We will set up Maven to automatically generate the server code (i.e., model classes and API interfaces) from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
+ℹ️ We will set up Maven to automatically generate the server code (i.e., model classes and API interfaces) from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml`` file.
 
 The corresponding source code will be generated in the ``target/generated-sources/openapi`` directory.
 
@@ -842,6 +842,13 @@ public Response deleteGuitar(@NotNull UUID guitarId) {
 }
 ```
 
+Add the following imports:
+
+```java
+import jakarta.ws.rs.core.Response;
+import jakarta.enterprise.context.ApplicationScoped;
+```
+
 At the end, you will have these API resource classes:
 
 **GuitarResource**
@@ -911,6 +918,8 @@ public class GuitarResource implements GuitarsApi {
     }
 }
 ```
+
+Don't take care of the mapper related errors. We will fix them later on.
 
 **OrderRequestResource**
 
@@ -1015,36 +1024,38 @@ Update the ``GuitarDto`` creation:
 ℹ️ _For this test and the followings, you can replace the test methods by the code below_
 
 **``GuitarResourceTest``**
+
 Update the ``GuitarDto`` creation lines
 
 ```java
-@Order(1)
+@Order(2)
 @Test
 void should_create_successfully() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    var guitar = new GuitarDto().guitarId(null).name("Gibson ES 135").type(TYPEDto.ELECTRIC).priceInUSD(1500.0).stock(10);
     RestAssured.given()
-    .header("Content-Type", "application/json")
+            .header("Content-Type", "application/json")
             .and()
-            .body(quote)
+            .body(guitar)
             .when()
-            .post("/quotes")
+            .post("/guitars")
             .then()
             .statusCode(201)
-            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+            .assertThat().body("guitarId", MatchesPattern.matchesPattern(UUID_REGEX));
 }
+
 @Order(3)
 @Test
-void should_create_and_fail() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+void should_update_successfully() {
+    var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).priceInUSD(2500.0).stock(9);
     RestAssured.given()
-    .header("Content-Type", "application/json")
+            .header("Content-Type", "application/json")
             .and()
-            .body(quote)
+            .body(guitar)
             .when()
-            .post("/quotes")
+            .put("/guitars/628766d4-fee3-46dd-8bcb-426cffb4d585")
             .then()
-            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
-    }
+            .statusCode(200);
+}
 ```
 
 Update then the import declarations (see above in the API chapter)
@@ -1134,68 +1145,6 @@ void should_create_and_fail() {
 }
 ```
 
-**``GuitarResourceTest``**
-Update the ``GuitarDto`` creation:
-
-ℹ️ _For this test and the followings, you can replace the test methods by the code below_
-
-```java
-@Order(1)
-@Test
-void should_create_successfully() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
-    RestAssured.given()
-    .header("Content-Type", "application/json")
-            .and()
-            .body(quote)
-            .when()
-            .post("/quotes")
-            .then()
-            .statusCode(201)
-            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
-}
-@Order(3)
-@Test
-void should_create_and_fail() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
-    RestAssured.given()
-    .header("Content-Type", "application/json")
-            .and()
-            .body(quote)
-            .when()
-            .post("/quotes")
-            .then()
-            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
-    }
-
-@Order(1)
-@Test
-void should_create_successfully() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
-    RestAssured.given()
-    .header("Content-Type", "application/json")
-            .and()
-            .body(quote)
-            .when()
-            .post("/quotes")
-            .then()
-            .statusCode(201)
-            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
-}
-@Order(3)
-@Test
-void should_create_and_fail() {
-    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
-    RestAssured.given()
-    .header("Content-Type", "application/json")
-            .and()
-            .body(quote)
-            .when()
-            .post("/quotes")
-            .then()
-            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
-    }
-```
 
 **``OrderRequestResourceTest``**
 
@@ -1280,7 +1229,7 @@ Change the ``setUp`` method as following:
 @BeforeEach
     void setUp() {
         paginationLinksFactory = new PaginationLinksFactory();
-        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
+        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(ELECTRIC).priceInUSD(2500D).stock(9).build());
         page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
     }
 
@@ -1474,8 +1423,8 @@ To be in your customer's shoes, we will experiment how they would use your API d
 After testing the API through a [Swagger UI](https://editor.swagger.io/)
 or [Redocly console](https://redocly.github.io/redoc/), they would probably integrate your API and mock it.
 
-Among other things, mocking external API help isolate the code from external resources and streamline the SDLC (Software
-Development LifeCycle).
+Among other things, mocking external API help isolate the code from external resources and streamline the [SDLC (Software
+Development LifeCycle)](https://aws.amazon.com/what-is/sdlc/).
 
 Some projects could help in this field : [Microcks](https://microcks.io/), [Wiremock](https://wiremock.org/), [MockServer](https://www.mock-server.com/).
 
@@ -2043,7 +1992,6 @@ quarkus.openapi-generator.codegen.input-base-dir=src/main/resources/openapi-clie
 quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.base-package=info.touret.guitarheaven.infrastructure.ebay
 quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.model-name-suffix=Dto
 quarkus.openapi-generator.codegen.spec.ebay_buy_openapi_yaml.use-bean-validation=true
-
 ```
 
 In both the files ``src/main/resources/application.properties`` and ``src/test/resources/application.properties`` add the following properties:
@@ -2063,6 +2011,15 @@ Remove the others.
 Modify the adapter with the following code:
 
 ```java
+import info.touret.guitarheaven.domain.port.SupplierCatalogPort;
+import info.touret.guitarheaven.infrastructure.ebay.api.ItemSummaryApi;
+import io.quarkus.rest.client.reactive.ClientExceptionMapper;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.OptionalDouble;
+
 @ApplicationScoped
 public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
@@ -2094,6 +2051,17 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
 }
 ```
 
+Update then the package imports:
+
+From:
+
+```java
+
+```
+
+To:
+
+
 
 ### Verification
 
@@ -2110,6 +2078,18 @@ Check then if the integration tests run well:
 ```shell
 $ ./mvnw clean verify
  ```
+
+If you have this issue:
+
+```bash
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean (default-clean) on project guitar-heaven: Failed to clean project: Failed to delete /home/alexandre/dev/src/api-first-workshop/target/generated-sources/asyncapi/info/touret/guitarheaven/infrastructure/kafka/generated/GuitarRequest.java -> [Help
+```
+
+Run the following command:
+
+```shell
+$ sudo rm -rf target/*
+```
 
 Now you can run the Quarkus app. The modification should be transparent in a customer point of view.
 
@@ -2160,11 +2140,25 @@ Update your ``pom.xml`` to use it instead of ``guitarheaven-openapi.yaml`` in th
 
 Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori.yaml``.  
 
-First, go to the ``guitarheaven-openapi-with-examples.yaml`` and merge the definition of the ``GET /guitars`` ``GET /guitars/pages`` endpoints.
+First, go to the ``guitarheaven-openapi-with-examples.yaml`` and merge the definition of the ``GET /guitars`` and ``GET /guitars/pages`` endpoints.
 
 For the following steps, you can use [the Swagger OpenAPI Editor](https://editor.swagger.io/).
 
 Add the parameters and examples of the second one to the first one and remove the ``GET /guitars/pages`` endpoint.
+
+Rename the ``PageableGuitar`` schema to ``Guitars``:
+
+```yaml
+    Guitars:
+      type: object
+      properties:
+        guitars:
+          type: array
+          items:
+            $ref: "#/components/schemas/Guitar"
+        links:
+          $ref: "#/components/schemas/Links"
+```
 
 Change the schema of the response content schema to : 
 
@@ -2177,7 +2171,11 @@ content:
         $ref: "#/components/schemas/Guitars"
 ```
 
-Rename the schema ``PageableGuitar`` to ``Guitars``
+Rename the schema ``Guitar`` to ``Guitars``
+
+```yaml
+$ref: "#/components/schemas/Guitars"
+```
 
 We can also improve the constraints on the parameters adding the ``required``, ``maximum`` and ``minimum`` constraints.
 
@@ -2245,6 +2243,22 @@ You should therefore have the following endpoint:
       tags:
         - Guitar Resource
 
+```
+
+Rename the former API definition (``guitarheaven-with-examples-openapi-ORI.yaml``) with the following information:
+
+```yaml
+info:
+  title: Guitar Heaven API with Examples ORI
+  version: 1.0.1
+  description: "Your guitar is probably here, check it out!"
+  contact:
+    name: Alexandre Touret
+    email: techsupport@example.com
+    url: https://blog.touret.info/contact/
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
 ```
 
 To check this API, you can use ``vacuum``:
