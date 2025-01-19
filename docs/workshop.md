@@ -359,7 +359,7 @@ $ ./mvnw quarkus:dev
 👀 Wait a while until you get the following output:
 
 ```jshelllanguage
-2024 - 12 - 26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
+2024-12-26 22:27:42,814INFO[io.quarkus](Quarkus Main Thread)guitar-heaven1.0.0-SNAPSHOT on JVM(powered by Quarkus3.17.4)started in27.006s.Listening on:http://localhost:8080
 2024-12-26 22:27:42,815INFO[io.quarkus](Quarkus Main Thread)Profile dev activated.Live Coding activated.
 2024-12-26 22:27:42,816INFO[io.quarkus](Quarkus Main Thread)Installed features:[agroal,cdi,hibernate-orm,hibernate-orm-panache,hibernate-validator,jdbc-postgresql,kafka-client,messaging,messaging-kafka,microcks,narayana-jta,rest,rest-client,rest-client-jackson,rest-jackson,resteasy-problem,smallrye-context-propagation,smallrye-openapi,swagger-ui,vertx]
 ```
@@ -399,7 +399,7 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/dev
 
 ### 👀 From a user perspective
 
-Click then to ``SwaggerUI`` or go to the ``/q/swagger-ui/`` URI.
+Click then to ``SwaggerUI`` or go directly to the ``/q/swagger-ui/`` URI.
 
 For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swagger-ui``.
 
@@ -423,9 +423,9 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 > ```
 >
 
-### Under the Hood
+### 👀 Under the Hood
 
-👀 Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. Look into how the API documentation is generated.
+Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. Look into how the API documentation is generated.
 
 ```shell
 tree src/main/java/info/touret/guitarheaven/application/
@@ -451,11 +451,11 @@ public List<GuitarDto> retrieveAllGuitars() {
 }
 ```
 
-#### 👀 Pinpoint drawbacks
+#### Pinpoint drawbacks
 
-A bunch of examples:
+For instance:
 
-* How the error descriptions stick to their implementation?
+* How the error descriptions sticks to their implementation?
 * How to avoid gaps between the specification and the implementation?
 * How to design & validate the API prior to coding it?
   ...
@@ -498,7 +498,7 @@ Examples     | 0      | 54       | 0
 * Understand your API
 * Build mocks and the API client tooling.
 
-#### Check the OpenAPI manually & pinpoint the differences
+#### Check manually the OpenAPI & pinpoint the differences
 
 Open the OpenAPI
 
@@ -560,7 +560,7 @@ info    [response-property-pattern-removed] at /data/src/main/resources/openapi/
 You can also pinpoint the breaking changes with the following command:
 
 ```shell
-bin/oasdiff.sh breaking /data/src/main/resources/openapi/guitarheaven-code-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+$ bin/oasdiff.sh breaking /data/src/main/resources/openapi/guitarheaven-code-first-openapi.yaml /data/src/main/resources/openapi/guitarheaven-openapi.yaml
 ```
 
 and get the output:
@@ -593,15 +593,15 @@ error   [request-property-type-changed] at /data/src/main/resources/openapi/guit
 > - How to easily remove the boilerplate code
 > - Stick to the specification
 
-### 📝 Updating the Maven configuration
+### 📝 Update the Maven configuration
 
-ℹ️ We will set up Maven to automatically generate the server code from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
+ℹ️ We will set up Maven to automatically generate the server code (i.e., model classes and API interfaces) from the OpenAPI file stored into the ``src/main/resources/openapi/guitarheaven-openapi.yaml``.
 
 The corresponding source code will be generated in the ``target/generated-sources/openapi`` directory.
 
-Let us do it now!
+Let us do it!
 
-* Stop now the Quarkus application by typing ``q`` in the command prompt.
+* Stop the Quarkus application by typing ``q`` in the command prompt.
 * Go to the ``pom.xml`` and update it as following:
 
 In the ``build>plugins`` section, add the following plugin:
@@ -651,8 +651,7 @@ In the ``build>plugins`` section, add the following plugin:
 
 ```
 
-The plugin generates useless classes for Quarkus. We can ignore their creation adding the file using the
-``<ignoreFilesOverride>`` feature and creating the file ``.openapi-generator-ignore`` at the root of your project:
+The plugin generates also useless classes for Quarkus. We can ignore their creation adding the file using the ``<ignoreFilesOverride>`` feature and creating the file ``.openapi-generator-ignore`` at the root of your project:
 
 ```properties
 # Exclude Configurator classes
@@ -689,33 +688,6 @@ Add then the following plugin in the ``build>plugins>`` section:
 
 This configuration enables the support of two separate source folders in your project.
 
-Now this plugin should be configured as following:
-
-```xml
-
-<plugin>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>${compiler-plugin.version}</version>
-    <configuration>
-        <parameters>true</parameters>
-        <annotationProcessorPaths>
-            <path>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${org.mapstruct.version}</version>
-            </path>
-            <!-- other annotation processors -->
-        </annotationProcessorPaths>
-        <compilerArgs>
-            <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
-            <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
-            <arg>-Amapstruct.verbose=true</arg>
-            <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
-        </compilerArgs>
-        <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
-    </configuration>
-</plugin>
-```
 
 ✅ Now let us check it. Run the following command:
 
@@ -784,6 +756,12 @@ Normally, it ends successfully and you would get such an output:
 
 ```
 
+The generated classes should be located then in the ``target/generated-sources/open-api-yaml`` folder.
+
+Reload the project in your IDE to detect this new source folder.
+
+![reload_maven_vscode](./img/reload_maven_project.png)
+
 ### 📝 Update the server code
 
 #### DTO
@@ -845,7 +823,7 @@ Change all the method declarations.
 
 Remove the ``jakarta.validation.constraints`` annotations such as ``@NotNull``
 
-Instead of returning a POJO, you will have now to return a ``Response`` object.
+Instead of returning a POJO, you will have now to return a ``jakarta.ws.rs.core.Response`` object.
 
 For instance:
 
@@ -866,12 +844,16 @@ public Response deleteGuitar(@NotNull UUID guitarId) {
 }
 ```
 
+For the ``GuitarResource`` the UriInfo can't be injected into the method parameters anymore. 
+Hopefully, we can inject it as a field.
+
 At the end, you will have these API resource classes:
 
 **GuitarResource**
 
-```java
+Let us revamp it without (mostly) impacting the Java code.
 
+```java
 @ApplicationScoped
 public class GuitarResource implements GuitarsApi {
 
@@ -907,9 +889,13 @@ public class GuitarResource implements GuitarsApi {
 
     @Override
     public Response deleteGuitar(UUID guitarId) {
-        guitarService.deleteGuitarByUUID(guitarId);
+        var deleted = guitarService.deleteGuitarByUUID(guitarId);
+        if (!deleted) {
+            throw new WebApplicationException("Guitar {} not found", Response.Status.NOT_FOUND);
+        }
         return Response.noContent().build();
     }
+
 
     @Override
     public Response getGuitar(UUID guitarId) {
@@ -930,6 +916,7 @@ public class GuitarResource implements GuitarsApi {
             throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }
 ```
@@ -999,7 +986,7 @@ public class QuoteResource implements QuotesApi {
 
 ```
 
-#### Mapper
+#### 📝 Mapper
 
 For the ``GuitarMapper``, ``OrderRequestMapper`` and ``QuoteMapper`` located in the
 ``info.touret.guitarheaven.application.mapper`` package, update the import declaration in the same way as before.
@@ -1016,7 +1003,7 @@ to
 import info.touret.guitarheaven.application.generated.model.GuitarDto;
 ```
 
-#### LinksFactory
+#### 📝 PaginationLinksFactory
 
 Update the import declaration as above and change the creation of the ``LinksDto`` class from:
 
@@ -1030,28 +1017,168 @@ to:
 return new LinksDto().self(self.toString()).first(first.toString()).prev(prev.toString()).next(next.toString()).last(last.toString());
 ```
 
-#### Integration tests
+#### 📝 Integration tests
 
 Change then the DTO creation in the integration tests : ``GuitarResourceTest``,``OrderRequestResourceTest`` and
 ``QuoteResourceTest``.
 
-For example, change
+
+**``GuitarResourceTest``**
+Update the ``GuitarDto`` creation:
+
+ℹ️ _For this test and the followings, you can replace the test methods by the code below_
 
 ```java
-var guitar = new GuitarDto(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), "Gibson ES 335", ELECTRIC, 2500.0, 9);
+@Order(1)
+@Test
+void should_create_successfully() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(201)
+            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+}
+@Order(3)
+@Test
+void should_create_and_fail() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+    }
 ```
 
-to
+Update then the import declarations (see above in the API chapter)
+
+Fix the static import.
+
+Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.application.generated.model.TYPEDto`` class.
+
+The import of the ``ELECTRIC`` is now:
 
 ```java
-var guitar = new GuitarDto().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 135").type(ELECTRIC).price(2500.0).stock(9);
+import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 ```
 
-Update then the import declarations.
+Finally, change the name of the method called ``price`` to ``priceInUSD``.
+
+**``OrderRequestResourceTest``**
+
+Update then the import declarations (see above in the API chapter)
+
+Update in the same way the ``OrderRequestDto`` creation:
+
+```java
+ @Test
+void should_create_order_successfully() {
+    var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());        
+    RestAssured.given()
+            .header("Content-Type", "application/json")
+            .and()
+            .body(orderDto)
+            .when()
+            .post("/orders-requests")
+            .then()
+            .statusCode(201)
+            .assertThat().body("orderId", MatchesPattern.matchesPattern(UUID_REGEX));
+    }
+
+ @Test
+ void should_fail_creating_order() {
+ var orderDto = new OrderRequestDto().orderId(null).guitarIds(List.of(UUID.fromString("628766d4-fdd3-46dd-8bcb-426cffb4d685"))).discountRequestedInUSD(10D).createdAt(OffsetDateTime.now());   
+      RestAssured.given()
+         .header("Content-Type", "application/json")
+         .and()
+         .body(orderDto)
+         .when()
+         .post("/orders-requests")
+         .then()
+         .statusCode(417)
+         .contentType(ContentType.fromContentType("application/problem+json"));
+
+}
+```
+
+**``QuoteResourceTest``**
+
+Update then the import declarations (see above in the API chapter) and the object creation:
+
+```java
+@Order(1)
+@Test
+void should_create_successfully() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(201)
+                .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+
+}
+
+@Order(3)
+@Test
+void should_create_and_fail() {
+  var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+  RestAssured.given()
+        .header("Content-Type", "application/json")
+                .and()
+                .body(quote)
+                .when()
+                .post("/quotes")
+                .then()
+                .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+}
+```
+
+#### Unit Tests
+
+Go to the ``info.touret.guitarheaven.test.application.PaginationLinksFactoryTest`` test.
+
+Change the ``setUp`` method as following:
+
+```java
+@BeforeEach
+    void setUp() {
+        paginationLinksFactory = new PaginationLinksFactory();
+        List<GuitarDto> guitarDtoList = List.of(GuitarDto.builder().guitarId(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585")).name("Gibson ES 335").type(TYPEDto.ELECTRIC).priceInUSD(2500D).stock(9).build());
+        page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
+    }
+
+```
+And update the ``should_return_a_list_successfully()`` method as below:
+
+```java
+@Test
+void should_return_a_list_successfully() throws MalformedURLException, URISyntaxException {
+  when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
+  paginationLinksFactory.createLinksDto(uriInfo, page, 10);
+  assertFalse(page.hasNext());
+  assertFalse(page.hasPrevious());
+  assertEquals(1, page.pageCount());
+  assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().getGuitarId());
+}
+```
+
+Update the Import to use the generated code instead of the deleted one.
 
 #### 🛠 Validation
 
-Run the following command:
+Run finally the following command:
 
 ```shell
 $ ./mvnw clean verify
@@ -1059,122 +1186,34 @@ $ ./mvnw clean verify
 
 It might be successful.
 
-Now, you can run again the application and go to the ``dev-ui``
+Now, you can run again the application and go to the ``dev-ui``:
 
 ```shell
 $ ./mvnw quarkus:dev
 ```
 
-## Improve the OpenAPI contract
-
+## Improve the OpenAPI contracts
 ### 👀 Object Naming
 
-If we look into our API specification carefully, we can guess our backend is built on top of a Java platform.
-
-To make it fully agnostic, let us revamp it without (mostly) impacting the Java code.
+It is important to make our API fully agnostic. What is why we removed the ``Dto`` suffixes and made some arrangements with the OpenAPI code:
 
 #### 📝 Dto
 
-In the ``guitarheaven-openapi.yaml`` file, remove all the ``Dto`` suffixes.
-
-In the ``pom.xml``, add the following configuration parameter into the
+To do that and keep them in the code we applied the following configuration parameter into the
 ``build>plugins>openapi-generator-maven-plugin>configuration``
 
 ```xml
-
 <modelNameSuffix>Dto</modelNameSuffix>
 ```
 
-You will therefore have the following configuration for this plugin:
-
-```xml
-
-<plugin>
-    <groupId>org.openapitools</groupId>
-    <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>7.9.0</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-            <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml</inputSpec>
-                <generatorName>jaxrs-spec</generatorName>
-                <configOptions>
-                    <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
-                    <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
-                    <library>quarkus</library>
-                    <dateLibrary>java8</dateLibrary>
-                    <generateBuilders>true</generateBuilders>
-                    <openApiNullable>false</openApiNullable>
-                    <useBeanValidation>true</useBeanValidation>
-                    <generatePom>false</generatePom>
-                    <interfaceOnly>true</interfaceOnly>
-                    <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
-                    <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
-                    <returnResponse>true</returnResponse>
-                    <sourceFolder>.</sourceFolder>
-                    <useJakartaEe>true</useJakartaEe>
-                    <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
-                    <useSwaggerAnnotations>false</useSwaggerAnnotations>
-                    <withXml>false</withXml>
-                </configOptions>
-                <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
-                <modelNameSuffix>Dto</modelNameSuffix>
-            </configuration>
-        </execution>
-    </executions>
-
-</plugin>
-
-```
-
-Stop the quarkus dev, and generate again the code
-
-```shell
-$ ./mvnw clean compile
-```
-
-In the ``GuitarResourceTest`` class, update the import declaration
-
-From:
-
-```java
-import static info.touret.guitarheaven.application.generated.model.TYPE.ELECTRIC;
-```
-
-to:
-
-```java
-import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
-```
-
-_Yes it is a side effect :-(_
-
 #### 📝 Date Time
-
-In the OpenAPI, remove the ``OffsetDateTime`` schema type and update the fields using it as following:
+Check out the generated OpenAPI it declares an ``OffsetDateTime`` schema type. It is useless. You can use this instead:
 
 ```yaml
 createdAt:
   type: string
   format: date-time
 ```
-
-Run again the following command:
-
-```shell
-$ ./mvnw clean compile
-```
-
-and now run the Quarkus dev environment to check it again:
-
-```shell
-$ ./mvnw quarkus:dev
-```
-
-You can go through the SmallRye Swagger UI to catch the differences.
 
 #### Other Data Constraints
 
@@ -1292,7 +1331,7 @@ public class OrderRequestDto   {
 > ℹ️ What about output validation?
 > Usually, we only validate the data coming from the incoming requests. 
 > 
-> However, a good secure coding practice is to validate the output also. The more you will document your API and add data constraints, the easier it will be to validate both the input and the output data.
+> However, a good secure coding practice is to validate also the output. The more you will document your API and add data constraints, the easier it will be to validate both the input and the output data.
 >
 
 ## Your API from a customer perspective
@@ -1304,7 +1343,7 @@ public class OrderRequestDto   {
 > - Use [Microcks](https://microcks.io/)
 > - Add examples to your OpenAPI
 
-### 👀 Explore Microcks
+### 👀 Explore Mirocks
 
 To be in your customer's shoes, we will experiment how they would use your API during their development.
 After testing the API through a [Swagger UI](https://editor.swagger.io/)
@@ -1313,11 +1352,9 @@ or [Redocly console](https://redocly.github.io/redoc/), they would probably inte
 Among other things, mocking external API help isolate the code from external resources and streamline the SDLC (Software
 Development LifeCycle).
 
-Some projects could help in this
-field : [Microcks](https://microcks.io/), [Wiremock](https://wiremock.org/), [MockServer](https://www.mock-server.com/).
+Some projects could help in this field : [Microcks](https://microcks.io/), [Wiremock](https://wiremock.org/), [MockServer](https://www.mock-server.com/).
 
-In this workshop, we will use the first one. Beyond simply mocking external endpoints, it may help to do contract
-testing and provide a standalone mock which could be sat up in an easy way.
+In this workshop, we will use the first one. Beyond simply mocking external endpoints, it may help to do contract testing and provide a standalone mock which could be sat up in an easy way.
 
 Go to the dev-ui and select the ``Extensions>Microcks`` extension.
 
@@ -1340,7 +1377,9 @@ For more information about OpenAPI examples,
 you [can check out the specification](https://swagger.io/docs/specification/v3_0/adding-examples/).
 
 To help you avoid wasting time with the examples, you can directly use the OpenAPI file
-``guitarheaven-with-examples.yaml``.
+``guitarheaven-with-examples-openapi.yaml``.
+
+Compare it with the last one to pinpoint the differences.
 
 On the Microcks web page, open then the service ``Guitar Heaven API with Examples - 1.0.1``.
 You will see the score is increased and now we have mocks.
@@ -1357,8 +1396,7 @@ You will get the output configured in the OpenAPI.
 
 Let us dig into it and see what is under the hood:
 
-If you look into the ``POST /guitars`` endpoint definition, you will see we coded examples for both the request and the
-results:
+If you look into the ``POST /guitars`` endpoint definition, you will see we coded examples for both the request and the results:
 
 Here we specified the ``order_es335`` example
 
@@ -1412,13 +1450,11 @@ Here we specified the ``order_es335`` example
 
       tags:
         - Guitar Resource
-
 ```
 
 In this way, your customer must stick to your specification during their tests.
 
-Be aware, to be detected and usable in Microcks, the name of the examples declared in the request must also be  present
-in the response specification.
+Be aware, to be detected and usable in Microcks, the name of the examples declared in the request must also be declared in the response specification.
 
 Now, how to deal with endpoints which don't return any content?
 
@@ -1482,6 +1518,22 @@ In this workshop, we will implement the latter.
 Create the following class in the ``src/test/resouces`` directory and in the ``info.touret.guitarheaven.test.application`` package:
 
 ```java
+package info.touret.guitarheaven.test.application;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.microcks.testcontainers.MicrocksContainer;
+import io.github.microcks.testcontainers.model.TestRequest;
+import io.github.microcks.testcontainers.model.TestResult;
+import io.github.microcks.testcontainers.model.TestRunnerType;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @QuarkusTest
 public class APIContractTest {
     private final static Logger LOGGER = LoggerFactory.getLogger(APIContractTest.class);
@@ -1511,7 +1563,7 @@ public class APIContractTest {
 
 Under the hood, this test will run Microcks and checks every endpoint declared in the OpenAPI using the examples filled earlier.
 
-To check it , stop the Quarkus Dev and run the integration tests.
+To check it, stop the Quarkus Dev and run the integration tests.
 
 ```shell
 $ ./mvnw clean verify
@@ -1546,7 +1598,7 @@ The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challen
 
 It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
-### 🛠️ Draf an event-driven API
+### 🛠️ Draft an event-driven API
 
 In this chapter, we will 
 * See how to validate an AsyncAPI file
@@ -1633,6 +1685,7 @@ Run then the following command:
 ```shell
 $ ./bin/asyncapi-validate.sh
 ```
+
 You would get such an output:
 
 ```shell
@@ -1919,7 +1972,9 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
 
 ### Verification
 
-Check if the code compiles first:
+Stop Quarkus.
+
+Next, check if the code compiles:
 
 ```shell
 $ ./mvnw clean compile
@@ -1978,8 +2033,7 @@ Update your ``pom.xml`` to use it instead of ``guitarheaven-openapi.yaml`` in th
               </inputSpec>
 ```
 
-Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori
-.yaml``.  
+Copy-paste the ``guitarheaven-openapi-with-examples.yaml`` file and name the new file as ``guitarheaven-with-examples-openapi-ori.yaml``.  
 
 First, go to the ``guitarheaven-openapi-with-examples.yaml`` and merge the definition of the ``GET /guitars`` ``GET /guitars/pages`` endpoints.
 
@@ -2083,6 +2137,8 @@ $ ./bin/oasdiff.sh diff /data/src/main/resources/openapi/guitarheaven-with-examp
 ```
 
 ### Updating the code
+
+Stop Quarkus if it is still running.
 
 Run the following command:
 
