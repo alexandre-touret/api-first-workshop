@@ -688,6 +688,33 @@ Add then the following plugin in the ``build>plugins>`` section:
 
 This configuration enables the support of two separate source folders in your project.
 
+Now this plugin should be configured as following:
+
+```xml
+
+<plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>${compiler-plugin.version}</version>
+    <configuration>
+        <parameters>true</parameters>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </path>
+            <!-- other annotation processors -->
+        </annotationProcessorPaths>
+        <compilerArgs>
+            <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+            <arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
+            <arg>-Amapstruct.verbose=true</arg>
+            <arg>-Amapstruct.defaultComponentModel=jakarta-cdi</arg>
+        </compilerArgs>
+        <generatedSourcesDirectory>${project.build.outputDirectory}/generated-source/openapi</generatedSourcesDirectory>
+    </configuration>
+</plugin>
+```
 
 ✅ Now let us check it. Run the following command:
 
@@ -1144,11 +1171,10 @@ void should_create_and_fail() {
 }
 ```
 
-#### Unit Tests
+**``GuitarResourceTest``**
+Update the ``GuitarDto`` creation:
 
-Go to the ``info.touret.guitarheaven.test.application.PaginationLinksFactoryTest`` test.
-
-Change the ``setUp`` method as following:
+ℹ️ _For this test and the followings, you can replace the test methods by the code below_
 
 ```java
 @Order(1)
@@ -1186,8 +1212,35 @@ void should_create_and_fail() {
         page = new Page<GuitarDto>(1,guitarDtoList,0,false,false);
     }
 
+@Order(1)
+@Test
+void should_create_successfully() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbc1")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(201)
+            .assertThat().body("quoteId", MatchesPattern.matchesPattern(UUID_REGEX));
+}
+@Order(3)
+@Test
+void should_create_and_fail() {
+    var quote = new QuoteDto().quoteId(null).orderId(UUID.fromString("292a485f-a56a-4938-8f1a-bbbbbbbbbbb9")).discountInUSD(10D).totalPriceWithDiscountInUSD(null).createdAt(OffsetDateTime.now());                
+    RestAssured.given()
+    .header("Content-Type", "application/json")
+            .and()
+            .body(quote)
+            .when()
+            .post("/quotes")
+            .then()
+            .statusCode(417).contentType(ContentType.fromContentType("application/problem+json"));
+    }
 ```
-And update the ``should_return_a_list_successfully()`` method as below:
+
 Update then the import declarations (see above in the API chapter)
 
 Fix the static import.
@@ -1197,15 +1250,6 @@ Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.applicatio
 The import of the ``ELECTRIC`` is now:
 
 ```java
-@Test
-void should_return_a_list_successfully() throws MalformedURLException, URISyntaxException {
-  when(uriInfo.getAbsolutePath()).thenReturn(URI.create("http://serverhost/test"));
-  paginationLinksFactory.createLinksDto(uriInfo, page, 10);
-  assertFalse(page.hasNext());
-  assertFalse(page.hasPrevious());
-  assertEquals(1, page.pageCount());
-  assertEquals(UUID.fromString("628766d4-fee3-46dd-8bcb-426cffb4d585"), page.entities().getFirst().getGuitarId());
-}
 import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 ```
 
@@ -1737,7 +1781,7 @@ The [AsyncAPI](https://www.asyncapi.com/) standard could help us in this challen
 
 It is based on OpenAPI and specifies event-driven API accessible through Kafka, AMQP or MQTT.
 
-### 🛠️ Draf an event-driven API
+### 🛠️ Draft an event-driven API
 
 In this chapter, we will 
 * See how to validate an AsyncAPI file
