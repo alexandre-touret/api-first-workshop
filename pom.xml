@@ -113,7 +113,11 @@
             <artifactId>archunit-junit5</artifactId>
             <version>${archunit-junit5.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.quarkiverse.openapi.generator</groupId>
+            <artifactId>quarkus-openapi-generator</artifactId>
+            <version>2.7.1-lts</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -184,6 +188,65 @@
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.10.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-server</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/guitarheaven-openapi.yaml
+                            </inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
+                            <configOptions>
+                                <apiPackage>info.touret.guitarheaven.application.generated.resource</apiPackage>
+                                <modelPackage>info.touret.guitarheaven.application.generated.model</modelPackage>
+                                <library>quarkus</library>
+                                <dateLibrary>java8</dateLibrary>
+                                <generateBuilders>true</generateBuilders>
+                                <openApiNullable>false</openApiNullable>
+                                <useBeanValidation>true</useBeanValidation>
+                                <generatePom>false</generatePom>
+                                <interfaceOnly>true</interfaceOnly>
+                                <legacyDiscriminatorBehavior>false</legacyDiscriminatorBehavior>
+                                <openApiSpecFileLocation>openapi/openapi.yaml</openApiSpecFileLocation>
+                                <returnResponse>true</returnResponse>
+                                <sourceFolder>.</sourceFolder>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useMicroProfileOpenAPIAnnotations>true</useMicroProfileOpenAPIAnnotations>
+                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                                <withXml>false</withXml>
+                            </configOptions>
+                            <output>${project.build.directory}/generated-sources/open-api-yaml</output>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/open-api-yaml</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

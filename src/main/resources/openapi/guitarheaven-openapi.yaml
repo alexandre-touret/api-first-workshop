@@ -4,9 +4,6 @@ components:
   schemas:
     Guitar:
       type: object
-      required:
-        - name
-        - type
       properties:
         guitarId:
           type: string
@@ -19,11 +16,9 @@ components:
         priceInUSD:
           type: number
           format: double
-          minimum: 0
         stock:
           type: integer
           format: int32
-          minimum: 0
     Links:
       type: object
       properties:
