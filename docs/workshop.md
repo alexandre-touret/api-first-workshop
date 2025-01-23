@@ -2050,19 +2050,6 @@ public class EbayDiscounterAdapter implements SupplierCatalogPort {
     }
 }
 ```
-
-Update then the package imports:
-
-From:
-
-```java
-
-```
-
-To:
-
-
-
 ### Verification
 
 Stop Quarkus.
