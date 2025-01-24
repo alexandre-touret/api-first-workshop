@@ -11,7 +11,7 @@ Person(user, "User")
 System_Boundary(guitarHeavenSystem, "Guitar Heaven System") {
     System_Boundary(guitarHeavenCoreSystem,"Guitar Heaven API","Provides an API to manage Guitar stock, Orders & Quotes"){
         Container(api,"API","Java,Quarkus,Docker")
-        Container(database,"Database",PostgreSQL")
+        ContainerDb(database,"Database",PostgreSQL")
 
     }
 
