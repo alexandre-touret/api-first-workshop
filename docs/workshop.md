@@ -428,7 +428,6 @@ For instance: ``https://laughing-giggle-x5x4rqxpwfv5pj-8080.app.github.dev/q/swa
 Check out the API located in the ``info.touret.guitarheaven.application.resource`` package. Look into how the API documentation is generated.
 
 ```shell
-tree src/main/java/info/touret/guitarheaven/application/
 src/main/java/info/touret/guitarheaven/application/
 └── resource
     ├── GuitarResource.java
@@ -1067,7 +1066,7 @@ Now the ``TYPE`` values are located in the ``info.touret.guitarheaven.applicatio
 The import of the ``ELECTRIC`` is now:
 
 ```java
-import static ``info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
+import static info.touret.guitarheaven.application.generated.model.TYPEDto.ELECTRIC;
 ```
 
 Finally, change the name of the method called ``price`` to ``priceInUSD``.
