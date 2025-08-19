@@ -1,0 +1,59 @@
+asyncapi: 3.0.0
+info:
+  title: Guitar Supply Chain API
+  version: 1.0.0
+  description: This API is notified whenever the stock is too low
+
+servers:
+  dev:
+    host: kafka://localhost:8092
+    description: Kafka broker running in a Quarkus Dev Service
+    protocol: kafka
+
+operations:
+  onGuitarRequestOut:
+    action: send
+    channel:
+      $ref: '#/channels/guitar-requests-out'
+  onGuitarRequestIn:
+    action: receive
+    channel:
+      $ref: '#/channels/guitar-requests-in'
+
+channels:
+  guitar-requests-out:
+    description: This channel is used to broadcast guitars supply requests
+    address: guitar-requests
+    messages:
+      guitarRequest:
+        $ref: '#/components/messages/guitarRequest'
+  guitar-requests-in:
+    description: This channel is used to fetch guitar requests
+    address: guitar-requests
+    messages:
+      guitarRequest:
+        $ref: '#/components/messages/guitarRequest'
+components:
+  messages:
+    guitarRequest:
+      name: guitarRequest
+      title: Guitar Request
+      contentType: application/json
+      payload:
+        $id: "GuitarRequest"
+        $ref: '#/components/schemas/guitarRequest'
+  schemas:
+    guitarRequest:
+      additionalProperties: false
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: This property describes the UUID of the request
+        guitarName:
+          type: string
+          description: This property describes the name of the guitar
+        quantity:
+          type: integer
+          description: The quantity to order and supply
