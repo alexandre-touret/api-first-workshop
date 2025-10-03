@@ -1588,7 +1588,7 @@ These tests could be implemented in a different ways:
 
 In this workshop, we will implement the latter.
 
-Create the following class in the ``src/test/resouces`` directory and in the ``info.touret.guitarheaven.test.application`` package:
+Create the following class in the ``src/test/resources`` directory and in the ``info.touret.guitarheaven.test.application`` package:
 
 ```java
 package info.touret.guitarheaven.test.application;
