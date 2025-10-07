@@ -479,17 +479,40 @@ $ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-code-first-openapi.
 You would get the following output summary:
 
 ```shell
-ategory     | Errors | Warnings | Info
-Tags         | 0      | 11       | 0
-Schemas      | 1      | 0        | 0
-Descriptions | 0      | 30       | 20
-Examples     | 0      | 54       | 0
+ category              ✗ errors      ▲ warnings    ● info                                                  
+ ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
+ Operations            1             0             0                                                       
+ Tags                  0             11            0                                                       
+ Descriptions          0             19            20                                                      
+ Examples              0             23            0                                                       
+ ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
+ total                 1             53            20                                                      
 
-                                                                                
-          Linting file 'src/main/resources/openapi/guitarheaven-code-f          
-          irst-openapi.yaml' failed with 1 errors, 95 warnings and 20           
-          informs                                                               
-                                                                                
+ rule                                      violations    quality impact                                    
+ ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
+ oas3-missing-example                      22            ██████████████████████████████████████████████████
+ description-duplication                   20            █████████████████████████████████████████████     
+ operation-tag-defined                     11            █████████████████████████                         
+ component-description                     9             ████████████████████                              
+ oas3-parameter-description                6             ██████████████                                    
+ operation-description                     4             █████████                                         
+ oas3-valid-schema-example                 1             ██                                                
+ no-ambiguous-paths                        1             ██                                                
+ ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
+ total                                     74          
+
+ --> use the <dashboard> command to be able to navigate results interactively <--
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                         │
+│  Quality Score: 67/100 [D]                                                                              │
+│                                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ │                                                     
+ │ ✗ Failed with 1 errors, 53 warnings and 20 informs. 
+ │                                                     
+  
 ```
 
 ℹ️ The current issues seem insignificant. However, they would be harmful for your customers to:
@@ -522,19 +545,25 @@ Remark: The ``/data`` prefix is only mentioned for assuring the compatibility wi
 You would get such an output:
 
 ```yaml
- discount:
-   min:
-     from: null
-     to: 0
-   orderId:
-     pattern:
-       from: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-       to: ""
-   quoteId:
-     pattern:
-       from: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-       to: ""
-
+        - PageableGuitarDto
+        - GuitarDto
+        - LinksDto
+    modified:
+        Quote:
+            properties:
+                modified:
+                    createdAt:
+                        extensions:
+                            deleted:
+                                - examples
+                    orderId:
+                        pattern:
+                            from: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+                            to: ""
+                    quoteId:
+                        pattern:
+                            from: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+                            to: ""
 ```
 
 You can then generate the changelog with the following command:
@@ -546,14 +575,21 @@ $ bin/oasdiff.sh changelog /data/src/main/resources/openapi/guitarheaven-code-fi
 You would get such a content:
 
 ```shell
-info    [request-parameter-pattern-removed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml       
-        in API GET /guitars/{guitarId}
-                removed the pattern '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}' from the 'path' request parameter 'guitarId'
+info    [response-property-pattern-removed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API GET /quotes
+                the '/items/quoteId' response's property pattern '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}' was removed for the status '200'
 
-info    [response-property-pattern-removed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml       
-        in API GET /guitars/{guitarId}
-                the 'name' response's property pattern '\S' was removed for the status '200'
+info    [request-property-pattern-removed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API POST /quotes
+                removed the pattern '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' from the request property 'orderId'
 
+info    [request-property-pattern-removed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API POST /quotes
+                removed the pattern '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' from the request property 'quoteId'
+
+info    [response-media-type-added] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API POST /quotes
+                added the media type 'application/json' for the response with the status '201'
 ```
 
 You can also pinpoint the breaking changes with the following command:
@@ -566,11 +602,20 @@ and get the output:
 
 ```shell
 
-error   [request-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml   
+
+error   [response-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API GET /orders-requests/{orderId}
+                the 'guitarIds/items/' response's property type/format changed from 'string'/'' to 'string'/'uuid' for status '200'
+
+error   [response-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
+        in API GET /orders-requests/{orderId}
+                the 'orderId' response's property type/format changed from 'string'/'' to 'string'/'uuid' for status '200'
+
+error   [request-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
         in API POST /quotes
                 the 'orderId' request property type/format changed from 'string'/'' to 'string'/'uuid'
 
-error   [request-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml   
+error   [request-property-type-changed] at /data/src/main/resources/openapi/guitarheaven-openapi.yaml
         in API POST /quotes
                 the 'quoteId' request property type/format changed from 'string'/'' to 'string'/'uuid'
 
@@ -1329,7 +1374,7 @@ OrderRequest:
 
 ```
 
-We will have the corresponding generated Java code in the ``target/generated-sources/open-api-yaml/info/touret/guitarheaven/application/generated/model/`` folder:
+After rebuilding the app, we will have the corresponding generated Java code in the ``target/generated-sources/open-api-yaml/info/touret/guitarheaven/application/generated/model/`` folder:
 
 ```java
 @org.eclipse.microprofile.openapi.annotations.media.Schema(description="")

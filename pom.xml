@@ -133,6 +133,9 @@
                         </goals>
                     </execution>
                 </executions>
+				 <configuration>
+					<jvmArgs>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArgs>
+				</configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
