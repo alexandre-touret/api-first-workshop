@@ -2018,10 +2018,10 @@ We need to enable the [Quarkus OpenAPI Generator extension](https://docs.quarkiv
 Add therefore a new dependency into the ``pom.xml``:
 
 ```xml
-<dependency>
-  <groupId>io.quarkiverse.openapi.generator</groupId>
-  <artifactId>quarkus-openapi-generator</artifactId>
-  <version>2.7.1-lts</version>
+ <dependency>
+    <groupId>io.quarkiverse.openapi.generator</groupId>
+    <artifactId>quarkus-openapi-generator</artifactId>
+    <version>2.12.0</version>
 </dependency>
 ```
 
