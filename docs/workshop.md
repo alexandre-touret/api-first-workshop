@@ -2149,7 +2149,7 @@ Check out (and try) how the pagination is handled on the ``GET /guitars/pages`` 
 
 ### Update the API
 
-**We will base on our API on the ``guitarheaven-with-examples-openapi.yaml`` OpenAPI description.**
+**We will base our API on the ``guitarheaven-with-examples-openapi.yaml`` OpenAPI description.**
 
 Update your ``pom.xml`` to use it instead of ``guitarheaven-openapi.yaml`` in the ``build>plugins>openapi-generator-maven-plugin`` section
 
@@ -2297,6 +2297,27 @@ To check this API, you can use ``vacuum``:
 ```shell
 $ ./bin/vacuum.sh -d src/main/resources/openapi/guitarheaven-with-examples-openapi.yaml
 ```
+
+You should get this error:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                         │
+│  Quality Score: 69/100 [D]                                                                              │
+│                                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+│                                                     
+│ ✗ Failed with 1 errors, 43 warnings and 22 informs.
+│
+```
+It's due to a potential ambiguity in the API path definition
+
+```
+✗ error    paths are ambiguous with one another: `/guitars/pages` (GET) and `/guitars/{guitarId}` (GET)   no-ambiguous-paths          Operations    $.paths['/guitars/{guitarId}']    
+```
+
+Normally, we should avoid such a definition and send systematically paginated results instead of having an endpoint for all the results and an endpoint for paginated results.
 
 ### Pinpointing the differences
 
