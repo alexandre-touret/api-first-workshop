@@ -3,7 +3,7 @@
 {
   "name": "Java",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/java:21",
+  "image": "mcr.microsoft.com/devcontainers/java:21-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
       "installMaven": true,
@@ -25,7 +25,7 @@
     8080
   ],
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "./mvnw verify",
+  "postCreateCommand": "./mvnw clean install verify",
 
   // Configure tool-specific properties.
   "customizations": {
