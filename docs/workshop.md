@@ -816,7 +816,7 @@ Delete first the ``info.touret.guitarheaven.application.dto`` package.
 For the following classes : ``GuitarResouce``, ``OrderRequestResource`` and ``QuoteResource``, do the following steps:
 
 Change the import declarations of DTOs from ``info.touret.guitarheaven.application.dto`` to
-``info.touret.guitarheaven.application.dto``:
+``info.touret.guitarheaven.application.generated.model``:
 
 For instance, from :
 
