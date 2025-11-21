@@ -813,7 +813,7 @@ Delete first the ``info.touret.guitarheaven.application.dto`` package.
 
 #### API
 
-For the following classes : ``GuitarResouce``, ``OrderRequestResource`` and ``QuoteResource``, do the following steps:
+For the following classes : ``GuitarResource``, ``OrderRequestResource`` and ``QuoteResource``, do the following steps:
 
 Change the import declarations of DTOs from ``info.touret.guitarheaven.application.dto`` to
 ``info.touret.guitarheaven.application.generated.model``:
