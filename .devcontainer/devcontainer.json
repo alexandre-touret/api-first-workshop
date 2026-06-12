@@ -34,7 +34,7 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
-        "vscjava.vscode-java-pack""Angular.ng-template"
+        "vscjava.vscode-java-pack"
       ]
     }
   }
